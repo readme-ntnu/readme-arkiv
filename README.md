@@ -1,68 +1,46 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# readme-arkiv
 
-## Available Scripts
+Søkemotor for artikler i studentmagasinet [readme](https://readme.abakus.no).
 
-In the project directory, you can run:
+## Hvordan fungerer dette?
 
-### `npm start`
+Dette er et Firebase-prosjekt. Artiklene ligger i en Firestore-database, og klienten kan søke etter artikler i denne ved bruk av en Cloud Function ved navn `search`. Den functionen fungerer altså som en enkel backend-server. Klienten er laga med Create React App.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Kom i gang
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+Aller først må du sørge for at du har Node.js v10 installert.
 
-### `npm test`
+Deretter klon repoet og installer avhengigheter:
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+git clone git@github.com:readme-ntnu/readme-arkiv.git
+cd readme-arkiv
+npm install
+```
 
-### `npm run build`
+Så må du logge inn på Firebase i terminalen din:
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+npm i -g firebase-tools
+firebase login
+```
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+Du må få noen til å gi deg tilgang til `readme-arkiv`-prosjektet i Firebase. For å sjekke om du har tilgang, kjør `firebase list` i terminalen. `readme-arkiv` skal ligge der om du har tilgang.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+For å kunne snakke med Firestore-databasen lokalt, må du ha en _Service Account Key_ lokalt. Gå til https://console.cloud.google.com/iam-admin/serviceaccounts og følg disse stegene:
+* Velg `readme-arkiv` som prosjekt.
+* Finn raden med Name "App Engine default service account"
+* Trykk på menyen til høyre på denne raden, og velg Create key
+* Legg fila på en trygg plass på maskina di, f.eks. `/home/ola.nordmann/serviceaccounts/readme-arkiv.json`
 
-### `npm run eject`
+Nå kan du kjøre opp Functions-emulator slik:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+GOOGLE_APPLICATION_CREDENTIALS="<path-til-der-du-la-service-account.json>" firebase serve --only functions
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Og deretter åpne ny terminal for å fyre opp frontenden:
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+```
+npm start
+```
