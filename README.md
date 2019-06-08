@@ -44,3 +44,13 @@ Og deretter åpne ny terminal for å fyre opp frontenden:
 ```
 npm start
 ```
+
+## Deploy
+
+For å sette dine endringer i produksjon, skal det ikke mer til enn
+
+```
+npm run deploy
+```
+
+Dette vil bygge klienten og deploye både den og functions.
