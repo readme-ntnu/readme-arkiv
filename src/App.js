@@ -6,6 +6,7 @@ import { Table } from "react-bootstrap";
 
 import AppNavBar from "./components/Navbar.js";
 import Loading from "./components/Loading.js";
+import AppTable from "./components/Table.js";
 
 const searchForArticles = async searchString => {
   const host =
@@ -62,34 +63,7 @@ function App() {
           placeholder="Søk..."
         />
         {loading ? <Loading /> : null}
-        {hasData ? (
-          <Table striped bordered hover className="search-table">
-            <thead>
-              <tr>
-                <th>Utgave</th>
-                <th>Tittel</th>
-                <th>Forfatter</th>
-                <th>Layout</th>
-                <th>Spalte</th>
-                <th>Stikkord</th>
-              </tr>
-            </thead>
-            <tbody>
-              {articles.map(article => (
-                <tr key={article._id}>
-                  <td>
-                    <a href={article.url}>{article.edition}</a>
-                  </td>
-                  <td>{article.title}</td>
-                  <td>{article.author}</td>
-                  <td>{article.layout}</td>
-                  <td>{article.type}</td>
-                  <td>{article.tags}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        ) : null}
+        {hasData ? <AppTable articles={articles} /> : null}
       </div>
     </div>
   );
