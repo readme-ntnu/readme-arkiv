@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { debounce } from 'lodash'
 import './App.css';
 
+import { Table } from 'react-bootstrap';
+
+import AppNavBar from './components/Navbar.js'
+
 const searchForArticles = async (searchString) => {
   const host = process.env.NODE_ENV === 'production'
     ? 'https://us-central1-readme-arkiv.cloudfunctions.net/search'
@@ -38,6 +42,7 @@ function App() {
 
   return (
     <div className="App">
+      <AppNavBar />
       <header className="App-header">
         <img src="readme.png" alt="Logo" />
         <h1>Artikkelsøk</h1>
@@ -48,7 +53,7 @@ function App() {
           placeholder="Søk..."
         />
         { loading ? <div>Laster...</div> : null }
-        <table className="search-table">
+        <Table striped bordered hover className="search-table">
           <thead>
             <tr>
                 <th>Utgave</th>
@@ -71,7 +76,7 @@ function App() {
               </tr>
             )) }
           </tbody>
-        </table>
+        </Table>
       </div>
     </div>
   );
