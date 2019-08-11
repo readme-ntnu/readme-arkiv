@@ -1,5 +1,10 @@
 .App {
   text-align: center;
+  font-family: helvetica neue, Arial, Helvetica, Geneva, sans-serif;
+}
+
+.App-header.img {
+  width: 570px;
 }
 
 .search-table {
