@@ -3,7 +3,7 @@ import { Navbar, Nav, NavItem } from "react-bootstrap";
 
 function AppNavbar() {
   return (
-    <Navbar inverse collapseOnSelect>
+    <Navbar staticTop inverse>
       <Navbar.Brand><a href="http://readme.abakus.no/">Arkiv</a></Navbar.Brand>
       <Navbar.Toggle/>
       <Navbar.Collapse>
