@@ -4,7 +4,7 @@ import { Table, Fade } from "react-bootstrap";
 function AppTable(props) {
   return (
     <Fade appear in>
-      <Table striped bordered hover className="search-table">
+      <Table striped bordered hover responsive className="search-table">
         <thead>
           <tr>
             <th>Utgave</th>
