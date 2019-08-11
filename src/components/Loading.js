@@ -8,7 +8,7 @@ import "./Loading.css";
 
 const override = css`
     display: block;
-    margin: 0 auto;
+    margin: auto;
 `;
 
 function Loading() {

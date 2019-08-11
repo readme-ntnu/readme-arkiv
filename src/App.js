@@ -59,6 +59,7 @@ function App() {
         <input
           onChange={event => search(event.currentTarget.value)}
           placeholder="Søk..."
+          size="32"
         />
         {loading ? <Loading /> : null}
         {hasData ? <AppTable articles={articles} /> : null}
