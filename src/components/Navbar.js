@@ -4,7 +4,7 @@ import { Navbar, Nav, NavItem } from "react-bootstrap";
 function AppNavbar() {
   return (
     <Navbar inverse collapseOnSelect>
-      <Navbar.Brand><a href="http://readme.abakus.no/"><b>Arkiv</b></a></Navbar.Brand>
+      <Navbar.Brand><a href="http://readme.abakus.no/">Arkiv</a></Navbar.Brand>
       <Navbar.Toggle/>
       <Navbar.Collapse>
         <Nav className="mr-auto">
