@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { debounce } from "lodash";
 import "./App.css";
 
-import { Table } from "react-bootstrap";
-
 import AppNavBar from "./components/Navbar.js";
 import Loading from "./components/Loading.js";
 import AppTable from "./components/Table.js";

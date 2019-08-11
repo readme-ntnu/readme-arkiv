@@ -1,15 +1,23 @@
 import React from "react";
-import { Spinner, Fade } from "react-bootstrap";
+import { css } from '@emotion/core';
+
+import { Fade } from "react-bootstrap";
+import { BounceLoader } from "react-spinners";
 
 import "./Loading.css";
+
+const override = css`
+    display: block;
+    margin: 0 auto;
+`;
 
 function Loading() {
   return (
     <Fade appear in>
       <div className="Loading">
-        <Spinner animation="grow" role="status">
+        <BounceLoader css={override} animation="grow" role="status">
           <span className="sr-only">Loading...</span>
-        </Spinner>
+        </BounceLoader>
         <div>Laster...</div>
       </div>
     </Fade>
