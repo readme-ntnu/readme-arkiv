@@ -3,6 +3,10 @@
   font-family: helvetica neue, Arial, Helvetica, Geneva, sans-serif;
 }
 
+.App-header.img {
+  width: 570px;
+}
+
 .search-table {
   margin: 4rem;
   text-align: left;
