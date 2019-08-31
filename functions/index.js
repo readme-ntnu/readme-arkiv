@@ -1,11 +1,12 @@
-import { initializeApp, firestore } from "firebase-admin";
-import express from "express";
-import cors from "cors";
-import Fuse from "fuse.js";
+const admin = require("firebase-admin");
+const express = require("express");
+const cors = require("cors");
+const Fuse = require("fuse.js");
 const functions = require("firebase-functions");
+const algoliasearch = require("algoliasearch");
 
-initializeApp();
-const db = firestore();
+admin.initializeApp();
+const db = admin.firestore();
 
 const app = express();
 app.use(cors());
@@ -80,40 +81,40 @@ app.get("/", async (request, response) => {
   }
 });
 
-export const sendCollectionToAlgolia = functions.https.onRequest(async (req, res) => {
+exports.sendCollectionToAlgolia = functions.https.onRequest(
+  async (req, res) => {
+    // This array will contain all records to be indexed in Algolia.
+    // A record does not need to necessarily contain all properties of the Firestore document,
+    // only the relevant ones.
+    const algoliaRecords = [];
 
-	// This array will contain all records to be indexed in Algolia.
-	// A record does not need to necessarily contain all properties of the Firestore document,
-	// only the relevant ones. 
-	const algoliaRecords = [];
+    // Retrieve all documents from the COLLECTION collection.
+    const querySnapshot = await db.collection("articles").get();
 
-	// Retrieve all documents from the COLLECTION collection.
-	const querySnapshot = await db.collection('articles').get();
+    querySnapshot.docs.forEach(doc => {
+      const document = doc.data();
+      // Essentially, you want your records to contain any information that facilitates search,
+      // display, filtering, or relevance. Otherwise, you can leave it out.
+      const record = {
+        objectID: doc.id,
+        title: doc.title,
+        author: doc.author,
+        layout: doc.layout,
+        edition: doc.edition,
+        tags: doc.tags,
+        type: doc.type,
+        content: doc.content
+      };
 
-	querySnapshot.docs.forEach(doc => {
-		const document = doc.data();
-        // Essentially, you want your records to contain any information that facilitates search, 
-        // display, filtering, or relevance. Otherwise, you can leave it out.
-        const record = {
-            objectID: doc.id,
-            title: doc.title,
-            author: doc.author,
-            layout: doc.layout,
-            edition: doc.edition,
-            tags: doc.tags,
-            type: doc.type,
-            content: doc.content,
-        };
-
-        algoliaRecords.push(record);
+      algoliaRecords.push(record);
     });
-	
-	// After all records are created, we save them to 
-	index.saveObjects(algoliaRecords, (_error, content) => {
-        res.status(200).send("articles was indexed to Algolia successfully.");
+
+    // After all records are created, we save them to
+    index.saveObjects(algoliaRecords, (_error, content) => {
+      res.status(200).send("articles was indexed to Algolia successfully.");
     });
-	
-})
+  }
+);
 
 exports.search = functions.https.onRequest((request, response) =>
   app(request, response)
