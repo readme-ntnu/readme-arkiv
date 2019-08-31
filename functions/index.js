@@ -96,14 +96,14 @@ exports.sendCollectionToAlgolia = functions.https.onRequest(
       // Essentially, you want your records to contain any information that facilitates search,
       // display, filtering, or relevance. Otherwise, you can leave it out.
       const record = {
-        objectID: doc.id,
-        title: doc.title,
-        author: doc.author,
-        layout: doc.layout,
-        edition: doc.edition,
-        tags: doc.tags,
-        type: doc.type,
-        content: doc.content
+        objectID: document.id,
+        title: document.title,
+        author: document.author,
+        layout: document.layout,
+        edition: document.edition,
+        tags: document.tags,
+        type: document.type,
+        content: document.content
       };
 
       algoliaRecords.push(record);
