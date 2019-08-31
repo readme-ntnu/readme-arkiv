@@ -111,7 +111,11 @@ exports.sendCollectionToAlgolia = functions.https.onRequest(
 
     // After all records are created, we save them to
     index.saveObjects(algoliaRecords, (_error, content) => {
-      res.status(200).send("articles was indexed to Algolia successfully.");
+        if(_error) {
+            res.status(200).send("Something went wrong: " + _error);
+        } else {
+            res.status(200).send("articles was indexed to Algolia successfully.");
+        }
     });
   }
 );
