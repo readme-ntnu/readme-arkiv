@@ -1,11 +1,11 @@
-const admin = require('firebase-admin')
-const functions = require('firebase-functions')
-const express = require('express')
-const cors = require('cors')
-const Fuse = require('fuse.js')
+import { initializeApp, firestore } from 'firebase-admin';
+import { https } from 'firebase-functions';
+import express from 'express';
+import cors from 'cors';
+import Fuse from 'fuse.js';
 
-admin.initializeApp()
-const db = admin.firestore()
+initializeApp()
+const db = firestore()
 
 const app = express()
 app.use(cors())
@@ -50,4 +50,4 @@ app.get('/', async (request, response) => {
     }
 })
 
-exports.search = functions.https.onRequest((request, response) => app(request, response));
+export const search = https.onRequest((request, response) => app(request, response));
