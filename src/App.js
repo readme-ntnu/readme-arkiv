@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { debounce } from "lodash";
+import { Image } from "react-bootstrap";
 import "./App.css";
 
 import AppNavBar from "./components/Navbar.js";
@@ -52,7 +53,7 @@ function App() {
     <div className="App">
       <AppNavBar />
       <header className="App-header">
-        <img src="readme.png" alt="Logo" />
+        <Image id="readmelogo" src="readme.png" alt="Logo" responsive />
         <h1>Artikkelsøk</h1>
       </header>
       <div>

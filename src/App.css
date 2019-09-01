@@ -3,8 +3,9 @@
   font-family: helvetica neue, Arial, Helvetica, Geneva, sans-serif;
 }
 
-.App-header.img {
-  width: 570px;
+#readmelogo {
+  display: inline-block !important;
+  padding: 0px 10px;
 }
 
 .search-table {
