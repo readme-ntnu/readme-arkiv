@@ -1,26 +1,20 @@
 import React from "react";
-import { Navbar, Nav, NavItem } from "react-bootstrap";
+import { Navbar, Nav } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
 function AppNavbar() {
   return (
-    <Navbar staticTop inverse>
-      <Navbar.Header>
-        <LinkContainer to="/">
-          <Navbar.Brand>Arkiv</Navbar.Brand>
-        </LinkContainer>
-        <Navbar.Toggle />
-      </Navbar.Header>
-      <Navbar.Collapse>
+    <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark">
+      <LinkContainer to="/">
+        <Navbar.Brand>Arkiv</Navbar.Brand>
+      </LinkContainer>
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="mr-auto">
           <LinkContainer to="/search">
-            <NavItem eventKey={1} href="https://readme-arkiv.web.app/">
-              Søk
-            </NavItem>
+            <Nav.Link>Søk</Nav.Link>
           </LinkContainer>
-          <NavItem eventKey={2} href="https://abakus.no/">
-            Abakus.no
-          </NavItem>
+          <Nav.Link href="https://abakus.no/">Abakus.no</Nav.Link>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

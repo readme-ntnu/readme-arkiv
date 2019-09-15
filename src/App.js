@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { Image } from "react-bootstrap";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import "./App.css";
 
 import AppNavBar from "./components/Navbar";
@@ -13,7 +13,7 @@ function App() {
       <div className="App">
         <AppNavBar />
         <header className="App-header">
-          <Image id="readmelogo" src="readme.png" alt="Logo" responsive />
+          <Image id="readmelogo" src="readme.png" alt="Logo" fluid />
         </header>
         <Route exact path="/" component={Home} />
         <Route path="/search" component={Search} />
