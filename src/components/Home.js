@@ -17,20 +17,14 @@ function Home() {
       let storage = firebase.storage();
       let storageRef = storage.ref("images");
       let list = await storageRef.listAll();
+      let arrayOfPromises = [];
       let items = list.prefixes;
       for (let i = 0; i < items.length; i++) {
-        let imgRefs = await items[i].list();
-        let imgRefsItems = imgRefs.items;
-        let object = {};
-        let urls = [];
-        for (let j = 0; j < imgRefsItems.length; j++) {
-          let res = await imgRefsItems[j].getDownloadURL();
-          urls.push(res);
-        }
-        object["year"] = items[i].name;
-        object["urls"] = urls;
-        loadImg.push(object);
-        console.log(loadImg);
+        arrayOfPromises.push(fetchImagesForYear(items[i]));
+      }
+      let responses = await Promise.all(arrayOfPromises);
+      for (var yearObj of responses) {
+        loadImg.push(yearObj);
       }
       setImages(loadImg);
     }
@@ -43,7 +37,23 @@ function Home() {
     return <ImageRow info={URLsrow} key={URLsrow.year} />;
   });
 
+  imgRows.reverse();
+
   return loading ? <Spinner animation="grow" /> : imgRows;
+}
+
+async function fetchImagesForYear(yearPrefix) {
+  let imgRefs = await yearPrefix.list();
+  let imgRefsItems = imgRefs.items;
+  let object = {};
+  let urls = [];
+  for (let j = 0; j < imgRefsItems.length; j++) {
+    let res = await imgRefsItems[j].getDownloadURL();
+    urls.push(res);
+  }
+  object["year"] = yearPrefix.name;
+  object["urls"] = urls;
+  return object;
 }
 
 export default Home;

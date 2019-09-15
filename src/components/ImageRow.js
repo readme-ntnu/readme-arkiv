@@ -2,9 +2,11 @@ import React from "react";
 
 import { Image } from "react-bootstrap";
 
+import "./ImageRow.css";
+
 function ImageRow(props) {
   let images = props.info.urls.map(url => {
-    return <Image src={url} fluid />;
+    return <Image className="RowImage" src={url} fluid key={url} />;
   });
   return (
     <div>
