@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Spinner } from "react-bootstrap";
 
 import ImageRow from "./ImageRow.js";
+import "./Home.css";
 
 import * as firebase from "firebase";
 

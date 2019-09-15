@@ -2,7 +2,7 @@
   display: block;
   margin: auto;
   margin-bottom: 15px;
-  max-height: 300px;
+  max-width: 200px;
   box-shadow: 5px 5px 12px #888;
   -webkit-transition: transform 0.1s ease-in-out;
   transition: transform 0.1s ease-in-out;
