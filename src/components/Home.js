@@ -39,7 +39,11 @@ function Home() {
 
   imgRows.reverse();
 
-  return loading ? <Spinner animation="grow" /> : imgRows;
+  return loading ? (
+    <Spinner animation="grow" />
+  ) : (
+    <div className="row-container">{imgRows}</div>
+  );
 }
 
 async function fetchImagesForYear(yearPrefix) {

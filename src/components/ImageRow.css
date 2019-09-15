@@ -1,3 +1,20 @@
 .RowImage {
-  width: 25vw;
+  display: block;
+  margin: auto;
+  margin-bottom: 15px;
+  max-height: 300px;
+  box-shadow: 5px 5px 12px #888;
+  -webkit-transition: transform 0.1s ease-in-out;
+  transition: transform 0.1s ease-in-out;
+}
+
+.RowImage:hover {
+  -ms-transform: scale(1.02); /* IE 9 */
+  -webkit-transform: scale(1.02); /* Safari */
+  transform: scale(1.02);
+  box-shadow: 8px 8px 15px #888;
+}
+
+.ImageRow {
+  margin: auto;
 }
