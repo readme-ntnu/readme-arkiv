@@ -17,4 +17,10 @@
 
 .ImageRow {
   margin: auto;
+  margin-bottom: 15px;
+}
+
+.ImageRow > .year {
+  color: #555;
+  text-align: center;
 }
