@@ -3,3 +3,11 @@
   text-align: center;
   margin: auto;
 }
+
+@media only screen and (max-width: 650px) {
+  .row-container {
+    max-width: 350px;
+    text-align: center;
+    margin: auto;
+  }
+}
