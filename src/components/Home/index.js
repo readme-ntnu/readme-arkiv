@@ -22,14 +22,16 @@ function Home(props) {
         arrayOfPromises.push(fetchDataForYear(items[i], storage));
       }
       let responses = await Promise.all(arrayOfPromises);
+      // eslint-disable-next-line no-unused-vars
       for (const yearObj of responses) {
         loadImg.push(yearObj);
       }
+      //TODO: Fix memory leak
       setImages(loadImg);
       setDownloading(false);
     }
     fetchData();
-  }, []);
+  }, [props.firebase.storage]);
 
   let imgRows = images.map(URLsrow => {
     return <ImageRow info={URLsrow} key={URLsrow.year} />;

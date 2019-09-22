@@ -23,6 +23,8 @@ class Firebase {
   doSignInWithEmailAndPassword = (email, password) =>
     this.auth.signInWithEmailAndPassword(email, password);
 
+  doPasswordReset = email => this.auth.sendPasswordResetEmail(email);
+
   doSignOut = () => this.auth.signOut();
 }
 export default Firebase;

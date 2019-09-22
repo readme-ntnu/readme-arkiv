@@ -2,7 +2,7 @@ import React from "react";
 import { Navbar, Nav } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
-import { withAuthentication, AuthUserContext } from "../Session";
+import { AuthUserContext } from "../Session";
 
 import SignOutButton from "../SignOut";
 
