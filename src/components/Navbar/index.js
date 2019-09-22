@@ -2,9 +2,13 @@ import React from "react";
 import { Navbar, Nav } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
+import { withAuthentication, AuthUserContext } from "../Session";
+
+import SignOutButton from "../SignOut";
+
 import * as ROUTES from "../../constants/routes.js";
 
-function AppNavbar() {
+function AppNavbar(props) {
   return (
     <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark">
       <LinkContainer to={ROUTES.HOME}>
@@ -19,9 +23,17 @@ function AppNavbar() {
           <Nav.Link href="https://abakus.no/">Abakus.no</Nav.Link>
         </Nav>
         <Nav>
-          <LinkContainer to={ROUTES.SIGN_IN}>
-            <Nav.Link>Sign in</Nav.Link>
-          </LinkContainer>
+          <AuthUserContext.Consumer>
+            {authUser =>
+              authUser ? (
+                <SignOutButton />
+              ) : (
+                <LinkContainer to={ROUTES.SIGN_IN}>
+                  <Nav.Link>Sign in</Nav.Link>
+                </LinkContainer>
+              )
+            }
+          </AuthUserContext.Consumer>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Image } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.css";
@@ -12,10 +12,11 @@ import SignInPage from "./components/SignIn";
 //import AdminPage from "../components/Admin.js";
 
 import NoMatch from "./components/NoMatch";
-import { withFirebase } from "./components/Firebase/context";
+import { withFirebase } from "./components/Firebase";
+import { withAuthentication } from "./components/Session";
 
 function App() {
-  const HomeFire = withFirebase(Home);
+  const HomeWithFire = withFirebase(Home);
   return (
     <Router>
       <div className="App">
@@ -24,7 +25,7 @@ function App() {
           <Image id="readmelogo" src="readme.png" alt="Logo" fluid />
         </header>
         <Switch>
-          <Route exact path={ROUTES.HOME} component={HomeFire} />
+          <Route exact path={ROUTES.HOME} component={HomeWithFire} />
           <Route path={ROUTES.SEARCH} component={Search} />
           <Route path={ROUTES.SIGN_IN} component={SignInPage} />
           {/*<Route path={ROUTES.ADMIN} component={AdminPage} />*/}
@@ -35,4 +36,4 @@ function App() {
   );
 }
 
-export default App;
+export default withAuthentication(App);
