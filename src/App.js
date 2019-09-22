@@ -6,12 +6,12 @@ import "./App.css";
 import * as ROUTES from "./constants/routes";
 
 import AppNavBar from "./components/Navbar";
-import Home from "./components/Home.js";
-import Search from "./components/Search.js";
+import Home from "./components/Home";
+import Search from "./components/Search";
 //import SignInPage from "./components/SignIn.js";
 //import AdminPage from "../components/Admin.js";
 
-import NoMatch from "./components/NoMatch.js";
+import NoMatch from "./components/NoMatch";
 import { withFirebase } from "./components/Firebase/context";
 
 function App() {

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { debounce } from "lodash";
 
-import Loading from "./Loading.js";
-import AppTable from "./Table.js";
+import Loading from "../Loading";
+import AppTable from "./Table";
 
 const searchForArticles = async searchString => {
   const host =

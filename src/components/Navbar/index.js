@@ -2,7 +2,7 @@ import React from "react";
 import { Navbar, Nav } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
-import * as ROUTES from "../constants/routes";
+import * as ROUTES from "../../constants/routes.js";
 
 function AppNavbar() {
   return (

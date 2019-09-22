@@ -1,7 +1,7 @@
 import React from "react";
 import { Image, Fade } from "react-bootstrap";
 
-import redaktør from "../Assets/Images/Shjolberg.png";
+import redaktør from "../../Assets/Images/Shjolberg.png";
 
 function NoMatch(props) {
   return (

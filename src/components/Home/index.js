@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 
-import { Spinner } from "react-bootstrap";
-
-import ImageRow from "./ImageRow.js";
+import ImageRow from "./ImageRow/";
 import "./Home.css";
+import Loading from "../Loading";
 
 function Home(props) {
   const [images, setImages] = useState([]);
@@ -37,7 +36,7 @@ function Home(props) {
   });
 
   if (downloading) {
-    return <Spinner animation="grow" />;
+    return <Loading />;
   } else {
     return <div className="row-container">{imgRows}</div>;
   }
