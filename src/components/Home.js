@@ -25,7 +25,7 @@ function Home() {
         arrayOfPromises.push(fetchDataForYear(items[i]));
       }
       let responses = await Promise.all(arrayOfPromises);
-      for (var yearObj of responses) {
+      for (const yearObj of responses) {
         loadImg.push(yearObj);
       }
       setImages(loadImg);

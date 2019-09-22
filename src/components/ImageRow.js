@@ -1,7 +1,7 @@
 import React from "react";
 
-import { Image, Fade } from "react-bootstrap";
-import LazyLoad from "react-lazyload";
+import { Image } from "react-bootstrap";
+import FadeIn from "react-lazyload-fadein";
 import "firebase/storage";
 
 import "./ImageRow.css";
@@ -18,18 +18,20 @@ function ImageRow(props) {
   });
 
   let imagesLen = images.length;
-  let images1 = images.slice(0, imagesLen - 3);
-  let images2 = images.slice(imagesLen - 3, imagesLen);
+  let images1 = images.slice(0, 3);
+  let images2 = images.slice(3, imagesLen);
   return (
-    <LazyLoad once offset={300} height={290}>
-      <Fade appear in>
-        <div className="ImageRow">
-          <h2 className="year">{props.info.year}</h2>
-          <div className="row">{images1}</div>
-          <div className="row">{images2}</div>
-        </div>
-      </Fade>
-    </LazyLoad>
+    <div className="ImageRow">
+      <h2 className="year">{props.info.year}</h2>
+      <FadeIn height={250}>
+        {onload => (
+          <div onLoad={onload}>
+            <div className="row">{images1}</div>
+            <div className="row">{images2}</div>
+          </div>
+        )}
+      </FadeIn>
+    </div>
   );
 }
 

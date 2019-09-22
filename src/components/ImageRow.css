@@ -1,11 +1,13 @@
 .RowImage {
   display: block;
-  margin: auto;
-  margin-bottom: 15px;
-  max-width: 200px;
+  margin: 0px 2vw;
+  margin-bottom: 2vh;
+  width: 200px;
+  min-height: 245px;
   box-shadow: 5px 5px 12px #888;
   -webkit-transition: transform 0.1s ease-in-out;
   transition: transform 0.1s ease-in-out;
+  background: #fff;
 }
 
 .RowImage:hover {
