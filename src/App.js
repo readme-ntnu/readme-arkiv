@@ -8,7 +8,7 @@ import * as ROUTES from "./constants/routes";
 import AppNavBar from "./components/Navbar";
 import Home from "./components/Home";
 import Search from "./components/Search";
-//import SignInPage from "./components/SignIn.js";
+import SignInPage from "./components/SignIn";
 //import AdminPage from "../components/Admin.js";
 
 import NoMatch from "./components/NoMatch";
@@ -26,8 +26,8 @@ function App() {
         <Switch>
           <Route exact path={ROUTES.HOME} component={HomeFire} />
           <Route path={ROUTES.SEARCH} component={Search} />
-          {/*<Route path={ROUTES.SIGN_IN} component={SignInPage} />
-          <Route path={ROUTES.ADMIN} component={AdminPage} />*/}
+          <Route path={ROUTES.SIGN_IN} component={SignInPage} />
+          {/*<Route path={ROUTES.ADMIN} component={AdminPage} />*/}
           <Route component={NoMatch} />
         </Switch>
       </div>
