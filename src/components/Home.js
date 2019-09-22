@@ -5,9 +5,7 @@ import { Spinner } from "react-bootstrap";
 import ImageRow from "./ImageRow.js";
 import "./Home.css";
 
-import * as firebase from "firebase";
-
-function Home() {
+function Home(props) {
   const [images, setImages] = useState([]);
 
   const [downloading, setDownloading] = useState(true);
@@ -16,13 +14,13 @@ function Home() {
     async function fetchData() {
       setDownloading(true);
       var loadImg = [];
-      let storage = firebase.storage();
+      let storage = props.firebase.storage;
       let storageRef = storage.ref("images");
       let list = await storageRef.listAll();
       let arrayOfPromises = [];
       let items = list.prefixes.reverse();
       for (let i = 0; i < items.length; i++) {
-        arrayOfPromises.push(fetchDataForYear(items[i]));
+        arrayOfPromises.push(fetchDataForYear(items[i], storage));
       }
       let responses = await Promise.all(arrayOfPromises);
       for (const yearObj of responses) {
@@ -44,11 +42,11 @@ function Home() {
     return <div className="row-container">{imgRows}</div>;
   }
 }
-async function fetchDataForYear(yearPrefix) {
+async function fetchDataForYear(yearPrefix, storage) {
   let object = {};
   let response = await Promise.all([
     fetchImagesForAYear(yearPrefix),
-    fetchPDFsForAYear(yearPrefix)
+    fetchPDFsForAYear(yearPrefix, storage)
   ]);
   object["year"] = yearPrefix.name;
   object["urls"] = response[0];
@@ -67,8 +65,7 @@ async function fetchImagesForAYear(yearPrefix) {
   return urls;
 }
 
-async function fetchPDFsForAYear(yearPrefix) {
-  let storage = firebase.storage();
+async function fetchPDFsForAYear(yearPrefix, storage) {
   let year = yearPrefix.name;
   let PDFrefs = await storage.ref("pdf/" + year).list();
   let PDFrefsItems = PDFrefs.items.reverse();
