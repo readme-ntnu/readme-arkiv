@@ -10,7 +10,9 @@ import Home from "./components/Home";
 import Search from "./components/Search";
 import SignInPage from "./components/SignIn";
 import PasswordForgetPage from "./components/PasswordForget";
-//import AdminPage from "../components/Admin.js";
+import AdminPage from "./components/Admin";
+import NewEditionPage from "./components/Admin/NewEdition";
+import NewArticlePage from "./components/Admin/NewArticle";
 
 import NoMatch from "./components/NoMatch";
 import { withFirebase } from "./components/Firebase";
@@ -30,7 +32,9 @@ function App() {
           <Route path={ROUTES.SEARCH} component={Search} />
           <Route path={ROUTES.SIGN_IN} component={SignInPage} />
           <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
-          {/*<Route path={ROUTES.ADMIN} component={AdminPage} />*/}
+          <Route path={ROUTES.ADMIN} component={AdminPage} />
+          <Route path={ROUTES.NEW_EDITION} component={NewEditionPage} />
+          <Route path={ROUTES.NEW_ARTICLE} component={NewArticlePage} />
           <Route component={NoMatch} />
         </Switch>
       </div>

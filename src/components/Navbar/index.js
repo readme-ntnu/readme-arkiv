@@ -22,19 +22,24 @@ function AppNavbar(props) {
           </LinkContainer>
           <Nav.Link href="https://abakus.no/">Abakus.no</Nav.Link>
         </Nav>
-        <Nav>
-          <AuthUserContext.Consumer>
-            {authUser =>
-              authUser ? (
+        <AuthUserContext.Consumer>
+          {authUser =>
+            authUser ? (
+              <Nav>
+                <LinkContainer to={ROUTES.ADMIN}>
+                  <Nav.Link>Admin</Nav.Link>
+                </LinkContainer>
                 <SignOutButton />
-              ) : (
+              </Nav>
+            ) : (
+              <Nav>
                 <LinkContainer to={ROUTES.SIGN_IN}>
                   <Nav.Link>Sign in</Nav.Link>
                 </LinkContainer>
-              )
-            }
-          </AuthUserContext.Consumer>
-        </Nav>
+              </Nav>
+            )
+          }
+        </AuthUserContext.Consumer>
       </Navbar.Collapse>
     </Navbar>
   );

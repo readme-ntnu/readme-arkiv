@@ -5,7 +5,7 @@ import "./Home.css";
 import Loading from "../Loading";
 
 function Home(props) {
-  const [images, setImages] = useState([]);
+  const [data, setData] = useState([]);
 
   const [downloading, setDownloading] = useState(true);
 
@@ -27,13 +27,13 @@ function Home(props) {
         loadImg.push(yearObj);
       }
       //TODO: Fix memory leak
-      setImages(loadImg);
+      setData(loadImg);
       setDownloading(false);
     }
     fetchData();
   }, [props.firebase.storage]);
 
-  let imgRows = images.map(URLsrow => {
+  let imgRows = data.map(URLsrow => {
     return <ImageRow info={URLsrow} key={URLsrow.year} />;
   });
 
