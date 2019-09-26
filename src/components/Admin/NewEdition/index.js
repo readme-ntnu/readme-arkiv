@@ -16,19 +16,27 @@ const schema = Yup.object({
     .required("Utgavenummer må fylles ut.")
 });
 
-function handleSubmit(values, actions) {
-  console.log(values);
-}
-
 function NewEditionPage() {
+  const handleUpload = e => {
+    setFile(e.currentTarget.files[0]);
+  };
+
+  function handleSubmit(values, actions) {
+    console.log(values);
+    console.log(file);
+  }
+
+  const [file, setFile] = useState(undefined);
+
+  const now = new Date();
+  const year = now.getFullYear();
   return (
     <Formik
       validationSchema={schema}
       onSubmit={(values, actions) => handleSubmit(values, actions)}
       initialValues={{
-        editionYear: 1999,
-        editionNumber: 1,
-        editionFile: undefined
+        editionYear: year,
+        editionNumber: 1
       }}
     >
       {({
@@ -76,8 +84,7 @@ function NewEditionPage() {
               <Form.Control
                 name="editionFile"
                 type="file"
-                value={values.file}
-                onChange={handleChange}
+                onChange={handleUpload}
               ></Form.Control>
             </Form.Group>
           </Form.Row>
