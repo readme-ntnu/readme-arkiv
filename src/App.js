@@ -15,11 +15,9 @@ import NewEditionPage from "./components/Admin/NewEdition";
 import NewArticlePage from "./components/Admin/NewArticle";
 
 import NoMatch from "./components/NoMatch";
-import { withFirebase } from "./components/Firebase";
 import { withAuthentication } from "./components/Session";
 
 function App() {
-  const HomeWithFire = withFirebase(Home);
   return (
     <Router>
       <div className="App">
@@ -28,7 +26,7 @@ function App() {
           <Image id="readmelogo" src="readme.png" alt="Logo" fluid />
         </header>
         <Switch>
-          <Route exact path={ROUTES.HOME} component={HomeWithFire} />
+          <Route exact path={ROUTES.HOME} component={Home} />
           <Route path={ROUTES.SEARCH} component={Search} />
           <Route path={ROUTES.SIGN_IN} component={SignInPage} />
           <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />

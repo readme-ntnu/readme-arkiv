@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import ImageRow from "./ImageRow/";
 import "./Home.css";
 import Loading from "../Loading";
+import { withFirebase } from "../Firebase";
 
 function Home(props) {
   const [data, setData] = useState([]);
@@ -78,4 +79,4 @@ async function fetchPDFsForAYear(yearPrefix, storage) {
   return pdfUrls;
 }
 
-export default Home;
+export default withFirebase(Home)
