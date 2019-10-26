@@ -11,6 +11,7 @@ function Home(props) {
   const [downloading, setDownloading] = useState(true);
 
   useEffect(() => {
+    let isSubscribed = true;
     async function fetchData() {
       setDownloading(true);
       var loadImg = [];
@@ -27,9 +28,11 @@ function Home(props) {
       for (const yearObj of responses) {
         loadImg.push(yearObj);
       }
-      //TODO: Fix memory leak
-      setData(loadImg);
-      setDownloading(false);
+      if (isSubscribed) {
+        setData(loadImg);
+        setDownloading(false);
+      }
+      return () => (isSubscribed = false);
     }
     fetchData();
   }, [props.firebase.storage]);
@@ -44,6 +47,7 @@ function Home(props) {
     return <div className="row-container">{imgRows}</div>;
   }
 }
+
 async function fetchDataForYear(yearPrefix, storage) {
   let object = {};
   let response = await Promise.all([
@@ -79,4 +83,4 @@ async function fetchPDFsForAYear(yearPrefix, storage) {
   return pdfUrls;
 }
 
-export default withFirebase(Home)
+export default withFirebase(Home);
