@@ -5,17 +5,17 @@ import "./Home.css";
 import Loading from "../Loading";
 import { withFirebase } from "../Firebase";
 
-function Home(props) {
+function Home({ firebase }) {
   const [data, setData] = useState([]);
 
   const [downloading, setDownloading] = useState(true);
 
   useEffect(() => {
-    let isSubscribed = true;
     async function fetchData() {
+      let isSubscribed = true;
       setDownloading(true);
       var loadImg = [];
-      let storage = props.firebase.storage;
+      let storage = firebase.storage;
       let storageRef = storage.ref("images");
       let list = await storageRef.listAll();
       let arrayOfPromises = [];
@@ -35,7 +35,7 @@ function Home(props) {
       return () => (isSubscribed = false);
     }
     fetchData();
-  }, [props.firebase.storage]);
+  }, [firebase.storage]);
 
   let imgRows = data.map(URLsrow => {
     return <ImageRow info={URLsrow} key={URLsrow.year} />;
@@ -47,7 +47,6 @@ function Home(props) {
     return <div className="row-container">{imgRows}</div>;
   }
 }
-
 async function fetchDataForYear(yearPrefix, storage) {
   let object = {};
   let response = await Promise.all([
