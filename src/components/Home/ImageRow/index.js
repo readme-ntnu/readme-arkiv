@@ -10,7 +10,11 @@ function ImageRow(props) {
   let images = props.info.urls.map((url, index) => {
     return (
       <div className="RowImage" key={url}>
-        <a href={props.info.pdfs[index]}>
+        <a
+          href={props.info.pdfs[index]}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <Image src={url} fluid />
         </a>
       </div>
@@ -27,7 +31,7 @@ function ImageRow(props) {
         {onload => (
           <div onLoad={onload}>
             <div className="row">{images1}</div>
-            <div className="row">{images2}</div>
+            {images2.length ? <div className="row">{images2}</div> : null}
           </div>
         )}
       </FadeIn>
