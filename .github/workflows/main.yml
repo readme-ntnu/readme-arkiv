@@ -32,6 +32,8 @@ jobs:
         with:
           name: dist
       - name: Install Dependencies
+        run: npm install
+      - name: Install Functions Dependencies
         working-directory: functions
         run: npm install
       - name: Deploy to Firebase
