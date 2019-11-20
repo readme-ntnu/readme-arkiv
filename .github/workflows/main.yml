@@ -18,7 +18,7 @@ jobs:
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
-          name: dist
+          name: build
           path: build
   deploy:
     name: Deploy
@@ -30,7 +30,7 @@ jobs:
       - name: Download Artifact
         uses: actions/download-artifact@master
         with:
-          name: dist
+          name: build
       - name: Install Dependencies
         run: npm install
       - name: Install Functions Dependencies
