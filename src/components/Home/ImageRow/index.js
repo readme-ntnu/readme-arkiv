@@ -1,42 +1,105 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { withFirebase } from "../../Firebase";
+import Loading from "../../Loading";
 
 import { Image } from "react-bootstrap";
 import FadeIn from "react-lazyload-fadein";
-import "firebase/storage";
 
 import "./ImageRow.css";
 
-function ImageRow(props) {
-  let images = props.info.urls.map((url, index) => {
-    return (
-      <div className="RowImage" key={url}>
-        <a
-          href={props.info.pdfs[index]}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image src={url} fluid />
-        </a>
-      </div>
-    );
-  });
+function ImageRow({ year, firebase }) {
+  const [downloading, setDownloading] = useState(true);
+  const [info, setInfo] = useState([]);
 
-  let imagesLen = images.length;
-  let images1 = images.slice(0, 3);
-  let images2 = images.slice(3, imagesLen);
+  useEffect(() => {
+    async function fetchData() {
+      let isSubscribed = true;
+      setDownloading(true);
+      const info = await fetchDataForYear(year, firebase.storage);
+      if (isSubscribed) {
+        setInfo(info);
+        setDownloading(false);
+      }
+      return () => (isSubscribed = false);
+    }
+    fetchData();
+  }, [firebase.storage, year]);
+
+  let images, imagesLen, images1, images2;
+
+  if (info.urls) {
+    images = info.urls.map((url, index) => {
+      return (
+        <div className="RowImage" key={url}>
+          <a href={info.pdfs[index]} target="_blank" rel="noopener noreferrer">
+            <Image src={url} fluid />
+          </a>
+        </div>
+      );
+    });
+
+    imagesLen = images.length;
+    images1 = images.slice(0, 3);
+    images2 = images.slice(3, imagesLen);
+  }
+
   return (
     <div className="ImageRow">
-      <h2 className="year">{props.info.year}</h2>
-      <FadeIn height={250}>
-        {onload => (
-          <div onLoad={onload}>
-            <div className="row">{images1}</div>
-            {images2.length ? <div className="row">{images2}</div> : null}
-          </div>
-        )}
-      </FadeIn>
+      {downloading ? (
+        <Loading
+          styles={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "500px"
+          }}
+        />
+      ) : (
+        <FadeIn height={490}>
+          {onLoad => (
+            <>
+              <div onLoad={onLoad} className="row">
+                {images1}
+              </div>
+              {images2 && images2.length ? (
+                <div onLoad={onLoad} className="row">
+                  {images2}
+                </div>
+              ) : null}
+            </>
+          )}
+        </FadeIn>
+      )}
     </div>
   );
 }
+async function fetchDataForYear(yearPrefix, storage) {
+  let object = {};
+  let response = await Promise.all([
+    fetchImagesForAYear(yearPrefix),
+    fetchPDFsForAYear(yearPrefix, storage)
+  ]);
+  object["year"] = yearPrefix.name;
+  object["urls"] = response[0];
+  object["pdfs"] = response[1];
+  return object;
+}
 
-export default ImageRow;
+async function fetchImagesForAYear(yearPrefix) {
+  let imgRefs = await yearPrefix.list();
+  let imgRefsItems = imgRefs.items.reverse();
+  let urls = await Promise.all(imgRefsItems.map(ref => ref.getDownloadURL()));
+  return urls;
+}
+
+async function fetchPDFsForAYear(yearPrefix, storage) {
+  let year = yearPrefix.name;
+  let PDFRefs = await storage.ref("pdf/" + year).list();
+  let PDFRefsItems = PDFRefs.items.reverse();
+  const pdfUrls = await Promise.all(
+    PDFRefsItems.map(ref => ref.getDownloadURL())
+  );
+  return pdfUrls;
+}
+
+export default withFirebase(ImageRow);

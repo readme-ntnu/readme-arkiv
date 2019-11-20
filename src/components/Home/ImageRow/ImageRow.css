@@ -30,7 +30,6 @@
   flex-grow: 0;
 }
 
-.ImageRow > .year {
-  color: #555;
-  text-align: center;
+.row-loader {
+  min-height: 490px !important;
 }

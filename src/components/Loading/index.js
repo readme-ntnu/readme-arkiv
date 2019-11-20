@@ -4,10 +4,10 @@ import { Fade, Spinner } from "react-bootstrap";
 
 import "./Loading.css";
 
-function Loading() {
+function Loading({ styles }) {
   return (
     <Fade appear in>
-      <div className="Loading">
+      <div className="Loading" style={styles || {}}>
         <Spinner animation="grow" />
         <div>Laster...</div>
       </div>
