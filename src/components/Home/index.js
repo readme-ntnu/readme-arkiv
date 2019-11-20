@@ -14,14 +14,12 @@ function Home({ firebase }) {
     async function fetchData() {
       let isSubscribed = true;
       setDownloading(true);
-      let storage = firebase.storage;
-      let storageRef = storage.ref("images");
-      let list = await storageRef.listAll();
+      let list = await firebase.storage.ref("images").listAll();
       let items = list.prefixes.reverse();
-      const arrayOfPromises = items.map(item => fetchDataForYear(item, storage))
-      let responses = await Promise.all(arrayOfPromises);
-      // eslint-disable-next-line no-unused-vars
-      const loadImg = [...responses]
+      const arrayOfPromises = items.map(item =>
+        fetchDataForYear(item, firebase.storage)
+      );
+      const loadImg = await Promise.all(arrayOfPromises);
       if (isSubscribed) {
         setData(loadImg);
         setDownloading(false);
@@ -56,7 +54,7 @@ async function fetchDataForYear(yearPrefix, storage) {
 async function fetchImagesForAYear(yearPrefix) {
   let imgRefs = await yearPrefix.list();
   let imgRefsItems = imgRefs.items.reverse();
-  let urls = await Promise.all(imgRefsItems.map(ref => ref.getDownloadURL()))
+  let urls = await Promise.all(imgRefsItems.map(ref => ref.getDownloadURL()));
   return urls;
 }
 
@@ -64,7 +62,9 @@ async function fetchPDFsForAYear(yearPrefix, storage) {
   let year = yearPrefix.name;
   let PDFRefs = await storage.ref("pdf/" + year).list();
   let PDFRefsItems = PDFRefs.items.reverse();
-  const pdfUrls = await Promise.all(PDFRefsItems.map(ref => ref.getDownloadURL()))
+  const pdfUrls = await Promise.all(
+    PDFRefsItems.map(ref => ref.getDownloadURL())
+  );
   return pdfUrls;
 }
 
