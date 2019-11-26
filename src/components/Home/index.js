@@ -47,22 +47,7 @@ function Home({ firebase }) {
           return (
             <div className="row-wrapper">
               <h2 className="year">{year.name}</h2>
-              <LazyLoad
-                height={setRowMinHeight(year.name)}
-                offset={100}
-                once
-                placeholder={
-                  <Loading
-                    styles={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      minHeight: setRowMinHeight(year.name),
-                      marginBottom: "15px"
-                    }}
-                  />
-                }
-              >
+              <LazyLoad height={setRowMinHeight(year.name)} offset={100} once>
                 <ImageRow year={year} key={year} />
               </LazyLoad>
             </div>

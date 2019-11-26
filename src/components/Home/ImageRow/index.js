@@ -63,10 +63,12 @@ function ImageRow({ year, firebase }) {
 
   function setImageMinHeight(year) {
     year = parseInt(year);
-    if (year >= 2014) {
-      return "245px";
+    if (year >= 2018) {
+      return "255.5px";
+    } else if (year >= 2014) {
+      return "253.5px";
     } else {
-      return "283px";
+      return "291.5px";
     }
   }
 
@@ -85,16 +87,28 @@ function ImageRow({ year, firebase }) {
       ) : (
         <FadeIn height={setRowMinHeight(year.name)}>
           {onLoad => (
-            <div style={{ minHeight: setRowMinHeight(year.name) }}>
-              <div onLoad={onLoad} className="row">
+            <>
+              <div
+                onLoad={onLoad}
+                className="row"
+                style={{ minHeight: setImageMinHeight(year.name) }}
+              >
                 {images1}
               </div>
-              {images2 && images2.length ? (
-                <div onLoad={onLoad} className="row">
-                  {images2}
-                </div>
-              ) : null}
-            </div>
+
+              <div
+                onLoad={onLoad}
+                className="row"
+                style={{
+                  minHeight:
+                    images2 && images2.length
+                      ? setImageMinHeight(year.name)
+                      : "0px"
+                }}
+              >
+                {images2 && images2.length ? images2 : null}
+              </div>
+            </>
           )}
         </FadeIn>
       )}
