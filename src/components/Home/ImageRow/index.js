@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { withFirebase } from "../../Firebase";
-import Loading from "../../Loading";
 
 import { Image } from "react-bootstrap";
 import FadeIn from "react-lazyload-fadein";
