@@ -6,6 +6,7 @@ import { Image } from "react-bootstrap";
 import FadeIn from "react-lazyload-fadein";
 
 import "./ImageRow.css";
+import RowLoader from "./RowLoader";
 
 function ImageRow({ year, firebase }) {
   const [downloading, setDownloading] = useState(true);
@@ -50,15 +51,7 @@ function ImageRow({ year, firebase }) {
   return (
     <div className="ImageRow">
       {downloading ? (
-        <Loading
-          styles={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            minHeight: `${setRowMinHeight(year.name)}px`,
-            marginBottom: "15px"
-          }}
-        />
+        <RowLoader minHeight={setRowMinHeight(year.name)} />
       ) : (
         <FadeIn height={setRowMinHeight(year.name)}>
           {onLoad => (
