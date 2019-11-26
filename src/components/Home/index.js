@@ -25,6 +25,19 @@ function Home({ firebase }) {
     fetchData();
   }, [firebase.storage]);
 
+  function setRowMinHeight(year) {
+    year = parseInt(year);
+    if (year > 2014) {
+      return "510px";
+    } else if (year === 2014) {
+      return "545px";
+    } else if (year > 2010) {
+      return "584px";
+    } else {
+      return "583px";
+    }
+  }
+
   if (downloading) {
     return <Loading />;
   } else {
@@ -35,7 +48,7 @@ function Home({ firebase }) {
             <div className="row-wrapper">
               <h2 className="year">{year.name}</h2>
               <LazyLoad
-                height={490}
+                height={setRowMinHeight(year.name)}
                 offset={100}
                 once
                 placeholder={
@@ -44,7 +57,8 @@ function Home({ firebase }) {
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
-                      minHeight: "500px"
+                      minHeight: setRowMinHeight(year.name),
+                      marginBottom: "15px"
                     }}
                   />
                 }
