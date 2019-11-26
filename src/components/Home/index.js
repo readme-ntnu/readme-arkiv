@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import ImageRow from "./ImageRow/";
+import ImageRow, { setRowMinHeight } from "./ImageRow/";
 import "./Home.css";
 import Loading from "../Loading";
 import LazyLoad from "react-lazyload";
@@ -24,19 +24,6 @@ function Home({ firebase }) {
     }
     fetchData();
   }, [firebase.storage]);
-
-  function setRowMinHeight(year) {
-    year = parseInt(year);
-    if (year > 2014) {
-      return "510px";
-    } else if (year === 2014) {
-      return "545px";
-    } else if (year > 2010) {
-      return "584px";
-    } else {
-      return "583px";
-    }
-  }
 
   if (downloading) {
     return <Loading />;

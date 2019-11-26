@@ -47,30 +47,6 @@ function ImageRow({ year, firebase }) {
     images2 = images.slice(3, imagesLen);
   }
 
-  function setRowMinHeight(year) {
-    year = parseInt(year);
-    if (year > 2014) {
-      return "510px";
-    } else if (year === 2014) {
-      return "545px";
-    } else if (year > 2010) {
-      return "584px";
-    } else {
-      return "583px";
-    }
-  }
-
-  function setImageMinHeight(year) {
-    year = parseInt(year);
-    if (year >= 2018) {
-      return "255.5px";
-    } else if (year >= 2014) {
-      return "253.5px";
-    } else {
-      return "291.5px";
-    }
-  }
-
   return (
     <div className="ImageRow">
       {downloading ? (
@@ -79,7 +55,7 @@ function ImageRow({ year, firebase }) {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            minHeight: setRowMinHeight(year.name),
+            minHeight: `${setRowMinHeight(year.name)}px`,
             marginBottom: "15px"
           }}
         />
@@ -143,4 +119,29 @@ async function fetchPDFsForAYear(yearPrefix, storage) {
   return pdfUrls;
 }
 
+function setRowMinHeight(year) {
+  year = parseInt(year);
+  if (year > 2014) {
+    return 510;
+  } else if (year === 2014) {
+    return 545;
+  } else if (year > 2010) {
+    return 584;
+  } else {
+    return 583;
+  }
+}
+
+function setImageMinHeight(year) {
+  year = parseInt(year);
+  if (year >= 2018) {
+    return "255.5px";
+  } else if (year >= 2014) {
+    return "253.5px";
+  } else {
+    return "291.5px";
+  }
+}
+
+export { setRowMinHeight };
 export default withFirebase(ImageRow);
