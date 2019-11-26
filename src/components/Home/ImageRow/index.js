@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { withFirebase } from "../../Firebase";
-import Loading from "../../Loading";
 
 import { Image } from "react-bootstrap";
 import FadeIn from "react-lazyload-fadein";
 
 import "./ImageRow.css";
+import RowLoader from "./RowLoader";
 
 function ImageRow({ year, firebase }) {
   const [downloading, setDownloading] = useState(true);
@@ -15,7 +15,7 @@ function ImageRow({ year, firebase }) {
     async function fetchData() {
       let isSubscribed = true;
       setDownloading(true);
-      const info = await fetchDataForYear(year, firebase.storage);
+      const info = await firebase.editions(year);
       if (isSubscribed) {
         setInfo(info);
         setDownloading(false);
@@ -23,7 +23,7 @@ function ImageRow({ year, firebase }) {
       return () => (isSubscribed = false);
     }
     fetchData();
-  }, [firebase.storage, year]);
+  }, [firebase, year]);
 
   let images, imagesLen, images1, images2;
 
@@ -50,15 +50,7 @@ function ImageRow({ year, firebase }) {
   return (
     <div className="ImageRow">
       {downloading ? (
-        <Loading
-          styles={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            minHeight: `${setRowMinHeight(year.name)}px`,
-            marginBottom: "15px"
-          }}
-        />
+        <RowLoader minHeight={setRowMinHeight(year.name)} />
       ) : (
         <FadeIn height={setRowMinHeight(year.name)}>
           {onLoad => (
@@ -89,34 +81,6 @@ function ImageRow({ year, firebase }) {
       )}
     </div>
   );
-}
-async function fetchDataForYear(yearPrefix, storage) {
-  let object = {};
-  let response = await Promise.all([
-    fetchImagesForAYear(yearPrefix),
-    fetchPDFsForAYear(yearPrefix, storage)
-  ]);
-  object["year"] = yearPrefix.name;
-  object["urls"] = response[0];
-  object["pdfs"] = response[1];
-  return object;
-}
-
-async function fetchImagesForAYear(yearPrefix) {
-  let imgRefs = await yearPrefix.list();
-  let imgRefsItems = imgRefs.items.reverse();
-  let urls = await Promise.all(imgRefsItems.map(ref => ref.getDownloadURL()));
-  return urls;
-}
-
-async function fetchPDFsForAYear(yearPrefix, storage) {
-  let year = yearPrefix.name;
-  let PDFRefs = await storage.ref("pdf/" + year).list();
-  let PDFRefsItems = PDFRefs.items.reverse();
-  const pdfUrls = await Promise.all(
-    PDFRefsItems.map(ref => ref.getDownloadURL())
-  );
-  return pdfUrls;
 }
 
 function setRowMinHeight(year) {
