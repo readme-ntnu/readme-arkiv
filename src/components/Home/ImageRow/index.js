@@ -16,7 +16,6 @@ function ImageRow({ year, firebase }) {
       let isSubscribed = true;
       setDownloading(true);
       const info = await fetchDataForYear(year, firebase.storage);
-      console.log(info);
       if (isSubscribed) {
         setInfo(info);
         setDownloading(false);
