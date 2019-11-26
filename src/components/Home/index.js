@@ -14,8 +14,7 @@ function Home({ firebase }) {
     async function fetchData() {
       let isSubscribed = true;
       setDownloading(true);
-      let list = await firebase.storage.ref("images").listAll();
-      let items = list.prefixes.reverse();
+      const items = await firebase.editionYearPrefixes();
       if (isSubscribed) {
         setData(items);
         setDownloading(false);
@@ -23,7 +22,7 @@ function Home({ firebase }) {
       return () => (isSubscribed = false);
     }
     fetchData();
-  }, [firebase.storage]);
+  }, [firebase]);
 
   if (downloading) {
     return <Loading />;

@@ -37,5 +37,44 @@ class Firebase {
   article = id => this.db.collection("articles").doc(`${id}`);
 
   articles = () => this.db.collection("articles");
+
+  // *** Editions API ***
+  editions = year => fetchEditionDataForYear(year, this.storage);
+
+  editionYearPrefixes = () => fetchYearPrefixes(this.storage);
+}
+
+async function fetchYearPrefixes(storage) {
+  const list = await storage.ref("images").listAll();
+  return list.prefixes.reverse();
+}
+
+async function fetchEditionDataForYear(yearPrefix, storage) {
+  let object = {};
+  let response = await Promise.all([
+    fetchImagesForAYear(yearPrefix),
+    fetchPDFsForAYear(yearPrefix, storage)
+  ]);
+  object["year"] = yearPrefix.name;
+  object["urls"] = response[0];
+  object["pdfs"] = response[1];
+  return object;
+}
+
+async function fetchImagesForAYear(yearPrefix) {
+  let imgRefs = await yearPrefix.list();
+  let imgRefsItems = imgRefs.items.reverse();
+  let urls = await Promise.all(imgRefsItems.map(ref => ref.getDownloadURL()));
+  return urls;
+}
+
+async function fetchPDFsForAYear(yearPrefix, storage) {
+  let year = yearPrefix.name;
+  let PDFRefs = await storage.ref("pdf/" + year).list();
+  let PDFRefsItems = PDFRefs.items.reverse();
+  const pdfUrls = await Promise.all(
+    PDFRefsItems.map(ref => ref.getDownloadURL())
+  );
+  return pdfUrls;
 }
 export default Firebase;
