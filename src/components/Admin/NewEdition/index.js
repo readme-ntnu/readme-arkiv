@@ -20,7 +20,7 @@ const schema = Yup.object({
 });
 
 function NewEditionPage({ firebase }) {
-  function handleSubmit(values, { setSubmitting, setStatus, resetForm }) {
+  function handleSubmit(values, { setSubmitting, setStatus }) {
     const { editionYear, editionNumber, editionFile } = values;
     const fileToUpload = new File(
       [editionFile],
@@ -38,97 +38,100 @@ function NewEditionPage({ firebase }) {
   const year = now.getFullYear();
 
   return (
-    <Formik
-      validationSchema={schema}
-      onSubmit={(values, actions) => handleSubmit(values, actions)}
-      initialValues={{
-        editionYear: year,
-        editionNumber: 1,
-        editionFile: undefined
-      }}
-      initialStatus={{ success: false }}
-    >
-      {({
-        handleSubmit,
-        handleChange,
-        values,
-        touched,
-        isValid,
-        errors,
-        status,
-        isSubmitting,
-        setValues
-      }) => (
-        <Form className={editionForm} onSubmit={handleSubmit}>
-          <Form.Row>
-            <Form.Group as={Col}>
-              <Form.Control
-                placeholder="Utgaveår"
-                type="number"
-                name="editionYear"
-                value={values.editionYear}
-                onChange={handleChange}
-                isValid={touched.editionYear && !errors.editionYear}
-                isInvalid={!!errors.editionYear}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.editionYear}
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group as={Col}>
-              <Form.Control
-                placeholder="Utgavenummer"
-                type="number"
-                name="editionNumber"
-                value={values.editionNumber}
-                onChange={handleChange}
-                isValid={touched.editionNumber && !errors.editionNumber}
-                isInvalid={!!errors.editionNumber}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.editionNumber}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Form.Row>
-          <Form.Row>
-            <Form.Group>
-              <Form.Control
-                name="editionFile"
-                type="file"
-                onChange={event => {
-                  const newValues = { ...values }; // copy the original object
-                  newValues.editionFile = event.currentTarget.files[0];
-                  setValues(newValues);
-                }}
-              ></Form.Control>
-            </Form.Group>
-          </Form.Row>
-          <Button
-            variant="primary"
-            type="submit"
-            disabled={!isValid || isSubmitting}
-          >
-            {isSubmitting ? (
-              <Spinner
-                as="span"
-                animation="border"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-              />
+    <>
+      <h1>Ny utgave</h1>
+      <Formik
+        validationSchema={schema}
+        onSubmit={(values, actions) => handleSubmit(values, actions)}
+        initialValues={{
+          editionYear: year,
+          editionNumber: 1,
+          editionFile: undefined
+        }}
+        initialStatus={{ success: false }}
+      >
+        {({
+          handleSubmit,
+          handleChange,
+          values,
+          touched,
+          isValid,
+          errors,
+          status,
+          isSubmitting,
+          setValues
+        }) => (
+          <Form className={editionForm} onSubmit={handleSubmit}>
+            <Form.Row>
+              <Form.Group as={Col}>
+                <Form.Control
+                  placeholder="Utgaveår"
+                  type="number"
+                  name="editionYear"
+                  value={values.editionYear}
+                  onChange={handleChange}
+                  isValid={touched.editionYear && !errors.editionYear}
+                  isInvalid={!!errors.editionYear}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.editionYear}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Control
+                  placeholder="Utgavenummer"
+                  type="number"
+                  name="editionNumber"
+                  value={values.editionNumber}
+                  onChange={handleChange}
+                  isValid={touched.editionNumber && !errors.editionNumber}
+                  isInvalid={!!errors.editionNumber}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.editionNumber}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Form.Row>
+            <Form.Row>
+              <Form.Group>
+                <Form.Control
+                  name="editionFile"
+                  type="file"
+                  onChange={event => {
+                    const newValues = { ...values }; // copy the original object
+                    newValues.editionFile = event.currentTarget.files[0];
+                    setValues(newValues);
+                  }}
+                ></Form.Control>
+              </Form.Group>
+            </Form.Row>
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={!isValid || isSubmitting}
+            >
+              {isSubmitting ? (
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+              ) : null}
+              Last opp utgave
+            </Button>
+            {status.success ? (
+              <Alert className={alertInfo} variant="primary">
+                Opplasting fullført!
+                <br />
+                Merk at det kan ta litt tid før utgaven dukker opp på forsiden.
+              </Alert>
             ) : null}
-            Last opp utgave
-          </Button>
-          {status.success ? (
-            <Alert className={alertInfo} variant="primary">
-              Opplasting fullført!
-              <br />
-              Merk at det kan ta litt tid før utgaven dukker opp på forsiden.
-            </Alert>
-          ) : null}
-        </Form>
-      )}
-    </Formik>
+          </Form>
+        )}
+      </Formik>
+    </>
   );
 }
 

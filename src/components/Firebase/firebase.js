@@ -38,6 +38,9 @@ class Firebase {
 
   articles = () => this.db.collection("articles");
 
+  addArticle = (article, callback) =>
+    addArticleToDB(article, callback, this.db);
+
   // *** Editions API ***
   editions = year => fetchEditionDataForYear(year, this.storage);
 
@@ -116,5 +119,15 @@ async function doEditionUpload(editionFile, callback, storage) {
       callback();
     }
   );
+}
+
+function addArticleToDB(article, callback, db) {
+  db.collection("articles")
+    .add(article)
+    .then(() => {
+      console.log("Article added to DB");
+      callback();
+    })
+    .catch(error => console.error("Error adding document: ", error));
 }
 export default Firebase;
