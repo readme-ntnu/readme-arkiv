@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Form, Button, Col } from "react-bootstrap";
+
+import { editionForm } from "./NewEdition.module.css";
 
 import { withAuthorization } from "../../Session";
 
@@ -13,20 +15,14 @@ const schema = Yup.object({
   editionNumber: Yup.number()
     .lessThan(7, "Dette tallet kan ikke være høyere enn 6.")
     .moreThan(0, "Dette tallet må være høyere enn null.")
-    .required("Utgavenummer må fylles ut.")
+    .required("Utgavenummer må fylles ut."),
+  editionFile: Yup.object().isType(Object)
 });
 
 function NewEditionPage() {
-  const handleUpload = e => {
-    setFile(e.currentTarget.files[0]);
-  };
-
   function handleSubmit(values, actions) {
     console.log(values);
-    console.log(file);
   }
-
-  const [file, setFile] = useState(undefined);
 
   const now = new Date();
   const year = now.getFullYear();
@@ -36,21 +32,22 @@ function NewEditionPage() {
       onSubmit={(values, actions) => handleSubmit(values, actions)}
       initialValues={{
         editionYear: year,
-        editionNumber: 1
+        editionNumber: 1,
+        editionFile: undefined
       }}
     >
       {({
         handleSubmit,
         handleChange,
-        handleBlur,
         values,
         touched,
         isValid,
-        errors
+        errors,
+        setValues
       }) => (
-        <Form noValidate onSubmit={handleSubmit}>
+        <Form className={editionForm} onSubmit={handleSubmit}>
           <Form.Row>
-            <Form.Group as={Col} md="4">
+            <Form.Group as={Col}>
               <Form.Control
                 placeholder="Utgaveår"
                 type="number"
@@ -64,7 +61,7 @@ function NewEditionPage() {
                 {errors.editionYear}
               </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group as={Col} md="4">
+            <Form.Group as={Col}>
               <Form.Control
                 placeholder="Utgavenummer"
                 type="number"
@@ -84,11 +81,15 @@ function NewEditionPage() {
               <Form.Control
                 name="editionFile"
                 type="file"
-                onChange={handleUpload}
+                onChange={event => {
+                  const newValues = { ...values }; // copy the original object
+                  newValues.editionFile = event.currentTarget.files[0];
+                  setValues(newValues);
+                }}
               ></Form.Control>
             </Form.Group>
           </Form.Row>
-          <Button variant="primary" type="submit">
+          <Button variant="primary" type="submit" disabled={!isValid}>
             Last opp utgave
           </Button>
         </Form>
