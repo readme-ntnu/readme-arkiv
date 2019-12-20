@@ -4,6 +4,12 @@ const express = require("express");
 const cors = require("cors");
 const Fuse = require("fuse.js");
 
+const path = require("path");
+const sharp = require("sharp");
+const os = require("os");
+const fs = require("fs-extra");
+const gs = require("gs");
+
 admin.initializeApp();
 const db = admin.firestore();
 
@@ -53,3 +59,75 @@ app.get("/", async (request, response) => {
 exports.search = functions.https.onRequest((request, response) =>
   app(request, response)
 );
+
+const THUMB_MAX_WIDTH = 200;
+
+exports.handlePDFUpload = functions.storage
+  .object()
+  .onFinalize(async object => {
+    const fileBucket = object.bucket; // The Storage bucket that contains the file.
+    const filePath = object.name; // File path in the bucket.
+    // Get the file name.
+    const fileName = path.basename(filePath);
+    // Exit if the image is already a thumbnail.
+    if (filePath.startsWith("images")) {
+      return console.log("Already a Thumbnail.");
+    }
+
+    const bucket = admin.storage().bucket(fileBucket);
+    const workingDir = path.join(os.tmpdir(), "thumbs");
+    const tempFilePath = path.join(workingDir, fileName);
+    const tempJPGFilePath = path
+      .join(workingDir, fileName)
+      .replace(".pdf", ".jpg");
+
+    await fs.ensureDir(workingDir);
+
+    await bucket.file(filePath).download({ destination: tempFilePath });
+    console.log("PDF downloaded locally to", tempFilePath);
+
+    await fs.ensureFile(tempJPGFilePath);
+
+    await new Promise((resolve, reject) => {
+      gs()
+        .executablePath("ghostscript/./gs-950-linux-x86_64")
+        .batch()
+        .nopause()
+        .device("jpeg")
+        .output(tempJPGFilePath)
+        .input(tempFilePath)
+        .exec(err => {
+          if (err) {
+            console.log("Error while running Ghostscript", err);
+            reject(err);
+          } else {
+            console.log("PDF conversion to JPG completed successfully");
+            resolve();
+          }
+        });
+    });
+
+    const metadata = {
+      contentType: "image/jpeg"
+    };
+    const thumbFilePath = path
+      .join(path.dirname(filePath), fileName)
+      .replace(".pdf", ".jpg")
+      .replace("pdf", "images");
+
+    const thumbnailUploadStream = bucket
+      .file(thumbFilePath)
+      .createWriteStream({ metadata });
+
+    // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
+    const pipeline = sharp();
+    pipeline.resize(THUMB_MAX_WIDTH).pipe(thumbnailUploadStream);
+
+    fs.createReadStream(tempJPGFilePath).pipe(pipeline);
+
+    await new Promise((resolve, reject) =>
+      thumbnailUploadStream.on("finish", resolve).on("error", reject)
+    );
+
+    return fs.remove(workingDir);
+  });
