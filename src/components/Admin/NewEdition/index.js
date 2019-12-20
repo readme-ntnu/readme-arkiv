@@ -1,9 +1,9 @@
 import React from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { Form, Button, Col } from "react-bootstrap";
+import { Form, Button, Col, Spinner, Alert } from "react-bootstrap";
 
-import { editionForm } from "./NewEdition.module.css";
+import { editionForm, alertInfo } from "./NewEdition.module.css";
 
 import { withAuthorization } from "../../Session";
 
@@ -19,13 +19,24 @@ const schema = Yup.object({
   editionFile: Yup.object().isType(Object)
 });
 
-function NewEditionPage() {
-  function handleSubmit(values, actions) {
-    console.log(values);
+function NewEditionPage({ firebase }) {
+  function handleSubmit(values, { setSubmitting, setStatus, resetForm }) {
+    const { editionYear, editionNumber, editionFile } = values;
+    const fileToUpload = new File(
+      [editionFile],
+      `${editionYear}-0${editionNumber}.pdf`,
+      { type: editionFile.type }
+    );
+    setSubmitting(true);
+    firebase.uploadEdition(fileToUpload, () => {
+      setSubmitting(false);
+      setStatus({ success: true });
+    });
   }
 
   const now = new Date();
   const year = now.getFullYear();
+
   return (
     <Formik
       validationSchema={schema}
@@ -35,6 +46,7 @@ function NewEditionPage() {
         editionNumber: 1,
         editionFile: undefined
       }}
+      initialStatus={{ success: false }}
     >
       {({
         handleSubmit,
@@ -43,6 +55,8 @@ function NewEditionPage() {
         touched,
         isValid,
         errors,
+        status,
+        isSubmitting,
         setValues
       }) => (
         <Form className={editionForm} onSubmit={handleSubmit}>
@@ -89,9 +103,29 @@ function NewEditionPage() {
               ></Form.Control>
             </Form.Group>
           </Form.Row>
-          <Button variant="primary" type="submit" disabled={!isValid}>
+          <Button
+            variant="primary"
+            type="submit"
+            disabled={!isValid || isSubmitting}
+          >
+            {isSubmitting ? (
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+            ) : null}
             Last opp utgave
           </Button>
+          {status.success ? (
+            <Alert className={alertInfo} variant="primary">
+              Opplasting fullført!
+              <br />
+              Merk at det kan ta litt tid før utgaven dukker opp på forsiden.
+            </Alert>
+          ) : null}
         </Form>
       )}
     </Formik>

@@ -42,6 +42,9 @@ class Firebase {
   editions = year => fetchEditionDataForYear(year, this.storage);
 
   editionYearPrefixes = () => fetchYearPrefixes(this.storage);
+
+  uploadEdition = (editionFile, callback) =>
+    doEditionUpload(editionFile, callback, this.storage);
 }
 
 async function fetchYearPrefixes(storage) {
@@ -76,5 +79,42 @@ async function fetchPDFsForAYear(yearPrefix, storage) {
     PDFRefsItems.map(ref => ref.getDownloadURL())
   );
   return pdfUrls;
+}
+
+async function doEditionUpload(editionFile, callback, storage) {
+  const year = editionFile.name.split("-")[0];
+  const path = `pdf/${year}/${editionFile.name}`;
+  const metadata = {
+    contentType: "application/pdf"
+  };
+  const editionPDFRef = storage.ref(path);
+  const uploadTask = editionPDFRef.put(editionFile, metadata);
+  uploadTask.on(
+    app.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+    function(snapshot) {
+      // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+      var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      console.log("Upload is " + progress + "% done");
+    },
+    function(error) {
+      // A full list of error codes is available at
+      // https://firebase.google.com/docs/storage/web/handle-errors
+      switch (error.code) {
+        case "storage/unauthorized":
+          throw Error("Error, not authorized for file upload");
+
+        case "storage/unknown":
+          throw Error("Unkown error, file upload failed.");
+        default:
+      }
+    },
+    function() {
+      // Upload completed successfully, now we can get the download URL
+      uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+        console.log("File available at", downloadURL);
+      });
+      callback();
+    }
+  );
 }
 export default Firebase;
