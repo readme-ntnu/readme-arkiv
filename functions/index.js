@@ -57,29 +57,6 @@ app.get("/", async (request, response) => {
   }
 });
 
-app.get("/update", async (request, response) => {
-  try {
-    const articlesRef = await db.collection("articles").listDocuments();
-    articlesRef.forEach(async doc => {
-      const data = await doc.get();
-      doc.update({
-        url: getURL(data)
-      });
-    });
-
-    response.status(200).json({ message: "Success!" });
-  } catch (error) {
-    response.status(500).json({ message: error.toString() });
-  }
-});
-
-async function getURL(docData) {
-  const editionYear = docData.edition.split("-")[0];
-  const PDFRef = await storage.ref(`pdf/${editionYear}/${docData.edition}.pdf`);
-  const downloadURL = PDFRef.getDownloadURL();
-  return `${downloadURL}#page=${docData.pages[0]}`;
-}
-
 exports.search = functions.https.onRequest((request, response) =>
   app(request, response)
 );
