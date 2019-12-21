@@ -1,10 +1,12 @@
 import React from "react";
 import { Table, Fade } from "react-bootstrap";
 
+import { searchTable } from "./Table.module.css";
+
 function AppTable(props) {
   return (
     <Fade in appear>
-      <Table striped bordered hover responsive className="search-table">
+      <Table striped bordered hover responsive="lg" className={searchTable}>
         <thead>
           <tr>
             <th>Utgave</th>
