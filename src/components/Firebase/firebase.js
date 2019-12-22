@@ -38,16 +38,16 @@ class Firebase {
 
   articles = () => this.db.collection("articles");
 
-  addArticle = (article, callback) =>
-    addArticleToDB(article, callback, this.db);
+  addArticle = (article, callback = undefined) =>
+    addArticleToDB(article, callback, this.db, this.storage);
 
   // *** Editions API ***
   editions = year => fetchEditionDataForYear(year, this.storage);
 
   editionYearPrefixes = () => fetchYearPrefixes(this.storage);
 
-  uploadEdition = (editionFile, callback) =>
-    doEditionUpload(editionFile, callback, this.storage);
+  uploadEdition = (editionFile, callback = undefined) =>
+    doEditionUpload(editionFile, callback, this.storage, this.db);
 }
 
 async function fetchYearPrefixes(storage) {
@@ -84,7 +84,7 @@ async function fetchPDFsForAYear(yearPrefix, storage) {
   return pdfUrls;
 }
 
-async function doEditionUpload(editionFile, callback, storage) {
+async function doEditionUpload(editionFile, callback, storage, db) {
   const year = editionFile.name.split("-")[0];
   const path = `pdf/${year}/${editionFile.name}`;
   const metadata = {
@@ -115,19 +115,72 @@ async function doEditionUpload(editionFile, callback, storage) {
       // Upload completed successfully, now we can get the download URL
       uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
         console.log("File available at", downloadURL);
+        const editionName = editionFile.name.replace(".pdf", "");
+        updateArticlePDFURL(editionName, downloadURL, db);
       });
-      callback();
+      if (callback && typeof callback === "function") {
+        callback();
+      }
     }
   );
 }
 
-function addArticleToDB(article, callback, db) {
-  db.collection("articles")
-    .add(article)
-    .then(() => {
-      console.log("Article added to DB");
-      callback();
-    })
-    .catch(error => console.error("Error adding document: ", error));
+async function updateArticlePDFURL(editionName, newURL, db) {
+  const articles = await db
+    .collection("articles")
+    .where("edition", "==", editionName)
+    .get();
+  if (!articles.empty) {
+    articles.forEach(async docSnap => {
+      await docSnap.ref.update({
+        url: `${newURL}#page=${getPages(docSnap.data())}`
+      });
+    });
+  }
 }
+
+async function addArticleToDB(article, callback, db, storage) {
+  try {
+    const url = await getArticlePDFURL(article, storage);
+    article.url = url;
+    await db.collection("articles").add(article);
+    console.log("Article added to DB");
+    if (callback && typeof callback === "function") {
+      callback();
+    }
+  } catch (error) {
+    console.error(
+      "Something when wrong during edition upload, failed with error: ",
+      error
+    );
+  }
+}
+
+async function getArticlePDFURL(article, storage) {
+  const year = article.edition.split("-")[0];
+  const fileName = `${article.edition}.pdf`;
+  const path = `pdf/${year}/${fileName}`;
+  try {
+    let pdfURL = storage.ref(path).getDownloadURL();
+    if (article.pages) {
+      pdfURL = `${pdfURL}#page=${getPages(article)}`;
+    }
+    return pdfURL;
+  } catch (error) {
+    throw Error("Failed to get article PDF URL, with error: ", error);
+  }
+}
+
+function getPages(article) {
+  const [editionYear, editionNumber] = article.edition.split("-");
+  if (
+    editionYear > 2013 ||
+    (parseInt(editionYear) === 2013 && parseInt(editionNumber) === 6)
+  ) {
+    return Math.floor(article.pages[0] / 2) + 1;
+  } else {
+    return article.pages[0];
+  }
+}
+
 export default Firebase;
