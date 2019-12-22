@@ -16,7 +16,14 @@ const schema = Yup.object({
     .lessThan(7, "Dette tallet kan ikke være høyere enn 6.")
     .moreThan(0, "Dette tallet må være høyere enn null.")
     .required("Utgavenummer må fylles ut."),
-  editionFile: Yup.object().isType(Object)
+  editionFile: Yup.mixed()
+    .required("Du må ha en utgave å laste opp!")
+    .test(
+      "file type",
+      "Dette må være en PDF-fil",
+      value =>
+        value && value.name.endsWith(".pdf") && value.type === "application/pdf"
+    )
 });
 
 function NewEditionPage({ firebase }) {
@@ -105,6 +112,9 @@ function NewEditionPage({ firebase }) {
                     setValues(newValues);
                   }}
                 ></Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  {errors.editionFile}
+                </Form.Control.Feedback>
               </Form.Group>
             </Form.Row>
             <Button
