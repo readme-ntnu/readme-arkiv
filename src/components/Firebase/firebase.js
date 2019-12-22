@@ -39,7 +39,7 @@ class Firebase {
   articles = () => this.db.collection("articles");
 
   addArticle = (article, callback = undefined) =>
-    addArticleToDB(article, callback, this.db);
+    addArticleToDB(article, callback, this.db, this.storage);
 
   // *** Editions API ***
   editions = year => fetchEditionDataForYear(year, this.storage);
@@ -139,15 +139,33 @@ async function updateArticlePDFURL(editionName, newURL, db) {
   }
 }
 
-function addArticleToDB(article, callback, db) {
-  db.collection("articles")
-    .add(article)
-    .then(() => {
-      console.log("Article added to DB");
-      if (callback && typeof callback === "function") {
-        callback();
-      }
-    })
-    .catch(error => console.error("Error adding document: ", error));
+async function addArticleToDB(article, callback, db, storage) {
+  try {
+    const url = await getArticlePDFURL(article, storage);
+    article.url = url;
+    await db.collection("articles").add(article);
+    console.log("Article added to DB");
+    if (callback && typeof callback === "function") {
+      callback();
+    }
+  } catch (error) {
+    console.error(
+      "Something when wrong during edition upload, failed with error: ",
+      error
+    );
+  }
 }
+
+async function getArticlePDFURL(article, storage) {
+  const year = article.edition.split("-")[0];
+  const fileName = `${article.edition}.pdf`;
+  const path = `pdf/${year}/${fileName}`;
+  try {
+    const pdfURL = storage.ref(path).getDownloadURL();
+    return pdfURL;
+  } catch (error) {
+    throw Error("Failed to get article PDF URL, with error: ", error);
+  }
+}
+
 export default Firebase;
