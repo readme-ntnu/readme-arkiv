@@ -38,7 +38,7 @@ class Firebase {
 
   articles = () => this.db.collection("articles");
 
-  addArticle = (article, callback) =>
+  addArticle = (article, callback = undefined) =>
     addArticleToDB(article, callback, this.db);
 
   // *** Editions API ***
@@ -46,7 +46,7 @@ class Firebase {
 
   editionYearPrefixes = () => fetchYearPrefixes(this.storage);
 
-  uploadEdition = (editionFile, callback) =>
+  uploadEdition = (editionFile, callback = undefined) =>
     doEditionUpload(editionFile, callback, this.storage);
 }
 
@@ -116,7 +116,9 @@ async function doEditionUpload(editionFile, callback, storage) {
       uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
         console.log("File available at", downloadURL);
       });
-      callback();
+      if (callback && typeof callback === "function") {
+        callback();
+      }
     }
   );
 }
@@ -126,7 +128,9 @@ function addArticleToDB(article, callback, db) {
     .add(article)
     .then(() => {
       console.log("Article added to DB");
-      callback();
+      if (callback && typeof callback === "function") {
+        callback();
+      }
     })
     .catch(error => console.error("Error adding document: ", error));
 }
