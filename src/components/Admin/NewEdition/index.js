@@ -64,6 +64,7 @@ function NewEditionPage({ firebase }) {
           <Form className={editionForm} onSubmit={handleSubmit}>
             <Form.Row>
               <Form.Group as={Col}>
+                <Form.Label>Utgaveår</Form.Label>
                 <Form.Control
                   placeholder="Utgaveår"
                   type="number"
@@ -78,6 +79,7 @@ function NewEditionPage({ firebase }) {
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group as={Col}>
+                <Form.Label>Utgavenummer</Form.Label>
                 <Form.Control
                   placeholder="Utgavenummer"
                   type="number"
