@@ -47,7 +47,7 @@ class Firebase {
   editionYearPrefixes = () => fetchYearPrefixes(this.storage);
 
   uploadEdition = (editionFile, callback = undefined) =>
-    doEditionUpload(editionFile, callback, this.storage);
+    doEditionUpload(editionFile, callback, this.storage, this.db);
 }
 
 async function fetchYearPrefixes(storage) {
@@ -84,7 +84,7 @@ async function fetchPDFsForAYear(yearPrefix, storage) {
   return pdfUrls;
 }
 
-async function doEditionUpload(editionFile, callback, storage) {
+async function doEditionUpload(editionFile, callback, storage, db) {
   const year = editionFile.name.split("-")[0];
   const path = `pdf/${year}/${editionFile.name}`;
   const metadata = {
@@ -115,12 +115,28 @@ async function doEditionUpload(editionFile, callback, storage) {
       // Upload completed successfully, now we can get the download URL
       uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
         console.log("File available at", downloadURL);
+        const editionName = editionFile.name.replace(".pdf", "");
+        updateArticlePDFURL(editionName, downloadURL, db);
       });
       if (callback && typeof callback === "function") {
         callback();
       }
     }
   );
+}
+
+async function updateArticlePDFURL(editionName, newURL, db) {
+  const articles = db
+    .collection("articles")
+    .where("edition", "==", editionName)
+    .get();
+  if (!articles.empty) {
+    articles.forEach(async docSnap => {
+      await docSnap.ref.update({
+        url: newURL
+      });
+    });
+  }
 }
 
 function addArticleToDB(article, callback, db) {
