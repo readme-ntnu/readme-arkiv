@@ -29,11 +29,11 @@ function ImageRow({ year, firebase }) {
 
   if (info.urls) {
     images = info.urls.map((url, index) => {
-      return (
+      return info.pdfs[index].listinglop ? null : (
         <a
           className="RowImage"
           key={url}
-          href={info.pdfs[index]}
+          href={info.pdfs[index].url}
           target="_blank"
           rel="noopener noreferrer"
         >

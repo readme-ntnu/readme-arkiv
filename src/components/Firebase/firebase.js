@@ -61,9 +61,10 @@ async function fetchEditionDataForYear(yearPrefix, storage) {
     fetchImagesForAYear(yearPrefix),
     fetchPDFsForAYear(yearPrefix, storage)
   ]);
-  object["year"] = yearPrefix.name;
-  object["urls"] = response[0];
-  object["pdfs"] = response[1];
+  object.year = yearPrefix.name;
+  object.urls = response[0];
+  object.pdfs = response[1];
+  console.log(object);
   return object;
 }
 
@@ -78,8 +79,20 @@ async function fetchPDFsForAYear(yearPrefix, storage) {
   let year = yearPrefix.name;
   let PDFRefs = await storage.ref("pdf/" + year).list();
   let PDFRefsItems = PDFRefs.items.reverse();
-  const pdfUrls = await Promise.all(
-    PDFRefsItems.map(ref => ref.getDownloadURL())
+  const pdfUrls = Promise.all(
+    PDFRefsItems.map(async ref => {
+      const dataFromServer = await ref
+        .getMetadata()
+        .then(data => data.customMetadata.listinglop)
+        .catch(error => {
+          console.warn("Fond no metadata with error: ", error);
+          return false;
+        });
+      return {
+        listinglop: dataFromServer,
+        url: await ref.getDownloadURL()
+      };
+    })
   );
   return pdfUrls;
 }
