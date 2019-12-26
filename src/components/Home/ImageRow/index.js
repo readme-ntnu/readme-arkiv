@@ -7,7 +7,7 @@ import FadeIn from "react-lazyload-fadein";
 import "./ImageRow.css";
 import RowLoader from "./RowLoader";
 
-function ImageRow({ year, firebase }) {
+function ImageRow({ year, firebase, showListing }) {
   const [downloading, setDownloading] = useState(true);
   const [info, setInfo] = useState([]);
 
@@ -29,7 +29,7 @@ function ImageRow({ year, firebase }) {
 
   if (info.urls) {
     images = info.urls.map((url, index) => {
-      return info.pdfs[index].listinglop ? null : (
+      return !showListing && info.pdfs[index].listinglop ? null : (
         <a
           className="RowImage"
           key={url}

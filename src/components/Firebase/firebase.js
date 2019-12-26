@@ -48,6 +48,9 @@ class Firebase {
 
   uploadEdition = (editionFile, listinglop, callback = undefined) =>
     doEditionUpload(editionFile, listinglop, callback, this.storage, this.db);
+
+  // *** Settings API ***
+  getSettings = () => fetchSettings(this.db);
 }
 
 async function fetchYearPrefixes(storage) {
@@ -197,6 +200,12 @@ function getPageNumber(article) {
   } else {
     return article.pages[0];
   }
+}
+
+async function fetchSettings(db) {
+  const settings = await db.collection("settings").get();
+  console.log(settings);
+  return settings.docs[0].data();
 }
 
 export default Firebase;
