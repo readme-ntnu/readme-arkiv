@@ -46,8 +46,13 @@ class Firebase {
 
   editionYearPrefixes = () => fetchYearPrefixes(this.storage);
 
-  uploadEdition = (editionFile, callback = undefined) =>
-    doEditionUpload(editionFile, callback, this.storage, this.db);
+  uploadEdition = (editionFile, listinglop, callback = undefined) =>
+    doEditionUpload(editionFile, listinglop, callback, this.storage, this.db);
+
+  // *** Settings API ***
+  getSettings = () => fetchSettings(this.db);
+
+  setShowListing = value => setShowListingSetting(value, this.db);
 }
 
 async function fetchYearPrefixes(storage) {
@@ -61,9 +66,9 @@ async function fetchEditionDataForYear(yearPrefix, storage) {
     fetchImagesForAYear(yearPrefix),
     fetchPDFsForAYear(yearPrefix, storage)
   ]);
-  object["year"] = yearPrefix.name;
-  object["urls"] = response[0];
-  object["pdfs"] = response[1];
+  object.year = yearPrefix.name;
+  object.urls = response[0];
+  object.pdfs = response[1];
   return object;
 }
 
@@ -78,17 +83,32 @@ async function fetchPDFsForAYear(yearPrefix, storage) {
   let year = yearPrefix.name;
   let PDFRefs = await storage.ref("pdf/" + year).list();
   let PDFRefsItems = PDFRefs.items.reverse();
-  const pdfUrls = await Promise.all(
-    PDFRefsItems.map(ref => ref.getDownloadURL())
+  const pdfUrls = Promise.all(
+    PDFRefsItems.map(async ref => {
+      const dataFromServer = await ref
+        .getMetadata()
+        .then(data => data.customMetadata.listinglop)
+        .catch(error => {
+          console.warn("Fond no metadata with error: ", error);
+          return false;
+        });
+      return {
+        listinglop: dataFromServer === "true",
+        url: await ref.getDownloadURL()
+      };
+    })
   );
   return pdfUrls;
 }
 
-async function doEditionUpload(editionFile, callback, storage, db) {
+async function doEditionUpload(editionFile, listinglop, callback, storage, db) {
   const year = editionFile.name.split("-")[0];
   const path = `pdf/${year}/${editionFile.name}`;
   const metadata = {
-    contentType: "application/pdf"
+    contentType: "application/pdf",
+    customMetadata: {
+      listinglop: String(listinglop)
+    }
   };
   const editionPDFRef = storage.ref(path);
   const uploadTask = editionPDFRef.put(editionFile, metadata);
@@ -181,6 +201,18 @@ function getPageNumber(article) {
   } else {
     return article.pages[0];
   }
+}
+
+async function fetchSettings(db) {
+  const settings = await db.collection("settings").get();
+  return settings.docs[0].data();
+}
+
+async function setShowListingSetting(value, db) {
+  const settings = await db.collection("settings").get();
+  await settings.docs[0].ref.update({
+    showListing: value
+  });
 }
 
 export default Firebase;

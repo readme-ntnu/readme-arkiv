@@ -23,19 +23,20 @@ const schema = Yup.object({
       "Dette må være en PDF-fil",
       value =>
         value && value.name.endsWith(".pdf") && value.type === "application/pdf"
-    )
+    ),
+  listingslop: Yup.bool().required()
 });
 
 function NewEditionPage({ firebase }) {
   function handleSubmit(values, { setSubmitting, setStatus }) {
-    const { editionYear, editionNumber, editionFile } = values;
+    const { editionYear, editionNumber, editionFile, listingslop } = values;
     const fileToUpload = new File(
       [editionFile],
       `${editionYear}-0${editionNumber}.pdf`,
       { type: editionFile.type }
     );
     setSubmitting(true);
-    firebase.uploadEdition(fileToUpload, () => {
+    firebase.uploadEdition(fileToUpload, listingslop, () => {
       setSubmitting(false);
       setStatus({ success: true });
     });
@@ -117,6 +118,15 @@ function NewEditionPage({ firebase }) {
                 </Form.Control.Feedback>
               </Form.Group>
             </Form.Row>
+            <Form.Group>
+              <Form.Check
+                type="switch"
+                name="listingslop"
+                label="Listingsløputgave"
+                onChange={handleChange}
+                id="validationFormik0"
+              />
+            </Form.Group>
             <Button
               variant="primary"
               type="submit"
