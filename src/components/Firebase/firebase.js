@@ -69,7 +69,6 @@ async function fetchEditionDataForYear(yearPrefix, storage) {
   object.year = yearPrefix.name;
   object.urls = response[0];
   object.pdfs = response[1];
-  console.log(object);
   return object;
 }
 
@@ -94,7 +93,7 @@ async function fetchPDFsForAYear(yearPrefix, storage) {
           return false;
         });
       return {
-        listinglop: dataFromServer,
+        listinglop: dataFromServer === "true",
         url: await ref.getDownloadURL()
       };
     })

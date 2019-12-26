@@ -42,6 +42,8 @@ function ImageRow({ year, firebase, showListing }) {
       );
     });
 
+    images = images.filter(image => image !== null);
+
     imagesLen = images.length;
     images1 = images.slice(0, 3);
     images2 = images.slice(3, imagesLen);
