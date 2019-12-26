@@ -133,7 +133,7 @@ async function updateArticlePDFURL(editionName, newURL, db) {
   if (!articles.empty) {
     articles.forEach(async docSnap => {
       await docSnap.ref.update({
-        url: `${newURL}#page=${getPages(docSnap.data())}`
+        url: `${newURL}#page=${getPageNumber(docSnap.data())}`
       });
     });
   }
@@ -161,9 +161,9 @@ async function getArticlePDFURL(article, storage) {
   const fileName = `${article.edition}.pdf`;
   const path = `pdf/${year}/${fileName}`;
   try {
-    let pdfURL = storage.ref(path).getDownloadURL();
+    let pdfURL = await storage.ref(path).getDownloadURL();
     if (article.pages) {
-      pdfURL = `${pdfURL}#page=${getPages(article)}`;
+      pdfURL = `${pdfURL}#page=${getPageNumber(article)}`;
     }
     return pdfURL;
   } catch (error) {
@@ -171,7 +171,7 @@ async function getArticlePDFURL(article, storage) {
   }
 }
 
-function getPages(article) {
+function getPageNumber(article) {
   const [editionYear, editionNumber] = article.edition.split("-");
   if (
     editionYear > 2013 ||
