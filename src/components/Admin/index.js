@@ -4,8 +4,6 @@ import { Button } from "react-bootstrap";
 
 import { withAuthorization } from "../Session";
 
-import Loading from "../Loading";
-
 import * as ROUTES from "../../constants/routes";
 import "./AdminPage.css";
 
