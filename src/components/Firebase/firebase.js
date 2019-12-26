@@ -130,7 +130,7 @@ async function updateArticlePDFURL(editionName, newURL, db) {
     .collection("articles")
     .where("edition", "==", editionName)
     .get();
-  if (!articles.empty) {
+  if (articles && !articles.empty) {
     articles.forEach(async docSnap => {
       await docSnap.ref.update({
         url: `${newURL}#page=${getPageNumber(docSnap.data())}`
