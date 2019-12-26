@@ -51,6 +51,8 @@ class Firebase {
 
   // *** Settings API ***
   getSettings = () => fetchSettings(this.db);
+
+  setShowListing = value => setShowListingSetting(value, this.db);
 }
 
 async function fetchYearPrefixes(storage) {
@@ -204,8 +206,14 @@ function getPageNumber(article) {
 
 async function fetchSettings(db) {
   const settings = await db.collection("settings").get();
-  console.log(settings);
   return settings.docs[0].data();
+}
+
+async function setShowListingSetting(value, db) {
+  const settings = await db.collection("settings").get();
+  await settings.docs[0].ref.update({
+    showListing: value
+  });
 }
 
 export default Firebase;
