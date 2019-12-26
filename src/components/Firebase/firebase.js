@@ -46,8 +46,8 @@ class Firebase {
 
   editionYearPrefixes = () => fetchYearPrefixes(this.storage);
 
-  uploadEdition = (editionFile, callback = undefined) =>
-    doEditionUpload(editionFile, callback, this.storage, this.db);
+  uploadEdition = (editionFile, listinglop, callback = undefined) =>
+    doEditionUpload(editionFile, listinglop, callback, this.storage, this.db);
 }
 
 async function fetchYearPrefixes(storage) {
@@ -84,11 +84,14 @@ async function fetchPDFsForAYear(yearPrefix, storage) {
   return pdfUrls;
 }
 
-async function doEditionUpload(editionFile, callback, storage, db) {
+async function doEditionUpload(editionFile, listinglop, callback, storage, db) {
   const year = editionFile.name.split("-")[0];
   const path = `pdf/${year}/${editionFile.name}`;
   const metadata = {
-    contentType: "application/pdf"
+    contentType: "application/pdf",
+    customMetadata: {
+      listinglop: String(listinglop)
+    }
   };
   const editionPDFRef = storage.ref(path);
   const uploadTask = editionPDFRef.put(editionFile, metadata);
