@@ -24,7 +24,7 @@ const schema = Yup.object({
       value =>
         value && value.name.endsWith(".pdf") && value.type === "application/pdf"
     ),
-  listingslop: Yup.bool().required()
+  listingslop: Yup.bool().default(false)
 });
 
 function NewEditionPage({ firebase }) {
