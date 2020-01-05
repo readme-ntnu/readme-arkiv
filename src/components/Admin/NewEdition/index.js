@@ -1,9 +1,16 @@
 import React from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { Form, Button, Col, Spinner, Alert } from "react-bootstrap";
+import {
+  Form,
+  Button,
+  Col,
+  Spinner,
+  Alert,
+  ProgressBar
+} from "react-bootstrap";
 
-import { editionForm, alertInfo } from "./NewEdition.module.css";
+import { editionForm, alertInfo, progressBar } from "./NewEdition.module.css";
 
 import { withAuthorization } from "../../Session";
 
@@ -36,10 +43,16 @@ function NewEditionPage({ firebase }) {
       { type: editionFile.type }
     );
     setSubmitting(true);
-    firebase.uploadEdition(fileToUpload, listingslop, () => {
-      setSubmitting(false);
-      setStatus({ success: true });
-    });
+    firebase.uploadEdition(
+      fileToUpload,
+      listingslop,
+      () => {
+        setSubmitting(false);
+        setStatus({ success: true, progress: 100 });
+      },
+      () => setStatus({ error: true }),
+      progress => setStatus({ progress: progress })
+    );
   }
 
   const now = new Date();
@@ -56,7 +69,7 @@ function NewEditionPage({ firebase }) {
           editionNumber: 1,
           editionFile: undefined
         }}
-        initialStatus={{ success: false }}
+        initialStatus={{ success: false, error: false, progress: 0 }}
       >
         {({
           handleSubmit,
@@ -67,7 +80,9 @@ function NewEditionPage({ firebase }) {
           errors,
           status,
           isSubmitting,
-          setValues
+          setValues,
+          resetForm,
+          setStatus
         }) => (
           <Form className={editionForm} onSubmit={handleSubmit}>
             <Form.Row>
@@ -127,6 +142,15 @@ function NewEditionPage({ firebase }) {
                 id="validationFormik0"
               />
             </Form.Group>
+            <Form.Group>
+              <ProgressBar
+                className={progressBar}
+                striped
+                animated={isSubmitting}
+                now={status.progress}
+                label={`${status.progress.toFixed(0)}%`}
+              />
+            </Form.Group>
             <Button
               variant="primary"
               type="submit"
@@ -143,6 +167,26 @@ function NewEditionPage({ firebase }) {
               ) : null}
               Last opp utgave
             </Button>
+            {status.error ? (
+              <Alert className={alertInfo} variant="error">
+                Noe gikk galt!
+                <br />
+                Vent litt, og prøv igjen. Dersom problemet vedvarer, kontakt
+                ansvarlig utvikler.
+                <hr />
+                <div className="d-flex justify-content-end">
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      resetForm();
+                      setStatus({ success: false, error: false, progress: 0 });
+                    }}
+                  >
+                    Prøv igjen
+                  </Button>
+                </div>
+              </Alert>
+            ) : null}
             {status.success ? (
               <Alert className={alertInfo} variant="primary">
                 Opplasting fullført!

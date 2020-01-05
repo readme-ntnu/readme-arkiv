@@ -38,16 +38,28 @@ class Firebase {
 
   articles = () => this.db.collection("articles");
 
-  addArticle = (article, callback = undefined) =>
-    this.addArticleToDB(article, callback);
+  addArticle = (article, callback = undefined, errorCallback = undefined) =>
+    this.addArticleToDB(article, callback, errorCallback);
 
   // *** Editions API ***
   editions = year => this.fetchEditionDataForYear(year);
 
   editionYearPrefixes = () => this.fetchYearPrefixes();
 
-  uploadEdition = (editionFile, listinglop, callback = undefined) =>
-    this.doEditionUpload(editionFile, listinglop, callback);
+  uploadEdition = (
+    editionFile,
+    listinglop,
+    callback = undefined,
+    errorCallback = undefined,
+    updateProgessCallback = undefined
+  ) =>
+    this.doEditionUpload(
+      editionFile,
+      listinglop,
+      callback,
+      errorCallback,
+      updateProgessCallback
+    );
 
   // *** Settings API ***
   getSettings = () => this.fetchSettings();
@@ -101,7 +113,13 @@ class Firebase {
     return pdfUrls;
   };
 
-  doEditionUpload = async (editionFile, listinglop, callback) => {
+  doEditionUpload = async (
+    editionFile,
+    listinglop,
+    callback,
+    errorCallback,
+    updateProgessCallback
+  ) => {
     const updateArticlePDFURL = this.updateArticlePDFURL;
     const year = editionFile.name.split("-")[0];
     const path = `pdf/${year}/${editionFile.name}`;
@@ -118,7 +136,12 @@ class Firebase {
       function(snapshot) {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log("Upload is " + progress + "% done");
+        if (
+          updateProgessCallback &&
+          typeof updateProgessCallback === "function"
+        ) {
+          updateProgessCallback(progress);
+        }
       },
       function(error) {
         // A full list of error codes is available at
@@ -130,6 +153,9 @@ class Firebase {
           case "storage/unknown":
             throw Error("Unkown error, file upload failed.");
           default:
+        }
+        if (errorCallback && typeof errorCallback === "function") {
+          errorCallback();
         }
       },
       function() {
@@ -160,7 +186,7 @@ class Firebase {
     }
   };
 
-  addArticleToDB = async (article, callback) => {
+  addArticleToDB = async (article, callback, errorCallback) => {
     try {
       const url = await this.getArticlePDFURL(article);
       article.url = url;
@@ -174,6 +200,9 @@ class Firebase {
         "Something when wrong during edition upload, failed with error: ",
         error
       );
+      if (errorCallback && typeof errorCallback === "function") {
+        errorCallback();
+      }
     }
   };
 
