@@ -30,7 +30,6 @@ function EditionList({ firebase }) {
         {data.map(year => {
           return (
             <div key={year} className="row-wrapper">
-              <h2 className="year">{year.name}</h2>
               <ListPage year={year} key={year} />
             </div>
           );

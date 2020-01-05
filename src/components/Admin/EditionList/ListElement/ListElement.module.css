@@ -2,8 +2,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 2px solid gray;
+  border: 2px solid lightgray;
   border-radius: 5px;
+  margin: 2px;
+  height: 50px;
 }
 
 .elementStyle > p {
@@ -12,6 +14,9 @@
 }
 
 .deleteButton {
+  display: flex;
+  align-items: center;
+  margin-right: 5px;
   cursor: pointer;
   color: var(--danger);
   transition: 0.5s;

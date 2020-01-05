@@ -116,16 +116,14 @@ class Firebase {
   };
 
   fetchEditionListDataForYear = async yearPrefix => {
-    let imgRefs = await yearPrefix.list();
-    let imgRefsItems = imgRefs.items.reverse();
+    let imgRefs = (await yearPrefix.list()).items;
     let year = yearPrefix.name;
-    let PDFRefs = await this.storage.ref("pdf/" + year).list();
-    let PDFRefsItems = PDFRefs.items.reverse();
-    const yearObject = imgRefsItems.map((imgRef, index) => {
+    let PDFRefs = (await this.storage.ref("pdf/" + year).list()).items;
+    const yearObject = imgRefs.map((imgRef, index) => {
       return {
         edition: `${year}-0${index + 1}`,
         imgRef,
-        pdfRef: PDFRefsItems[index]
+        pdfRef: PDFRefs[index]
       };
     });
     return yearObject;
