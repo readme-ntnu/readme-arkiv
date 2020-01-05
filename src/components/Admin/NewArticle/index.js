@@ -38,10 +38,17 @@ function NewArticlePage({ firebase }) {
     values.edition = `${values.editionYear}-0${values.editionNumber}`;
     delete values.editionYear;
     delete values.editionNumber;
-    firebase.addArticle(values, () => {
-      setSubmitting(false);
-      setStatus({ success: true });
-    });
+    firebase.addArticle(
+      values,
+      () => {
+        setSubmitting(false);
+        setStatus({ success: true });
+      },
+      () => {
+        setSubmitting(false);
+        setStatus({ error: true });
+      }
+    );
   }
 
   return (
@@ -50,7 +57,7 @@ function NewArticlePage({ firebase }) {
       <Formik
         validationSchema={schema}
         onSubmit={(values, actions) => doHandleSubmit(values, actions)}
-        initialStatus={{ success: false }}
+        initialStatus={{ success: false, error: false }}
         initialValues={{
           title: "",
           type: "",
@@ -251,6 +258,26 @@ function NewArticlePage({ firebase }) {
               ) : null}
               Legg til artikkel
             </Button>
+            {status.error ? (
+              <Alert variant="warning">
+                Oups!
+                <br />
+                Noe gikk galt. Husket du å laste opp PDF-en først? Man kan ikke
+                opprette en artikkel uten tilhørende utgave i databasen.
+                <hr />
+                <div className="d-flex justify-content-end">
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      resetForm();
+                      setStatus({ success: false, error: false });
+                    }}
+                  >
+                    Tøm skjema
+                  </Button>
+                </div>
+              </Alert>
+            ) : null}
             {status.success ? (
               <Alert variant="primary">
                 Opplasting fullført!

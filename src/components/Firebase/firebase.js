@@ -38,16 +38,20 @@ class Firebase {
 
   articles = () => this.db.collection("articles");
 
-  addArticle = (article, callback = undefined) =>
-    this.addArticleToDB(article, callback);
+  addArticle = (article, callback = undefined, errorCallback = undefined) =>
+    this.addArticleToDB(article, callback, errorCallback);
 
   // *** Editions API ***
   editions = year => this.fetchEditionDataForYear(year);
 
   editionYearPrefixes = () => this.fetchYearPrefixes();
 
-  uploadEdition = (editionFile, listinglop, callback = undefined) =>
-    this.doEditionUpload(editionFile, listinglop, callback);
+  uploadEdition = (
+    editionFile,
+    listinglop,
+    callback = undefined,
+    errorCallback = undefined
+  ) => this.doEditionUpload(editionFile, listinglop, callback, errorCallback);
 
   // *** Settings API ***
   getSettings = () => this.fetchSettings();
@@ -101,7 +105,12 @@ class Firebase {
     return pdfUrls;
   };
 
-  doEditionUpload = async (editionFile, listinglop, callback) => {
+  doEditionUpload = async (
+    editionFile,
+    listinglop,
+    callback,
+    errorCallback
+  ) => {
     const updateArticlePDFURL = this.updateArticlePDFURL;
     const year = editionFile.name.split("-")[0];
     const path = `pdf/${year}/${editionFile.name}`;
@@ -130,6 +139,9 @@ class Firebase {
           case "storage/unknown":
             throw Error("Unkown error, file upload failed.");
           default:
+        }
+        if (errorCallback && typeof errorCallback === "function") {
+          errorCallback();
         }
       },
       function() {
@@ -160,7 +172,7 @@ class Firebase {
     }
   };
 
-  addArticleToDB = async (article, callback) => {
+  addArticleToDB = async (article, callback, errorCallback) => {
     try {
       const url = await this.getArticlePDFURL(article);
       article.url = url;
@@ -174,6 +186,9 @@ class Firebase {
         "Something when wrong during edition upload, failed with error: ",
         error
       );
+      if (errorCallback && typeof errorCallback === "function") {
+        errorCallback();
+      }
     }
   };
 

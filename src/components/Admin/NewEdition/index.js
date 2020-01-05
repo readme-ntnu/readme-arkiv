@@ -36,10 +36,15 @@ function NewEditionPage({ firebase }) {
       { type: editionFile.type }
     );
     setSubmitting(true);
-    firebase.uploadEdition(fileToUpload, listingslop, () => {
-      setSubmitting(false);
-      setStatus({ success: true });
-    });
+    firebase.uploadEdition(
+      fileToUpload,
+      listingslop,
+      () => {
+        setSubmitting(false);
+        setStatus({ success: true });
+      },
+      () => setStatus({ error: true })
+    );
   }
 
   const now = new Date();
@@ -56,7 +61,7 @@ function NewEditionPage({ firebase }) {
           editionNumber: 1,
           editionFile: undefined
         }}
-        initialStatus={{ success: false }}
+        initialStatus={{ success: false, error: false }}
       >
         {({
           handleSubmit,
@@ -67,7 +72,9 @@ function NewEditionPage({ firebase }) {
           errors,
           status,
           isSubmitting,
-          setValues
+          setValues,
+          resetForm,
+          setStatus
         }) => (
           <Form className={editionForm} onSubmit={handleSubmit}>
             <Form.Row>
@@ -143,6 +150,26 @@ function NewEditionPage({ firebase }) {
               ) : null}
               Last opp utgave
             </Button>
+            {status.error ? (
+              <Alert className={alertInfo} variant="error">
+                Noe gikk galt!
+                <br />
+                Vent litt, og prøv igjen. Dersom problemet vedvarer, kontakt
+                ansvarlig utvikler.
+                <hr />
+                <div className="d-flex justify-content-end">
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      resetForm();
+                      setStatus({ success: false, error: false });
+                    }}
+                  >
+                    Prøv igjen
+                  </Button>
+                </div>
+              </Alert>
+            ) : null}
             {status.success ? (
               <Alert className={alertInfo} variant="primary">
                 Opplasting fullført!
