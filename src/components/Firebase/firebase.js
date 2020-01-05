@@ -44,6 +44,8 @@ class Firebase {
   // *** Editions API ***
   editions = year => this.fetchEditionDataForYear(year);
 
+  editionListData = year => this.fetchEditionListDataForYear(year);
+
   editionYearPrefixes = () => this.fetchYearPrefixes();
 
   uploadEdition = (
@@ -111,6 +113,20 @@ class Firebase {
       })
     );
     return pdfUrls;
+  };
+
+  fetchEditionListDataForYear = async yearPrefix => {
+    let imgRefs = (await yearPrefix.list()).items;
+    let year = yearPrefix.name;
+    let PDFRefs = (await this.storage.ref("pdf/" + year).list()).items;
+    const yearObject = imgRefs.map((imgRef, index) => {
+      return {
+        edition: `${year}-0${index + 1}`,
+        imgRef,
+        pdfRef: PDFRefs[index]
+      };
+    });
+    return yearObject;
   };
 
   doEditionUpload = async (
