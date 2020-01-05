@@ -1,13 +1,16 @@
 import React from "react";
 import { elementStyle, deleteButton } from "./ListElement.module.css";
 
-function ListElement({ element }) {
+function ListElement({ obj }) {
   return (
     <div className={elementStyle}>
-      <p>{element.edition}</p>
+      <p>{obj.edition}</p>
       <i
         className={`material-icons md-36 ${deleteButton}`}
-        onClick={() => element.ref.delete()}
+        onClick={async () => {
+          await obj.imgRef.delete();
+          await obj.pdfRef.delete();
+        }}
       >
         delete_outline
       </i>
