@@ -36,9 +36,19 @@ function AdminPage({ firebase }) {
             Legg til ny utgave
           </Button>
         </LinkContainer>
+        <LinkContainer to={ROUTES.EDITION_LIST}>
+          <Button variant="primary" block>
+            Vis utgavelisten
+          </Button>
+        </LinkContainer>
         <LinkContainer to={ROUTES.NEW_ARTICLE}>
           <Button variant="primary" block>
             Legg til ny artikkel
+          </Button>
+        </LinkContainer>
+        <LinkContainer to={ROUTES.ARTICLE_LIST}>
+          <Button variant="primary" block>
+            Vis artikkellisten
           </Button>
         </LinkContainer>
 

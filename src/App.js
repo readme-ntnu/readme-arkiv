@@ -13,6 +13,7 @@ import PasswordForgetPage from "./components/PasswordForget";
 import AdminPage from "./components/Admin";
 import NewEditionPage from "./components/Admin/NewEdition";
 import NewArticlePage from "./components/Admin/NewArticle";
+import EditionList from "./components/Admin/EditionList";
 
 import NoMatch from "./components/NoMatch";
 import { withAuthentication } from "./components/Session";
@@ -33,6 +34,7 @@ function App() {
           <Route path={ROUTES.ADMIN} component={AdminPage} />
           <Route path={ROUTES.NEW_EDITION} component={NewEditionPage} />
           <Route path={ROUTES.NEW_ARTICLE} component={NewArticlePage} />
+          <Route path={ROUTES.EDITION_LIST} component={EditionList} />
           <Route component={NoMatch} />
         </Switch>
       </div>
