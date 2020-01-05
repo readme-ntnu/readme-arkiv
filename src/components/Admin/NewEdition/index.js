@@ -142,15 +142,7 @@ function NewEditionPage({ firebase }) {
                 id="validationFormik0"
               />
             </Form.Group>
-            <Form.Group>
-              <ProgressBar
-                className={progressBar}
-                striped
-                animated={isSubmitting}
-                now={status.progress}
-                label={`${status.progress.toFixed(0)}%`}
-              />
-            </Form.Group>
+
             <Button
               variant="primary"
               type="submit"
@@ -167,6 +159,15 @@ function NewEditionPage({ firebase }) {
               ) : null}
               Last opp utgave
             </Button>
+            {isSubmitting || status.success ? (
+              <ProgressBar
+                className={progressBar}
+                striped
+                animated={isSubmitting}
+                now={status.progress}
+                label={`${status.progress.toFixed(0)}%`}
+              />
+            ) : null}
             {status.error ? (
               <Alert className={alertInfo} variant="error">
                 Noe gikk galt!

@@ -12,6 +12,8 @@
 .progressBar {
   width: 35vw;
   height: 25px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 @media only screen and (max-width: 768px) {
