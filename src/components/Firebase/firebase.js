@@ -102,6 +102,7 @@ class Firebase {
   };
 
   doEditionUpload = async (editionFile, listinglop, callback) => {
+    const updateArticlePDFURL = this.updateArticlePDFURL;
     const year = editionFile.name.split("-")[0];
     const path = `pdf/${year}/${editionFile.name}`;
     const metadata = {
@@ -136,7 +137,7 @@ class Firebase {
         uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
           console.log("File available at", downloadURL);
           const editionName = editionFile.name.replace(".pdf", "");
-          this.updateArticlePDFURL(editionName, downloadURL);
+          updateArticlePDFURL(editionName, downloadURL);
         });
         if (callback && typeof callback === "function") {
           callback();
