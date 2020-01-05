@@ -1,9 +1,16 @@
 import React from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { Form, Button, Col, Spinner, Alert } from "react-bootstrap";
+import {
+  Form,
+  Button,
+  Col,
+  Spinner,
+  Alert,
+  ProgressBar
+} from "react-bootstrap";
 
-import { editionForm, alertInfo } from "./NewEdition.module.css";
+import { editionForm, alertInfo, progressBar } from "./NewEdition.module.css";
 
 import { withAuthorization } from "../../Session";
 
@@ -41,9 +48,10 @@ function NewEditionPage({ firebase }) {
       listingslop,
       () => {
         setSubmitting(false);
-        setStatus({ success: true });
+        setStatus({ success: true, progress: 100 });
       },
-      () => setStatus({ error: true })
+      () => setStatus({ error: true }),
+      progress => setStatus({ progress: progress })
     );
   }
 
@@ -61,7 +69,7 @@ function NewEditionPage({ firebase }) {
           editionNumber: 1,
           editionFile: undefined
         }}
-        initialStatus={{ success: false, error: false }}
+        initialStatus={{ success: false, error: false, progress: 0 }}
       >
         {({
           handleSubmit,
@@ -134,6 +142,15 @@ function NewEditionPage({ firebase }) {
                 id="validationFormik0"
               />
             </Form.Group>
+            <Form.Group>
+              <ProgressBar
+                className={progressBar}
+                striped
+                animated={isSubmitting}
+                now={status.progress}
+                label={`${status.progress.toFixed(0)}%`}
+              />
+            </Form.Group>
             <Button
               variant="primary"
               type="submit"
@@ -162,7 +179,7 @@ function NewEditionPage({ firebase }) {
                     variant="secondary"
                     onClick={() => {
                       resetForm();
-                      setStatus({ success: false, error: false });
+                      setStatus({ success: false, error: false, progress: 0 });
                     }}
                   >
                     Prøv igjen

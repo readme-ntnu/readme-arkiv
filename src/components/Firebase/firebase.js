@@ -50,8 +50,16 @@ class Firebase {
     editionFile,
     listinglop,
     callback = undefined,
-    errorCallback = undefined
-  ) => this.doEditionUpload(editionFile, listinglop, callback, errorCallback);
+    errorCallback = undefined,
+    updateProgessCallback = undefined
+  ) =>
+    this.doEditionUpload(
+      editionFile,
+      listinglop,
+      callback,
+      errorCallback,
+      updateProgessCallback
+    );
 
   // *** Settings API ***
   getSettings = () => this.fetchSettings();
@@ -109,7 +117,8 @@ class Firebase {
     editionFile,
     listinglop,
     callback,
-    errorCallback
+    errorCallback,
+    updateProgessCallback
   ) => {
     const updateArticlePDFURL = this.updateArticlePDFURL;
     const year = editionFile.name.split("-")[0];
@@ -127,7 +136,12 @@ class Firebase {
       function(snapshot) {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log("Upload is " + progress + "% done");
+        if (
+          updateProgessCallback &&
+          typeof updateProgessCallback === "function"
+        ) {
+          updateProgessCallback(progress);
+        }
       },
       function(error) {
         // A full list of error codes is available at
