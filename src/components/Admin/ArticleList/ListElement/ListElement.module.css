@@ -1,0 +1,54 @@
+.elementStyle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 2px solid lightgray;
+  border-radius: 5px;
+  margin: 2px;
+  text-align: left;
+}
+
+.elementStyle > p {
+  margin: 5px;
+}
+
+.end {
+  user-select: none;
+  display: flex;
+  align-items: center;
+  margin-right: 5px;
+}
+
+.open {
+  cursor: pointer;
+
+  color: var(--primary);
+  transition: 0.5s;
+}
+
+.open:hover {
+  transition: 0.5s;
+  filter: drop-shadow(0 0 0.1rem var(--primary));
+}
+
+.edit {
+  cursor: pointer;
+  color: var(--secondary);
+  transition: 0.5s;
+}
+
+.edit:hover {
+  transition: 0.5s;
+  filter: drop-shadow(0 0 0.1rem var(--secondary));
+}
+
+.deleteButton {
+  cursor: pointer;
+  color: var(--danger);
+  transition: 0.5s;
+}
+
+.deleteButton:hover {
+  transition: 0.5s;
+  filter: drop-shadow(0 0 0.1rem var(--danger));
+}

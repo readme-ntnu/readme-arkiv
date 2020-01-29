@@ -17,6 +17,7 @@ import EditionList from "./components/Admin/EditionList";
 
 import NoMatch from "./components/NoMatch";
 import { withAuthentication } from "./components/Session";
+import ArticleList from "./components/Admin/ArticleList";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path={ROUTES.NEW_EDITION} component={NewEditionPage} />
           <Route path={ROUTES.NEW_ARTICLE} component={NewArticlePage} />
           <Route path={ROUTES.EDITION_LIST} component={EditionList} />
+          <Route path={ROUTES.ARTICLE_LIST} component={ArticleList} />
           <Route component={NoMatch} />
         </Switch>
       </div>
