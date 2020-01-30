@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { withFirebase } from "../../Firebase";
 
 import Loading from "../../Loading";
@@ -16,28 +16,29 @@ function ArticleList({ firebase }) {
 
   const [downloading, setDownloading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      let subscribed = true;
-      setDownloading(true);
+  const fetchData = useCallback(async () => {
+    let subscribed = true;
+    setDownloading(true);
 
-      const response = await query.get();
-      const responseData = [];
-      response.forEach(doc => {
-        responseData.push({
-          data: doc.data(),
-          ref: doc.ref
-        });
+    const response = await query.get();
+    const responseData = [];
+    response.forEach(doc => {
+      responseData.push({
+        data: doc.data(),
+        ref: doc.ref
       });
-      if (subscribed) {
-        setData(responseData);
-        console.log(responseData);
-        setDownloading(false);
-      }
-      return () => (subscribed = false);
-    };
-    fetchData();
+    });
+    if (subscribed) {
+      setData(responseData);
+      console.log(responseData);
+      setDownloading(false);
+    }
+    return () => (subscribed = false);
   }, [query]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   function prevPage(first) {
     setQuery(baseQuery.endBefore(first[field]).limitToLast(pageSize));
@@ -47,13 +48,17 @@ function ArticleList({ firebase }) {
     setQuery(baseQuery.startAfter(last[field]).limit(pageSize));
   }
 
+  function removeItem(article) {
+    setData(data.filter(element => element.data._id !== article.data._id));
+  }
+
   if (downloading) {
     return <Loading />;
   } else {
     return (
       <>
         {data.map(article => (
-          <ListElement obj={article} />
+          <ListElement obj={article} removeSelf={removeItem} />
         ))}
         <button onClick={() => prevPage(data[0].data)}>Previous </button>
         <button onClick={() => nextPage(data[data.length - 1].data)}>

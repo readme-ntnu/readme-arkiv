@@ -1,15 +1,11 @@
 import React from "react";
 
-import {
-  elementStyle,
-  end,
-  deleteButton,
-  open,
-  edit
-} from "./ListElement.module.css";
+import { elementStyle, end, open, edit } from "./ListElement.module.css";
+import DeleteButton from "../../Common/DeleteButton";
 
-function ListElement({ obj }) {
-  const { edition, title, url } = obj.data;
+function ListElement({ obj, removeSelf }) {
+  const { data, ref } = obj;
+  const { edition, title, url } = data;
   return (
     <div className={elementStyle}>
       <p>
@@ -20,7 +16,7 @@ function ListElement({ obj }) {
           <i className={`material-icons md-36 ${open}`}>remove_red_eye</i>
         </a>
         <i className={`material-icons md-36 ${edit}`}>edit</i>
-        <i className={`material-icons md-36 ${deleteButton}`}>delete_outline</i>
+        <DeleteButton docRef={ref} removeSelf={() => removeSelf(obj)} />
       </div>
     </div>
   );

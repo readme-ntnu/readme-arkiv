@@ -41,14 +41,3 @@
   transition: 0.5s;
   filter: drop-shadow(0 0 0.1rem var(--secondary));
 }
-
-.deleteButton {
-  cursor: pointer;
-  color: var(--danger);
-  transition: 0.5s;
-}
-
-.deleteButton:hover {
-  transition: 0.5s;
-  filter: drop-shadow(0 0 0.1rem var(--danger));
-}
