@@ -16,6 +16,7 @@ function ArticleList({ firebase }) {
   const [query, setQuery] = useState(baseQuery.limit(pageSize));
 
   const [data, setData] = useState([]);
+  const [pageNum, setPageNum] = useState(0);
 
   const [downloading, setDownloading] = useState(true);
 
@@ -30,10 +31,10 @@ function ArticleList({ firebase }) {
         ref: doc.ref
       });
     });
-    if (subscribed) {
+    if (subscribed && responseData.length > 0) {
       setData(responseData);
-      setDownloading(false);
     }
+    setDownloading(false);
     return () => (subscribed = false);
   }, [query]);
 
@@ -42,10 +43,12 @@ function ArticleList({ firebase }) {
   }, [fetchData]);
 
   function prevPage(first) {
+    setPageNum(pageNum - 1);
     setQuery(baseQuery.endBefore(first[field]).limitToLast(pageSize));
   }
 
   function nextPage(last) {
+    setPageNum(pageNum + 1);
     setQuery(baseQuery.startAfter(last[field]).limit(pageSize));
   }
 
@@ -63,7 +66,12 @@ function ArticleList({ firebase }) {
           <ListElement key={i} obj={article} removeSelf={removeItem} />
         ))}
         <div className={pagination}>
-          <Button onClick={() => prevPage(data[0].data)}>&lt;&lt;</Button>
+          <Button
+            disabled={pageNum === 0}
+            onClick={() => prevPage(data[0].data)}
+          >
+            &lt;&lt;
+          </Button>
           <Button onClick={() => nextPage(data[data.length - 1].data)}>
             &gt;&gt;
           </Button>
