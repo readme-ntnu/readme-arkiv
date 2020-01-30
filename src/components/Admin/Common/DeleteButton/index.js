@@ -8,7 +8,13 @@ function DeleteButton({ docRef, removeSelf }) {
 
   async function deleteItem() {
     setIsDeleting(true);
-    await docRef.delete();
+    if (docRef.length) {
+      for (let ref of docRef) {
+        await ref.delete();
+      }
+    } else {
+      await docRef.delete();
+    }
     setIsDeleting(false);
     removeSelf();
   }

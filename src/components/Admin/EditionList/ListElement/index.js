@@ -1,30 +1,15 @@
-import React, { useState } from "react";
-import { Spinner } from "react-bootstrap";
+import React from "react";
 
-import { elementStyle, deleteButton } from "./ListElement.module.css";
+import { elementStyle } from "./ListElement.module.css";
+import DeleteButton from "../../Common/DeleteButton";
 
 function ListElement({ obj, removeSelf }) {
-  const [isDeleting, setIsDeleting] = useState(false);
+  const refs = [obj.imgRef, obj.pdfRef];
 
-  async function deleteItem() {
-    setIsDeleting(true);
-    await obj.imgRef.delete();
-    await obj.pdfRef.delete();
-    setIsDeleting(false);
-    removeSelf();
-  }
   return (
     <div className={elementStyle}>
       <p>{obj.edition}</p>
-      <div className={deleteButton}>
-        {isDeleting ? (
-          <Spinner animation="border" />
-        ) : (
-          <i className={"material-icons md-36"} onClick={() => deleteItem()}>
-            delete_outline
-          </i>
-        )}
-      </div>
+      <DeleteButton docRef={refs} removeSelf={() => removeSelf()} />
     </div>
   );
 }
