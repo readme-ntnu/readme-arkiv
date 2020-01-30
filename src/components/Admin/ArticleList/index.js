@@ -4,7 +4,8 @@ import { withFirebase } from "../../Firebase";
 import Loading from "../../Loading";
 import ListElement from "./ListElement";
 
-import { articleList } from "./ArticleList.module.css";
+import { articleList, pagination } from "./ArticleList.module.css";
+import { Button } from "react-bootstrap";
 
 function ArticleList({ firebase }) {
   const field = "edition";
@@ -61,10 +62,12 @@ function ArticleList({ firebase }) {
         {data.map((article, i) => (
           <ListElement key={i} obj={article} removeSelf={removeItem} />
         ))}
-        <button onClick={() => prevPage(data[0].data)}>Previous </button>
-        <button onClick={() => nextPage(data[data.length - 1].data)}>
-          Next
-        </button>
+        <div className={pagination}>
+          <Button onClick={() => prevPage(data[0].data)}>&lt;&lt;</Button>
+          <Button onClick={() => nextPage(data[data.length - 1].data)}>
+            &gt;&gt;
+          </Button>
+        </div>
       </div>
     );
   }
