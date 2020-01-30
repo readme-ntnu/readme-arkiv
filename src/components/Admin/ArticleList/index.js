@@ -19,7 +19,6 @@ function ArticleList({ firebase }) {
   const fetchData = useCallback(async () => {
     let subscribed = true;
     setDownloading(true);
-
     const response = await query.get();
     const responseData = [];
     response.forEach(doc => {
@@ -30,7 +29,6 @@ function ArticleList({ firebase }) {
     });
     if (subscribed) {
       setData(responseData);
-      console.log(responseData);
       setDownloading(false);
     }
     return () => (subscribed = false);
@@ -57,8 +55,8 @@ function ArticleList({ firebase }) {
   } else {
     return (
       <>
-        {data.map(article => (
-          <ListElement obj={article} removeSelf={removeItem} />
+        {data.map((article, i) => (
+          <ListElement key={i} obj={article} removeSelf={removeItem} />
         ))}
         <button onClick={() => prevPage(data[0].data)}>Previous </button>
         <button onClick={() => nextPage(data[data.length - 1].data)}>
