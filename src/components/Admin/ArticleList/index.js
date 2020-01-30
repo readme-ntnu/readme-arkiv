@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { withFirebase } from "../../Firebase";
+import { withAuthorization } from "../../Session";
 
 import Loading from "../../Loading";
 import ListElement from "./ListElement";
@@ -81,4 +81,6 @@ function ArticleList({ firebase }) {
   }
 }
 
-export default withFirebase(ArticleList);
+const condition = authUser => !!authUser;
+
+export default withAuthorization(condition)(ArticleList);
