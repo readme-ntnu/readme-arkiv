@@ -26,15 +26,18 @@ function EditionList({ firebase }) {
     return <Loading />;
   } else {
     return (
-      <div className="row-container">
-        {data.map(year => {
-          return (
-            <div key={year} className="row-wrapper">
-              <ListPage year={year} key={year} />
-            </div>
-          );
-        })}
-      </div>
+      <>
+        <h2>Utgaver</h2>
+        <div className="row-container">
+          {data.map(year => {
+            return (
+              <div key={year} className="row-wrapper">
+                <ListPage year={year} key={year} />
+              </div>
+            );
+          })}
+        </div>
+      </>
     );
   }
 }

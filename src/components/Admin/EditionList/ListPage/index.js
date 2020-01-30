@@ -37,7 +37,7 @@ function ListPage({ firebase, year }) {
   return (
     <div className={list}>
       {listElements || downloading ? (
-        <h2 className="year">{year.name}</h2>
+        <h3 className="year">{year.name}</h3>
       ) : null}
       {downloading ? <Loading /> : null}
       {!downloading && listElements ? listElements : null}

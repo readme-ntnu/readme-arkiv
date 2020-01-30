@@ -4,6 +4,8 @@ import { withFirebase } from "../../Firebase";
 import Loading from "../../Loading";
 import ListElement from "./ListElement";
 
+import { articleList } from "./ArticleList.module.css";
+
 function ArticleList({ firebase }) {
   const field = "edition";
   let pageSize = 20;
@@ -54,7 +56,8 @@ function ArticleList({ firebase }) {
     return <Loading />;
   } else {
     return (
-      <>
+      <div className={articleList}>
+        <h2>Artikler</h2>
         {data.map((article, i) => (
           <ListElement key={i} obj={article} removeSelf={removeItem} />
         ))}
@@ -62,7 +65,7 @@ function ArticleList({ firebase }) {
         <button onClick={() => nextPage(data[data.length - 1].data)}>
           Next
         </button>
-      </>
+      </div>
     );
   }
 }
