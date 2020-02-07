@@ -8,7 +8,7 @@ import SignOutButton from "../SignOut";
 
 import * as ROUTES from "../../constants/routes.js";
 
-function AppNavbar(props) {
+function AppNavbar() {
   return (
     <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark">
       <LinkContainer to={ROUTES.HOME}>
@@ -34,7 +34,7 @@ function AppNavbar(props) {
             ) : (
               <Nav>
                 <LinkContainer to={ROUTES.SIGN_IN}>
-                  <Nav.Link>Sign in</Nav.Link>
+                  <Nav.Link>Logg inn</Nav.Link>
                 </LinkContainer>
               </Nav>
             )

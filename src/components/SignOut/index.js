@@ -5,7 +5,7 @@ import { Nav } from "react-bootstrap";
 
 const SignOutButton = ({ firebase }) => (
   <Nav.Link type="button" onClick={firebase.doSignOut}>
-    Sign Out
+    Logg ut
   </Nav.Link>
 );
 export default withFirebase(SignOutButton);
