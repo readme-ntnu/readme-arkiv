@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import { debounce } from "lodash";
 import { Spinner } from "react-bootstrap";
 
-import Loading from "../Loading";
 import AppTable from "./Table";
 
-import { searchBox, search } from "./Search.module.css";
+import { searchBox, end } from "./Search.module.css";
 
 const searchForArticles = async searchString => {
   const host =
@@ -58,11 +57,13 @@ function Search() {
           placeholder="Søk..."
           size="32"
         />
-        {loading ? (
-          <Spinner animation="border" />
-        ) : (
-          <i className={`material-icons md-36 ${search}`}>search</i>
-        )}
+        <div className={end}>
+          {loading ? (
+            <Spinner animation="border" />
+          ) : (
+            <i className={`material-icons md-36 ${search}`}>search</i>
+          )}
+        </div>
       </div>
       {hasData ? <AppTable articles={articles} /> : null}
     </>
