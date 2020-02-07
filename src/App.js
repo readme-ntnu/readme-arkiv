@@ -1,6 +1,7 @@
 import React from "react";
-import { Image } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import useDarkMode from "use-dark-mode";
+import CrossfadeImage from "react-crossfade-image";
 
 import { app, readmelogo, lightSwitch, header } from "./App.module.css";
 
@@ -23,17 +24,19 @@ import NoMatch from "./components/NoMatch";
 import { withAuthentication } from "./components/Session";
 
 function App() {
+  const darkmode = useDarkMode();
+  const logoSrc = `${process.env.PUBLIC_URL}/readme${
+    darkmode.value ? "_hvit" : ""
+  }.png`;
+
   return (
     <Router>
       <div className={app}>
         <AppNavBar />
         <header className={header}>
-          <Image
-            className={readmelogo}
-            src={`${process.env.PUBLIC_URL}/readme.png`}
-            alt="Logo"
-            fluid
-          />
+          <div className={readmelogo}>
+            <CrossfadeImage src={logoSrc} alt="Logo" />
+          </div>
           <div className={lightSwitch}>
             <LightSwitch />
           </div>

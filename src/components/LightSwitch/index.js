@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 import Switch from "react-switch";
+import useDarkMode from "use-dark-mode";
 
 import { sun, moon } from "./LightSwitch.module.css";
 
 function LightSwitch() {
-  const [state, setState] = useState(true);
+  const darkmode = useDarkMode();
+  const [state, setState] = useState(!darkmode.value);
 
   function handleChange(checked) {
     setState(checked);
+    if (checked) {
+      darkmode.disable();
+    } else {
+      darkmode.enable();
+    }
   }
 
   return (

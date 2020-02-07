@@ -7,6 +7,36 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+body.light-mode {
+  background-color: #fff;
+  color: #333;
+  transition: all 0.3s ease;
+}
+body.dark-mode {
+  background-color: #1a1919;
+  color: #999;
+  transition: all 0.3s ease;
+}
+
+body.dark-mode * input {
+  background-color: #282d33;
+  color: #ffffff;
+}
+
+body.dark-mode * textarea {
+  background-color: #282d33;
+  color: #ffffff;
+}
+
+body.dark-mode * table {
+  background-color: #282d33;
+  color: #999;
+}
+
+body.dark-mode * input::placeholder {
+  color: #ffffff5e;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
