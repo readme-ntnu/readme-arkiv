@@ -60,7 +60,7 @@ function ArticleList({ firebase }) {
   return (
     <Fade in appear>
       <div className={articleList}>
-        <h2>Artikler</h2>
+        <h1>Artikler</h1>
         {downloading ? (
           <Loading />
         ) : (

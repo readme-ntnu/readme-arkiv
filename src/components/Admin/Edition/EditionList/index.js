@@ -26,7 +26,7 @@ function EditionList({ firebase }) {
   return (
     <>
       <Fade appear in>
-        <h2>Utgaver</h2>
+        <h1>Utgaver</h1>
       </Fade>
       {downloading ? (
         <Loading />
