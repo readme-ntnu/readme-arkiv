@@ -23,14 +23,14 @@ function EditionList({ firebase }) {
     fetchData();
   }, [firebase]);
 
-  if (downloading) {
-    return <Loading />;
-  } else {
-    return (
-      <>
-        <Fade appear in>
-          <h2>Utgaver</h2>
-        </Fade>
+  return (
+    <>
+      <Fade appear in>
+        <h2>Utgaver</h2>
+      </Fade>
+      {downloading ? (
+        <Loading />
+      ) : (
         <div className="row-container">
           {data.map(year => {
             return (
@@ -40,9 +40,9 @@ function EditionList({ firebase }) {
             );
           })}
         </div>
-      </>
-    );
-  }
+      )}
+    </>
+  );
 }
 
 const condition = authUser => !!authUser;

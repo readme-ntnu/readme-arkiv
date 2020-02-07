@@ -57,31 +57,34 @@ function ArticleList({ firebase }) {
     setData(data.filter(element => element.data._id !== article.data._id));
   }
 
-  if (downloading) {
-    return <Loading />;
-  } else {
-    return (
-      <Fade in appear>
-        <div className={articleList}>
-          <h2>Artikler</h2>
-          {data.map((article, i) => (
-            <ListElement key={i} obj={article} removeSelf={removeItem} />
-          ))}
-          <div className={pagination}>
-            <Button
-              disabled={pageNum === 0}
-              onClick={() => prevPage(data[0].data)}
-            >
-              &lt;&lt;
-            </Button>
-            <Button onClick={() => nextPage(data[data.length - 1].data)}>
-              &gt;&gt;
-            </Button>
-          </div>
-        </div>
-      </Fade>
-    );
-  }
+  return (
+    <Fade in appear>
+      <div className={articleList}>
+        <h2>Artikler</h2>
+        {downloading ? (
+          <Loading />
+        ) : (
+          <>
+            {data.map((article, i) => (
+              <ListElement key={i} obj={article} removeSelf={removeItem} />
+            ))}
+
+            <div className={pagination}>
+              <Button
+                disabled={pageNum === 0}
+                onClick={() => prevPage(data[0].data)}
+              >
+                &lt;&lt;
+              </Button>
+              <Button onClick={() => nextPage(data[data.length - 1].data)}>
+                &gt;&gt;
+              </Button>
+            </div>
+          </>
+        )}
+      </div>
+    </Fade>
+  );
 }
 
 const condition = authUser => !!authUser;
