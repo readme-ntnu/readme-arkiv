@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { debounce } from "lodash";
+import { Spinner } from "react-bootstrap";
 
-import Loading from "../Loading";
 import AppTable from "./Table";
+
+import { searchBox, end } from "./Search.module.css";
 
 const searchForArticles = async searchString => {
   const host =
@@ -47,18 +49,24 @@ function Search() {
   }, 300);
 
   return (
-    <div className="Search">
-      <div>
-        <h1>Artikkelsøk</h1>
+    <>
+      <h1>Artikkelsøk</h1>
+      <div className={searchBox}>
         <input
           onChange={event => search(event.currentTarget.value)}
           placeholder="Søk..."
           size="32"
         />
-        {loading ? <Loading /> : null}
-        {hasData ? <AppTable articles={articles} /> : null}
+        <div className={end}>
+          {loading ? (
+            <Spinner animation="border" />
+          ) : (
+            <i className={`material-icons md-36 ${search}`}>search</i>
+          )}
+        </div>
       </div>
-    </div>
+      {hasData ? <AppTable articles={articles} /> : null}
+    </>
   );
 }
 
