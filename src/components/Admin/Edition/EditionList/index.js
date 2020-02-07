@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { withAuthorization } from "../../Session";
+import { withAuthorization } from "../../../Session";
 
 import ListPage from "./ListPage";
-import Loading from "../../Loading";
+import Loading from "../../../Loading";
 
 function EditionList({ firebase }) {
   const [data, setData] = useState([]);

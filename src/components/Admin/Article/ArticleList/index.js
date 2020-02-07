@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { withAuthorization } from "../../Session";
+import { withAuthorization } from "../../../Session";
 
-import Loading from "../../Loading";
+import Loading from "../../../Loading";
 import ListElement from "./ListElement";
 
 import { articleList, pagination } from "./ArticleList.module.css";
@@ -27,6 +27,7 @@ function ArticleList({ firebase }) {
     const responseData = [];
     response.forEach(doc => {
       responseData.push({
+        id: doc.id,
         data: doc.data(),
         ref: doc.ref
       });

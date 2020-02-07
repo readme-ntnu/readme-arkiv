@@ -12,7 +12,7 @@ import {
 
 import { editionForm, alertInfo, progressBar } from "./NewEdition.module.css";
 
-import { withAuthorization } from "../../Session";
+import { withAuthorization } from "../../../Session";
 
 const schema = Yup.object().shape({
   editionYear: Yup.number()

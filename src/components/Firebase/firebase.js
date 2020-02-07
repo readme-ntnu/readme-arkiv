@@ -41,6 +41,9 @@ class Firebase {
   addArticle = (article, callback = undefined, errorCallback = undefined) =>
     this.addArticleToDB(article, callback, errorCallback);
 
+  updateArticle = (article, callback = undefined, errorCallback = undefined) =>
+    this.updateArticleInDB(article, callback, errorCallback);
+
   // *** Editions API ***
   editions = year => this.fetchEditionDataForYear(year);
 
@@ -207,6 +210,27 @@ class Firebase {
       const url = await this.getArticlePDFURL(article);
       article.url = url;
       await this.db.collection("articles").add(article);
+      console.log("Article added to DB");
+      if (callback && typeof callback === "function") {
+        callback();
+      }
+    } catch (error) {
+      console.error(
+        "Something when wrong during edition upload, failed with error: ",
+        error
+      );
+      if (errorCallback && typeof errorCallback === "function") {
+        errorCallback();
+      }
+    }
+  };
+
+  updateArticleInDB = async (article, callback, errorCallback) => {
+    try {
+      const url = await this.getArticlePDFURL(article);
+      article.url = url;
+      const articleRef = this.article(article._id);
+      await articleRef.update(article);
       console.log("Article added to DB");
       if (callback && typeof callback === "function") {
         callback();

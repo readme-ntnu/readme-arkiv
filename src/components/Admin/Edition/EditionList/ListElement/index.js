@@ -1,7 +1,7 @@
 import React from "react";
 
 import { elementStyle } from "./ListElement.module.css";
-import DeleteButton from "../../Common/DeleteButton";
+import DeleteButton from "../../../Common/DeleteButton";
 
 function ListElement({ obj, removeSelf }) {
   const refs = [obj.imgRef, obj.pdfRef];
