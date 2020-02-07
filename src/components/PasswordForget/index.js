@@ -9,7 +9,7 @@ import "./PasswordForgottenPage.css";
 
 const PasswordForgetPage = () => (
   <div className="PasswordForgetPage">
-    <h1>Password Reset</h1>
+    <h1>Tapt passord</h1>
     <PasswordForgetForm />
   </div>
 );
@@ -50,17 +50,17 @@ class PasswordForgetFormBase extends Component {
         {error && <Alert variant="danger">{error.message}</Alert>}
 
         <Form.Group controlId="email">
-          <Form.Label>Email</Form.Label>
+          <Form.Label>E-post</Form.Label>
           <Form.Control
             name="email"
             value={this.state.email}
             onChange={this.onChange}
             type="text"
-            placeholder="Email Address"
+            placeholder="E-post"
           />
         </Form.Group>
         <Button variant="primary" disabled={isInvalid} type="submit">
-          Reset My Password
+          Tilbakestill passord
         </Button>
       </Form>
     );
@@ -69,7 +69,7 @@ class PasswordForgetFormBase extends Component {
 
 const PasswordForgetLink = () => (
   <p>
-    <Link to={ROUTES.PASSWORD_FORGET}>Forgot Password?</Link>
+    <Link to={ROUTES.PASSWORD_FORGET}>Glemt passord?</Link>
   </p>
 );
 

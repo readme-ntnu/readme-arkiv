@@ -12,7 +12,7 @@ import "./SignIn.css";
 
 const SignInPage = () => (
   <div className="SignInForm">
-    <h1>Sign In</h1>
+    <h1>Logg inn</h1>
     <SignInForm />
     <PasswordForgetLink />
   </div>
@@ -38,7 +38,7 @@ class SignInFormBase extends Component {
         this.props.history.push(ROUTES.HOME);
       })
       .catch(error => {
-        this.setState({ error });
+        this.setState({ error, submitting: false });
       });
     event.preventDefault();
   };
@@ -52,23 +52,23 @@ class SignInFormBase extends Component {
       <Form onSubmit={this.onSubmit}>
         {error && <Alert variant="danger">{error.message}</Alert>}
         <Form.Group controlId="email">
-          <Form.Label>Email address</Form.Label>
+          <Form.Label>E-post</Form.Label>
           <Form.Control
             name="email"
             value={email}
             onChange={this.onChange}
             type="text"
-            placeholder="Email Address"
+            placeholder="E-post"
           />
         </Form.Group>
         <Form.Group controlId="password">
-          <Form.Label>Password</Form.Label>
+          <Form.Label>Passord</Form.Label>
           <Form.Control
             name="password"
             value={password}
             onChange={this.onChange}
             type="password"
-            placeholder="Password"
+            placeholder="Passord"
           />
         </Form.Group>
         <Button
@@ -79,7 +79,7 @@ class SignInFormBase extends Component {
           {this.state.submitting ? (
             <Spinner animation="border" size="sm" />
           ) : null}
-          Sign In
+          Logg inn
         </Button>
       </Form>
     );
