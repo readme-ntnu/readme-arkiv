@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-
-import ImageRow, { setRowMinHeight } from "./ImageRow/";
-import "./Home.css";
-import Loading from "../Loading";
+import { Fade } from "react-bootstrap";
 import LazyLoad from "react-lazyload";
+
+import "./Home.css";
 import { withFirebase } from "../Firebase";
+import ImageRow, { setRowMinHeight } from "./ImageRow/";
+import Loading from "../Loading";
 
 function Home({ firebase }) {
   const [data, setData] = useState([]);
@@ -35,7 +36,9 @@ function Home({ firebase }) {
         {data.map(year => {
           return (
             <div key={year} className="row-wrapper">
-              <h2 className="year">{year.name}</h2>
+              <Fade appear in>
+                <h2 className="year">{year.name}</h2>
+              </Fade>
               <LazyLoad height={setRowMinHeight(year.name)} offset={100} once>
                 <ImageRow year={year} key={year} showListing={showListing} />
               </LazyLoad>

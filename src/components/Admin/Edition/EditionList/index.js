@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { withAuthorization } from "../../../Session";
+import { Fade } from "react-bootstrap";
 
 import ListPage from "./ListPage";
 import Loading from "../../../Loading";
@@ -27,7 +28,9 @@ function EditionList({ firebase }) {
   } else {
     return (
       <>
-        <h2>Utgaver</h2>
+        <Fade appear in>
+          <h2>Utgaver</h2>
+        </Fade>
         <div className="row-container">
           {data.map(year => {
             return (

@@ -3,7 +3,7 @@ import { Image, Fade } from "react-bootstrap";
 
 import redaktør from "../../Assets/Images/Shjolberg.png";
 
-function NoMatch(props) {
+function NoMatch() {
   return (
     <Fade appear in>
       <div className="404Container">

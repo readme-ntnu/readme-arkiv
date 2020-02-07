@@ -7,7 +7,8 @@ import {
   Col,
   Spinner,
   Alert,
-  ProgressBar
+  ProgressBar,
+  Fade
 } from "react-bootstrap";
 
 import { editionForm, alertInfo, progressBar } from "./NewEdition.module.css";
@@ -60,7 +61,9 @@ function NewEditionPage({ firebase }) {
 
   return (
     <>
-      <h1>Ny utgave</h1>
+      <Fade appear in>
+        <h1>Ny utgave</h1>
+      </Fade>
       <Formik
         validationSchema={schema}
         onSubmit={(values, actions) => handleSubmit(values, actions)}
@@ -85,125 +88,126 @@ function NewEditionPage({ firebase }) {
           resetForm,
           setStatus
         }) => {
-          console.log(values);
           return (
-            <Form className={editionForm} onSubmit={handleSubmit}>
-              <Form.Row>
-                <Form.Group as={Col}>
-                  <Form.Label>Utgaveår</Form.Label>
-                  <Form.Control
-                    placeholder="Utgaveår"
-                    type="number"
-                    name="editionYear"
-                    value={values.editionYear}
-                    onChange={handleChange}
-                    isValid={touched.editionYear && !errors.editionYear}
-                    isInvalid={!!errors.editionYear}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.editionYear}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group as={Col}>
-                  <Form.Label>Utgavenummer</Form.Label>
-                  <Form.Control
-                    placeholder="Utgavenummer"
-                    type="number"
-                    name="editionNumber"
-                    value={values.editionNumber}
-                    onChange={handleChange}
-                    isValid={touched.editionNumber && !errors.editionNumber}
-                    isInvalid={!!errors.editionNumber}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.editionNumber}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
+            <Fade appear in>
+              <Form className={editionForm} onSubmit={handleSubmit}>
+                <Form.Row>
+                  <Form.Group as={Col}>
+                    <Form.Label>Utgaveår</Form.Label>
+                    <Form.Control
+                      placeholder="Utgaveår"
+                      type="number"
+                      name="editionYear"
+                      value={values.editionYear}
+                      onChange={handleChange}
+                      isValid={touched.editionYear && !errors.editionYear}
+                      isInvalid={!!errors.editionYear}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.editionYear}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group as={Col}>
+                    <Form.Label>Utgavenummer</Form.Label>
+                    <Form.Control
+                      placeholder="Utgavenummer"
+                      type="number"
+                      name="editionNumber"
+                      value={values.editionNumber}
+                      onChange={handleChange}
+                      isValid={touched.editionNumber && !errors.editionNumber}
+                      isInvalid={!!errors.editionNumber}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.editionNumber}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                  <Form.Group>
+                    <Form.Control
+                      name="editionFile"
+                      type="file"
+                      onChange={event => {
+                        const newValues = { ...values }; // copy the original object
+                        newValues.editionFile = event.currentTarget.files[0];
+                        setValues(newValues);
+                      }}
+                    ></Form.Control>
+                    <Form.Control.Feedback type="invalid">
+                      {errors.editionFile}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Form.Row>
                 <Form.Group>
-                  <Form.Control
-                    name="editionFile"
-                    type="file"
-                    onChange={event => {
-                      const newValues = { ...values }; // copy the original object
-                      newValues.editionFile = event.currentTarget.files[0];
-                      setValues(newValues);
-                    }}
-                  ></Form.Control>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.editionFile}
-                  </Form.Control.Feedback>
+                  <Form.Check
+                    type="switch"
+                    name="listingslop"
+                    label="Listingsløputgave"
+                    onChange={handleChange}
+                    id="validationFormik0"
+                  />
                 </Form.Group>
-              </Form.Row>
-              <Form.Group>
-                <Form.Check
-                  type="switch"
-                  name="listingslop"
-                  label="Listingsløputgave"
-                  onChange={handleChange}
-                  id="validationFormik0"
-                />
-              </Form.Group>
 
-              <Button
-                variant="primary"
-                type="submit"
-                disabled={!isValid || isSubmitting}
-              >
-                {isSubmitting ? (
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={!isValid || isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                  ) : null}
+                  Last opp utgave
+                </Button>
+                {isSubmitting || status.success ? (
+                  <ProgressBar
+                    className={progressBar}
+                    striped
+                    animated={isSubmitting}
+                    now={status.progress}
+                    label={`${status.progress.toFixed(0)}%`}
                   />
                 ) : null}
-                Last opp utgave
-              </Button>
-              {isSubmitting || status.success ? (
-                <ProgressBar
-                  className={progressBar}
-                  striped
-                  animated={isSubmitting}
-                  now={status.progress}
-                  label={`${status.progress.toFixed(0)}%`}
-                />
-              ) : null}
-              {status.error ? (
-                <Alert className={alertInfo} variant="error">
-                  Noe gikk galt!
-                  <br />
-                  Vent litt, og prøv igjen. Dersom problemet vedvarer, kontakt
-                  ansvarlig utvikler.
-                  <hr />
-                  <div className="d-flex justify-content-end">
-                    <Button
-                      variant="secondary"
-                      onClick={() => {
-                        resetForm();
-                        setStatus({
-                          success: false,
-                          error: false,
-                          progress: 0
-                        });
-                      }}
-                    >
-                      Prøv igjen
-                    </Button>
-                  </div>
-                </Alert>
-              ) : null}
-              {status.success ? (
-                <Alert className={alertInfo} variant="primary">
-                  Opplasting fullført!
-                  <br />
-                  Merk at det kan ta litt tid før utgaven dukker opp på
-                  forsiden.
-                </Alert>
-              ) : null}
-            </Form>
+                {status.error ? (
+                  <Alert className={alertInfo} variant="error">
+                    Noe gikk galt!
+                    <br />
+                    Vent litt, og prøv igjen. Dersom problemet vedvarer, kontakt
+                    ansvarlig utvikler.
+                    <hr />
+                    <div className="d-flex justify-content-end">
+                      <Button
+                        variant="secondary"
+                        onClick={() => {
+                          resetForm();
+                          setStatus({
+                            success: false,
+                            error: false,
+                            progress: 0
+                          });
+                        }}
+                      >
+                        Prøv igjen
+                      </Button>
+                    </div>
+                  </Alert>
+                ) : null}
+                {status.success ? (
+                  <Alert className={alertInfo} variant="primary">
+                    Opplasting fullført!
+                    <br />
+                    Merk at det kan ta litt tid før utgaven dukker opp på
+                    forsiden.
+                  </Alert>
+                ) : null}
+              </Form>
+            </Fade>
           );
         }}
       </Formik>
