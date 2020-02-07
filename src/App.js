@@ -1,7 +1,9 @@
 import React from "react";
-import { Image } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import "./App.css";
+import useDarkMode from "use-dark-mode";
+import CrossfadeImage from "react-crossfade-image";
+
+import { app, readmelogo, lightSwitch, header } from "./App.module.css";
 
 import * as ROUTES from "./constants/routes";
 
@@ -16,22 +18,28 @@ import EditionList from "./components/Admin/Edition/EditionList";
 import NewArticlePage from "./components/Admin/Article/NewArticle";
 import EditArticle from "./components/Admin/Article/EditArticle";
 import ArticleList from "./components/Admin/Article/ArticleList";
+import LightSwitch from "./components/LightSwitch";
 
 import NoMatch from "./components/NoMatch";
 import { withAuthentication } from "./components/Session";
 
 function App() {
+  const darkmode = useDarkMode();
+  const logoSrc = `${process.env.PUBLIC_URL}/readme${
+    darkmode.value ? "_hvit" : ""
+  }.png`;
+
   return (
     <Router>
-      <div className="App">
+      <div className={app}>
         <AppNavBar />
-        <header className="App-header">
-          <Image
-            id="readmelogo"
-            src={`${process.env.PUBLIC_URL}/readme.png`}
-            alt="Logo"
-            fluid
-          />
+        <header className={header}>
+          <div className={readmelogo}>
+            <CrossfadeImage src={logoSrc} alt="Logo" />
+          </div>
+          <div className={lightSwitch}>
+            <LightSwitch />
+          </div>
         </header>
         <Switch>
           <Route exact path={ROUTES.HOME} component={Home} />
