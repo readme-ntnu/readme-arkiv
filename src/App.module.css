@@ -1,0 +1,19 @@
+.app {
+  text-align: center;
+  font-family: helvetica neue, Arial, Helvetica, Geneva, sans-serif;
+}
+
+.readmelogo {
+  padding: 0px 10px;
+}
+
+.header {
+  position: relative;
+}
+
+.lightSwitch {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px;
+}
