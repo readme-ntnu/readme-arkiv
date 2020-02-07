@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { Fade } from "react-bootstrap";
 
 import { withAuthorization } from "../../../Session";
 
@@ -56,7 +57,9 @@ function EditArticle({ firebase }) {
 
   return (
     <>
-      <h1>Oppdater artikkel</h1>
+      <Fade appear in>
+        <h1>Oppdater artikkel</h1>
+      </Fade>
       {downloading ? (
         <Loading />
       ) : (

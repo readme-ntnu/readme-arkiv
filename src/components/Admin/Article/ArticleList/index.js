@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { withAuthorization } from "../../../Session";
+import { Button, Fade } from "react-bootstrap";
 
 import Loading from "../../../Loading";
 import ListElement from "./ListElement";
 
 import { articleList, pagination } from "./ArticleList.module.css";
-import { Button } from "react-bootstrap";
 
 function ArticleList({ firebase }) {
   const field = "edition";
@@ -57,29 +57,34 @@ function ArticleList({ firebase }) {
     setData(data.filter(element => element.data._id !== article.data._id));
   }
 
-  if (downloading) {
-    return <Loading />;
-  } else {
-    return (
+  return (
+    <Fade in appear>
       <div className={articleList}>
         <h2>Artikler</h2>
-        {data.map((article, i) => (
-          <ListElement key={i} obj={article} removeSelf={removeItem} />
-        ))}
-        <div className={pagination}>
-          <Button
-            disabled={pageNum === 0}
-            onClick={() => prevPage(data[0].data)}
-          >
-            &lt;&lt;
-          </Button>
-          <Button onClick={() => nextPage(data[data.length - 1].data)}>
-            &gt;&gt;
-          </Button>
-        </div>
+        {downloading ? (
+          <Loading />
+        ) : (
+          <>
+            {data.map((article, i) => (
+              <ListElement key={i} obj={article} removeSelf={removeItem} />
+            ))}
+
+            <div className={pagination}>
+              <Button
+                disabled={pageNum === 0}
+                onClick={() => prevPage(data[0].data)}
+              >
+                &lt;&lt;
+              </Button>
+              <Button onClick={() => nextPage(data[data.length - 1].data)}>
+                &gt;&gt;
+              </Button>
+            </div>
+          </>
+        )}
       </div>
-    );
-  }
+    </Fade>
+  );
 }
 
 const condition = authUser => !!authUser;

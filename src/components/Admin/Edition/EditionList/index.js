@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { withAuthorization } from "../../../Session";
+import { Fade } from "react-bootstrap";
 
 import ListPage from "./ListPage";
 import Loading from "../../../Loading";
@@ -22,12 +23,14 @@ function EditionList({ firebase }) {
     fetchData();
   }, [firebase]);
 
-  if (downloading) {
-    return <Loading />;
-  } else {
-    return (
-      <>
+  return (
+    <>
+      <Fade appear in>
         <h2>Utgaver</h2>
+      </Fade>
+      {downloading ? (
+        <Loading />
+      ) : (
         <div className="row-container">
           {data.map(year => {
             return (
@@ -37,9 +40,9 @@ function EditionList({ firebase }) {
             );
           })}
         </div>
-      </>
-    );
-  }
+      )}
+    </>
+  );
 }
 
 const condition = authUser => !!authUser;

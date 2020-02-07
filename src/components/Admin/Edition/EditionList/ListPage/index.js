@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { Fade } from "react-bootstrap";
 import { withFirebase } from "../../../../Firebase";
 
 import ListElement from "../ListElement";
 import Loading from "../../../../Loading";
 
 import { list } from "./ListPage.module.css";
-import { useCallback } from "react";
 
 function ListPage({ firebase, year }) {
   const [downloading, setDownloading] = useState(true);
@@ -36,9 +36,9 @@ function ListPage({ firebase, year }) {
 
   return (
     <div className={list}>
-      {listElements || downloading ? (
+      <Fade appear in>
         <h3 className="year">{year.name}</h3>
-      ) : null}
+      </Fade>
       {downloading ? <Loading /> : null}
       {!downloading && listElements ? listElements : null}
     </div>

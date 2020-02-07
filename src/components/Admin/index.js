@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { LinkContainer } from "react-router-bootstrap";
-import { Button } from "react-bootstrap";
+import { Button, Fade } from "react-bootstrap";
 
 import { withAuthorization } from "../Session";
 
@@ -28,35 +28,37 @@ function AdminPage({ firebase }) {
   }
 
   return (
-    <div>
-      <h1>Admin</h1>
-      <div className="buttonContainer">
-        <LinkContainer to={ROUTES.NEW_EDITION}>
-          <Button variant="primary" block>
-            Legg til ny utgave
-          </Button>
-        </LinkContainer>
-        <LinkContainer to={ROUTES.EDITION_LIST}>
-          <Button variant="primary" block>
-            Vis utgavelisten
-          </Button>
-        </LinkContainer>
-        <LinkContainer to={ROUTES.NEW_ARTICLE}>
-          <Button variant="primary" block>
-            Legg til ny artikkel
-          </Button>
-        </LinkContainer>
-        <LinkContainer to={ROUTES.ARTICLE_LIST}>
-          <Button variant="primary" block>
-            Vis artikkellisten
-          </Button>
-        </LinkContainer>
+    <Fade appear in>
+      <div>
+        <h1>Admin</h1>
+        <div className="buttonContainer">
+          <LinkContainer to={ROUTES.NEW_EDITION}>
+            <Button variant="primary" block>
+              Legg til ny utgave
+            </Button>
+          </LinkContainer>
+          <LinkContainer to={ROUTES.EDITION_LIST}>
+            <Button variant="primary" block>
+              Vis utgavelisten
+            </Button>
+          </LinkContainer>
+          <LinkContainer to={ROUTES.NEW_ARTICLE}>
+            <Button variant="primary" block>
+              Legg til ny artikkel
+            </Button>
+          </LinkContainer>
+          <LinkContainer to={ROUTES.ARTICLE_LIST}>
+            <Button variant="primary" block>
+              Vis artikkellisten
+            </Button>
+          </LinkContainer>
 
-        <Button variant="secondary" block onClick={() => toggleShowListing()}>
-          {settings.showListing ? "Skjul" : "Vis"} listingutgaver
-        </Button>
+          <Button variant="secondary" block onClick={() => toggleShowListing()}>
+            {settings.showListing ? "Skjul" : "Vis"} listingutgaver
+          </Button>
+        </div>
       </div>
-    </div>
+    </Fade>
   );
 }
 

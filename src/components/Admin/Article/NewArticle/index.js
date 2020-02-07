@@ -1,4 +1,5 @@
 import React from "react";
+import { Fade } from "react-bootstrap";
 
 import { withAuthorization } from "../../../Session";
 
@@ -28,7 +29,9 @@ function NewArticlePage({ firebase }) {
 
   return (
     <>
-      <h1>Ny artikkel</h1>
+      <Fade appear in>
+        <h1>Ny artikkel</h1>
+      </Fade>
       <ArticleForm doHandleSubmit={doHandleSubmit} />
     </>
   );
