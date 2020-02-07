@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { withAuthorization } from "../../Session";
+import { withAuthorization } from "../../../Session";
 
 import ListPage from "./ListPage";
-import Loading from "../../Loading";
+import Loading from "../../../Loading";
 
 function EditionList({ firebase }) {
   const [data, setData] = useState([]);
@@ -26,15 +26,18 @@ function EditionList({ firebase }) {
     return <Loading />;
   } else {
     return (
-      <div className="row-container">
-        {data.map(year => {
-          return (
-            <div key={year} className="row-wrapper">
-              <ListPage year={year} key={year} />
-            </div>
-          );
-        })}
-      </div>
+      <>
+        <h2>Utgaver</h2>
+        <div className="row-container">
+          {data.map(year => {
+            return (
+              <div key={year} className="row-wrapper">
+                <ListPage year={year} key={year} />
+              </div>
+            );
+          })}
+        </div>
+      </>
     );
   }
 }

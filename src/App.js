@@ -11,9 +11,11 @@ import Search from "./components/Search";
 import SignInPage from "./components/SignIn";
 import PasswordForgetPage from "./components/PasswordForget";
 import AdminPage from "./components/Admin";
-import NewEditionPage from "./components/Admin/NewEdition";
-import NewArticlePage from "./components/Admin/NewArticle";
-import EditionList from "./components/Admin/EditionList";
+import NewEditionPage from "./components/Admin/Edition/NewEdition";
+import EditionList from "./components/Admin/Edition/EditionList";
+import NewArticlePage from "./components/Admin/Article/NewArticle";
+import EditArticle from "./components/Admin/Article/EditArticle";
+import ArticleList from "./components/Admin/Article/ArticleList";
 
 import NoMatch from "./components/NoMatch";
 import { withAuthentication } from "./components/Session";
@@ -24,7 +26,12 @@ function App() {
       <div className="App">
         <AppNavBar />
         <header className="App-header">
-          <Image id="readmelogo" src="readme.png" alt="Logo" fluid />
+          <Image
+            id="readmelogo"
+            src={`${process.env.PUBLIC_URL}/readme.png`}
+            alt="Logo"
+            fluid
+          />
         </header>
         <Switch>
           <Route exact path={ROUTES.HOME} component={Home} />
@@ -33,8 +40,10 @@ function App() {
           <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
           <Route path={ROUTES.ADMIN} component={AdminPage} />
           <Route path={ROUTES.NEW_EDITION} component={NewEditionPage} />
-          <Route path={ROUTES.NEW_ARTICLE} component={NewArticlePage} />
           <Route path={ROUTES.EDITION_LIST} component={EditionList} />
+          <Route path={ROUTES.NEW_ARTICLE} component={NewArticlePage} />
+          <Route path={ROUTES.EDIT_ARTICLE} component={EditArticle} />
+          <Route path={ROUTES.ARTICLE_LIST} component={ArticleList} />
           <Route component={NoMatch} />
         </Switch>
       </div>

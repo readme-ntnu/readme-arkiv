@@ -1,0 +1,17 @@
+.articleList {
+  width: 60vw;
+  margin: auto;
+}
+
+.pagination {
+  margin: 10px auto;
+  width: 250px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.pagination > button {
+  width: 100px;
+  height: 45px;
+  font-size: 1.25em;
+}

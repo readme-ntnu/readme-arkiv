@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { withFirebase } from "../../../Firebase";
+import { withFirebase } from "../../../../Firebase";
 
 import ListElement from "../ListElement";
-import Loading from "../../../Loading";
+import Loading from "../../../../Loading";
 
 import { list } from "./ListPage.module.css";
 import { useCallback } from "react";
@@ -37,7 +37,7 @@ function ListPage({ firebase, year }) {
   return (
     <div className={list}>
       {listElements || downloading ? (
-        <h2 className="year">{year.name}</h2>
+        <h3 className="year">{year.name}</h3>
       ) : null}
       {downloading ? <Loading /> : null}
       {!downloading && listElements ? listElements : null}
