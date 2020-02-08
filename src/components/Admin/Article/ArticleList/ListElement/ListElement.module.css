@@ -19,9 +19,14 @@
   margin-right: 5px;
 }
 
+@media only screen and (max-width: 410px) {
+  .end {
+    flex-direction: column;
+  }
+}
+
 .open {
   cursor: pointer;
-
   color: var(--primary);
   transition: 0.5s;
 }

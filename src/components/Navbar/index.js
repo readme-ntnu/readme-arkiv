@@ -5,6 +5,9 @@ import { LinkContainer } from "react-router-bootstrap";
 import { AuthUserContext } from "../Session";
 
 import SignOutButton from "../SignOut";
+import LightSwitch from "../LightSwitch";
+
+import { lightSwitch } from "./Navbar.module.css";
 
 import * as ROUTES from "../../constants/routes.js";
 
@@ -21,6 +24,9 @@ function AppNavbar() {
             <Nav.Link>Søk</Nav.Link>
           </LinkContainer>
           <Nav.Link href="https://abakus.no/">Abakus.no</Nav.Link>
+        </Nav>
+        <Nav className={lightSwitch}>
+          <LightSwitch />
         </Nav>
         <AuthUserContext.Consumer>
           {authUser =>

@@ -29,6 +29,12 @@
   flex-grow: 0;
 }
 
+@media only screen and (max-width: 690px) {
+  .row {
+    flex-direction: column;
+  }
+}
+
 .row-loader {
   min-height: 490px !important;
 }

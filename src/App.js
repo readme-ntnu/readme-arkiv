@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import useDarkMode from "use-dark-mode";
 import CrossfadeImage from "react-crossfade-image";
 
-import { app, readmelogo, lightSwitch, header } from "./App.module.css";
+import { app, readmelogo, header } from "./App.module.css";
 
 import * as ROUTES from "./constants/routes";
 
@@ -18,7 +18,6 @@ import EditionList from "./components/Admin/Edition/EditionList";
 import NewArticlePage from "./components/Admin/Article/NewArticle";
 import EditArticle from "./components/Admin/Article/EditArticle";
 import ArticleList from "./components/Admin/Article/ArticleList";
-import LightSwitch from "./components/LightSwitch";
 
 import NoMatch from "./components/NoMatch";
 import { withAuthentication } from "./components/Session";
@@ -36,9 +35,6 @@ function App() {
         <header className={header}>
           <div className={readmelogo}>
             <CrossfadeImage src={logoSrc} alt="Logo" />
-          </div>
-          <div className={lightSwitch}>
-            <LightSwitch />
           </div>
         </header>
         <Switch>

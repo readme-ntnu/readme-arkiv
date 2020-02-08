@@ -4,14 +4,16 @@
 }
 
 .pagination {
-  margin: 10px auto;
-  width: 250px;
+  margin: auto;
+  padding: 10px 0;
+  width: 60vw;
+  position: relative;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .pagination > button {
-  width: 100px;
+  width: 20vw;
   height: 45px;
   font-size: 1.25em;
 }
