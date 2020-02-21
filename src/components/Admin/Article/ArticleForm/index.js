@@ -77,9 +77,21 @@ function ArticleForm({ doHandleSubmit, article }) {
       }) => {
         function onPaste(event) {
           event.preventDefault();
+          const cursorPosition = event.currentTarget.selectionStart;
           const text = event.clipboardData.getData("text");
           const trimmedText = text.replace(/\s+/g, " ").trim();
-          setFieldValue("content", trimmedText);
+          const currentText = values.content;
+          let textToSet;
+          if (currentText) {
+            textToSet = [
+              currentText.slice(0, cursorPosition),
+              trimmedText,
+              currentText.slice(cursorPosition)
+            ].join("");
+          } else {
+            textToSet = trimmedText;
+          }
+          setFieldValue("content", textToSet);
         }
         return (
           <Fade appear in>
