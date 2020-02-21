@@ -79,7 +79,13 @@ function ArticleForm({ doHandleSubmit, article }) {
           event.preventDefault();
           const cursorPosition = event.currentTarget.selectionStart;
           const text = event.clipboardData.getData("text");
-          const trimmedText = text.replace(/\s+/g, " ").trim();
+          const trimmedText = text
+            .replace(/\s+/g, " ")
+            .replace(/\.^(?!\.\s)/g, ". ")
+            .replace(/,^(?!\.\s)/g, ", ")
+            .replace(/!^(?!!\s)/g, ", ")
+            .replace(/\?^(?!\?\s)/g, ", ")
+            .trim();
           const currentText = values.content;
           let textToSet;
           if (currentText) {
