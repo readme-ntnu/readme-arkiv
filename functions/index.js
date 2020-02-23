@@ -12,7 +12,6 @@ const gs = require("gs");
 
 admin.initializeApp();
 const db = admin.firestore();
-const storage = admin.storage();
 
 const app = express();
 app.use(cors());
