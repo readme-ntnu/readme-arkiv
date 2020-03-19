@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { LinkContainer } from "react-router-bootstrap";
 import { Button, Fade } from "react-bootstrap";
 
@@ -6,27 +6,9 @@ import { withAuthorization } from "../Session";
 
 import * as ROUTES from "../../constants/routes";
 import "./AdminPage.css";
+import ShowListingToggle from "./ShowListingToggle";
 
-function AdminPage({ firebase }) {
-  const [settings, setSettings] = useState({});
-
-  useEffect(() => {
-    async function fetchData() {
-      let isSubscribed = true;
-      const settings = await firebase.getSettings();
-      if (isSubscribed) {
-        setSettings(settings);
-      }
-      return () => (isSubscribed = false);
-    }
-    fetchData();
-  }, [firebase]);
-
-  function toggleShowListing() {
-    firebase.setShowListing(!settings.showListing);
-    setSettings({ ...settings, showListing: !settings.showListing });
-  }
-
+function AdminPage() {
   return (
     <Fade appear in>
       <div>
@@ -53,9 +35,7 @@ function AdminPage({ firebase }) {
             </Button>
           </LinkContainer>
 
-          <Button variant="secondary" block onClick={() => toggleShowListing()}>
-            {settings.showListing ? "Skjul" : "Vis"} listingutgaver
-          </Button>
+          <ShowListingToggle />
         </div>
       </div>
     </Fade>
