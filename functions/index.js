@@ -29,7 +29,17 @@ const fuzzySearchOptions = {
 
 let articles
 
-app.get('/', async (request, response) => {
+async function verifyToken(req, res, next) {
+    try {
+        const token = (req.get('Authorization') || '').replace('Bearer ', '')
+        await admin.auth().verifyIdToken(token)
+        return next()
+    } catch (error) {
+        return res.status(401).json({ message: 'Unauthorized' })
+    }
+}
+
+app.get('/', verifyToken, async (request, response) => {
     try {
         const searchString = request.query.searchString
         if (!articles) {
