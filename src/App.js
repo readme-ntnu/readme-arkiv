@@ -7,24 +7,31 @@ import AppNavBar from "./components/Navbar.js";
 import Loading from "./components/Loading.js";
 import AppTable from "./components/Table.js";
 
-const searchForArticles = async searchString => {
+import { useAnonymousLogin } from './auth'
+
+const searchForArticles = async (searchString, token) => {
   const host =
-    process.env.NODE_ENV === "production"
-      ? "https://us-central1-readme-arkiv.cloudfunctions.net/search"
-      : "http://localhost:5000/readme-arkiv/us-central1/search";
+  process.env.NODE_ENV === "production"
+  ? "https://us-central1-readme-arkiv.cloudfunctions.net/search"
+  : "http://localhost:5000/readme-arkiv/us-central1/search";
 
   try {
+    if (!token) {
+      throw new Error('No token, so why even bother?')
+    }
+
     const res = await fetch(
       `${host}?searchString=${encodeURIComponent(searchString)}`,
       {
         headers: {
+          Authorization: `Bearer ${token}`,
           Accept: "application/json",
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         }
       }
     );
     const result = await res.json();
-    return result.articles;
+    return result.articles || [];
   } catch (error) {
     return [];
   }
@@ -35,6 +42,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [hasData, setHasData] = useState(false);
 
+  const { token } = useAnonymousLogin()
+
   const search = debounce(async searchString => {
     if (!searchString) {
       setArticles([]);
@@ -43,7 +52,7 @@ function App() {
     }
     setLoading(true);
     setHasData(false);
-    const newArticles = await searchForArticles(searchString);
+    const newArticles = await searchForArticles(searchString, token);
     setArticles(newArticles);
     setLoading(false);
     setHasData(true);
