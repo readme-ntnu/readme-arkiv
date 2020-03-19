@@ -25,7 +25,7 @@ npm i -g firebase-tools
 firebase login
 ```
 
-Du må få noen til å gi deg tilgang til `readme-arkiv`-prosjektet i Firebase. For å sjekke om du har tilgang, kjør `firebase list` i terminalen. `readme-arkiv` skal ligge der om du har tilgang.
+Du må få noen til å gi deg tilgang til `readme-arkiv`-prosjektet i Firebase. For å sjekke om du har tilgang, kjør `firebase projects:list` i terminalen. `readme-arkiv` skal ligge der om du har tilgang.
 
 For å kunne snakke med Firestore-databasen lokalt, må du ha en _Service Account Key_ lokalt. Gå til https://console.cloud.google.com/iam-admin/serviceaccounts og følg disse stegene:
 
@@ -37,7 +37,7 @@ For å kunne snakke med Firestore-databasen lokalt, må du ha en _Service Accoun
 Nå kan du kjøre opp Functions-emulator slik:
 
 ```
-GOOGLE_APPLICATION_CREDENTIALS="<path-til-der-du-la-service-account.json>" firebase serve --only functions
+GOOGLE_APPLICATION_CREDENTIALS="<path-til-der-du-la-service-account.json>" npm run serve
 ```
 
 Og deretter åpne ny terminal for å fyre opp frontenden:
@@ -50,7 +50,7 @@ npm start
 
 For å sette dine endringer i produksjon, skal det ikke mer til enn å pushe eller merge de til master.
 
-Om du vil gjøre det manuellt, skal det ikke mer til enn
+Om du vil gjøre det manuelt, skal det ikke mer til enn
 
 ```
 npm run deploy
