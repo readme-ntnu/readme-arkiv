@@ -1,63 +1,143 @@
-const admin = require('firebase-admin')
-const functions = require('firebase-functions')
-const express = require('express')
-const cors = require('cors')
-const Fuse = require('fuse.js')
+const admin = require("firebase-admin");
+const functions = require("firebase-functions");
+const express = require("express");
+const cors = require("cors");
+const Fuse = require("fuse.js");
 
-admin.initializeApp()
-const db = admin.firestore()
+const path = require("path");
+const sharp = require("sharp");
+const os = require("os");
+const fs = require("fs-extra");
+const gs = require("gs");
 
-const app = express()
-app.use(cors())
+admin.initializeApp();
+const db = admin.firestore();
+
+const app = express();
+app.use(cors());
 
 const fuzzySearchOptions = {
-    shouldSort: true,
-    threshold: 0.6,
-    location: 0,
-    distance: 100,
-    maxPatternLength: 32,
-    minMatchCharLength: 1,
-    keys: [
-        { name: 'title', weight: 0.3 },
-        { name: 'author', weight: 0.2 },
-        { name: 'layout', weight: 0.2 },
-        { name: 'edition', weight: 0.1 },
-        { name: 'tags', weight: 0.1 },
-        { name: 'type', weight: 0.1 },
-    ]
+  shouldSort: true,
+  threshold: 0.6,
+  location: 0,
+  distance: 100,
+  maxPatternLength: 32,
+  minMatchCharLength: 1,
+  keys: [
+    { name: "title", weight: 0.3 },
+    { name: "author", weight: 0.2 },
+    { name: "layout", weight: 0.2 },
+    { name: "edition", weight: 0.1 },
+    { name: "tags", weight: 0.1 },
+    { name: "type", weight: 0.1 }
+  ]
 };
 
-let articles
+let articles;
 
 async function verifyToken(req, res, next) {
-    try {
-        const token = (req.get('Authorization') || '').replace('Bearer ', '')
-        await admin.auth().verifyIdToken(token)
-        return next()
-    } catch (error) {
-        return res.status(401).json({ message: 'Unauthorized' })
-    }
+  try {
+    const token = (req.get("Authorization") || "").replace("Bearer ", "");
+    await admin.auth().verifyIdToken(token);
+    return next();
+  } catch (error) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
 }
 
-app.get('/', verifyToken, async (request, response) => {
-    try {
-        const searchString = request.query.searchString
-        if (!articles) {
-            // If local in-memory cache is empty, we need to query the Firestore database
-            articles = []
-            const articlesRef = db.collection('articles');
+app.get("/", verifyToken, async (request, response) => {
+  try {
+    const searchString = request.query.searchString;
+    if (!articles) {
+      // If local in-memory cache is empty, we need to query the Firestore database
+      articles = [];
+      const articlesRef = db.collection("articles");
 
-            const query = await articlesRef.get()
-            query.docs.forEach(doc => articles.push(doc.data()));
-        }
-
-        const fuse = new Fuse(articles, fuzzySearchOptions);
-        const result = fuse.search(searchString);
-
-        response.json({ articles: result });
-    } catch (error) {
-        response.status(500).json({ message: error.toString() })
+      const query = await articlesRef.get();
+      query.docs.forEach(doc => articles.push(doc.data()));
     }
-})
 
-exports.search = functions.https.onRequest((request, response) => app(request, response));
+    const fuse = new Fuse(articles, fuzzySearchOptions);
+    const result = fuse.search(searchString);
+
+    response.json({ articles: result });
+  } catch (error) {
+    response.status(500).json({ message: error.toString() });
+  }
+});
+
+exports.search = functions.https.onRequest((request, response) =>
+  app(request, response)
+);
+
+const THUMB_MAX_WIDTH = 620;
+
+exports.handlePDFUpload = functions.storage
+  .object()
+  .onFinalize(async object => {
+    const fileBucket = object.bucket; // The Storage bucket that contains the file.
+    const filePath = object.name; // File path in the bucket.
+    // Get the file name.
+    const fileName = path.basename(filePath);
+    // Exit if the image is already a thumbnail.
+    if (filePath.startsWith("images")) {
+      return console.log("Already a Thumbnail.");
+    }
+
+    const bucket = admin.storage().bucket(fileBucket);
+    const workingDir = path.join(os.tmpdir(), "thumbs");
+    const tempFilePath = path.join(workingDir, fileName);
+    const tempJPGFilePath = path
+      .join(workingDir, fileName)
+      .replace(".pdf", ".jpg");
+
+    await fs.ensureDir(workingDir);
+
+    await bucket.file(filePath).download({ destination: tempFilePath });
+    console.log("PDF downloaded locally to", tempFilePath);
+
+    await fs.ensureFile(tempJPGFilePath);
+
+    await new Promise((resolve, reject) => {
+      gs()
+        .executablePath("ghostscript/./gs-950-linux-x86_64")
+        .batch()
+        .nopause()
+        .device("jpeg")
+        .output(tempJPGFilePath)
+        .input(tempFilePath)
+        .exec(err => {
+          if (err) {
+            console.log("Error while running Ghostscript", err);
+            reject(err);
+          } else {
+            console.log("PDF conversion to JPG completed successfully");
+            resolve();
+          }
+        });
+    });
+
+    const metadata = {
+      contentType: "image/jpeg"
+    };
+    const thumbFilePath = path
+      .join(path.dirname(filePath), fileName)
+      .replace(".pdf", ".jpg")
+      .replace("pdf", "images");
+
+    const thumbnailUploadStream = bucket
+      .file(thumbFilePath)
+      .createWriteStream({ metadata });
+
+    // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
+    const pipeline = sharp();
+    pipeline.resize(THUMB_MAX_WIDTH).pipe(thumbnailUploadStream);
+
+    fs.createReadStream(tempJPGFilePath).pipe(pipeline);
+
+    await new Promise((resolve, reject) =>
+      thumbnailUploadStream.on("finish", resolve).on("error", reject)
+    );
+
+    return fs.remove(workingDir);
+  });
