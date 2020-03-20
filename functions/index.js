@@ -70,7 +70,7 @@ exports.search = functions.https.onRequest((request, response) =>
   app(request, response)
 );
 
-const THUMB_MAX_WIDTH = 200;
+const THUMB_MAX_WIDTH = 620;
 
 exports.handlePDFUpload = functions.storage
   .object()
