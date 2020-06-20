@@ -29,8 +29,8 @@ const fuzzySearchOptions = {
     { name: "layout", weight: 0.2 },
     { name: "edition", weight: 0.1 },
     { name: "tags", weight: 0.1 },
-    { name: "type", weight: 0.1 }
-  ]
+    { name: "type", weight: 0.1 },
+  ],
 };
 
 let articles;
@@ -54,7 +54,7 @@ app.get("/", verifyToken, async (request, response) => {
       const articlesRef = db.collection("articles");
 
       const query = await articlesRef.get();
-      query.docs.forEach(doc => articles.push(doc.data()));
+      query.docs.forEach((doc) => articles.push(doc.data()));
     }
 
     const fuse = new Fuse(articles, fuzzySearchOptions);
@@ -70,11 +70,17 @@ exports.search = functions.https.onRequest((request, response) =>
   app(request, response)
 );
 
+const runtimeOpts = {
+  timeoutSeconds: 180,
+  memory: "512MB",
+};
+
 const THUMB_MAX_WIDTH = 620;
 
-exports.handlePDFUpload = functions.storage
-  .object()
-  .onFinalize(async object => {
+exports.handlePDFUpload = functions
+  .runWith(runtimeOpts)
+  .storage.object()
+  .onFinalize(async (object) => {
     const fileBucket = object.bucket; // The Storage bucket that contains the file.
     const filePath = object.name; // File path in the bucket.
     // Get the file name.
@@ -106,7 +112,7 @@ exports.handlePDFUpload = functions.storage
         .device("jpeg")
         .output(tempJPGFilePath)
         .input(tempFilePath)
-        .exec(err => {
+        .exec((err) => {
           if (err) {
             console.log("Error while running Ghostscript", err);
             reject(err);
@@ -118,7 +124,7 @@ exports.handlePDFUpload = functions.storage
     });
 
     const metadata = {
-      contentType: "image/jpeg"
+      contentType: "image/jpeg",
     };
     const thumbFilePath = path
       .join(path.dirname(filePath), fileName)
