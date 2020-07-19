@@ -17,7 +17,7 @@ function ArticleForm({ doHandleSubmit, article }) {
     editionNumber,
     content,
     pages,
-    tags
+    tags,
   } = article || {};
   const schema = Yup.object({
     title: Yup.string().required("Artikkelen må ha en tittel"),
@@ -37,7 +37,7 @@ function ArticleForm({ doHandleSubmit, article }) {
     pages: Yup.string()
       .matches(new RegExp("^[0-9]+(,\\s{1}[0-9]+)*$"))
       .required("Artikkelen må ha sidetall, og de må oppgis på rett form."),
-    tags: Yup.string().matches(new RegExp("^[\\S]+(,\\s{1}[\\S]+)*$"))
+    tags: Yup.string().matches(new RegExp("^[\\S]+(,\\s{1}[\\S]+)*$")),
   });
 
   const now = new Date();
@@ -59,7 +59,7 @@ function ArticleForm({ doHandleSubmit, article }) {
         editionNumber: editionNumber || 1,
         content: content || "",
         pages: pages || "",
-        tags: tags || ""
+        tags: tags || "",
       }}
     >
       {({
@@ -73,7 +73,7 @@ function ArticleForm({ doHandleSubmit, article }) {
         setStatus,
         isSubmitting,
         resetForm,
-        setFieldValue
+        setFieldValue,
       }) => {
         function onPaste(event) {
           event.preventDefault();
@@ -92,7 +92,7 @@ function ArticleForm({ doHandleSubmit, article }) {
             textToSet = [
               currentText.slice(0, cursorPosition),
               trimmedText,
-              currentText.slice(cursorPosition)
+              currentText.slice(cursorPosition),
             ].join("");
           } else {
             textToSet = trimmedText;
@@ -219,7 +219,7 @@ function ArticleForm({ doHandleSubmit, article }) {
                     name="content"
                     value={values.content}
                     onChange={handleChange}
-                    onPaste={event => onPaste(event)}
+                    onPaste={(event) => onPaste(event)}
                     isValid={touched.content && !errors.content}
                     isInvalid={!!errors.content}
                   />
@@ -314,7 +314,10 @@ function ArticleForm({ doHandleSubmit, article }) {
                         <Button
                           variant="secondary"
                           onClick={() => {
-                            resetForm();
+                            resetForm({
+                              editionYear: values.editionYear,
+                              editionNumber: values.editionNumber,
+                            });
                             setStatus({ success: false });
                           }}
                         >

@@ -8,10 +8,14 @@ import ListElement from "./ListElement";
 import { articleList, pagination } from "./ArticleList.module.css";
 
 function ArticleList({ firebase }) {
-  const field = "edition";
+  const firstField = "edition";
+  const secondField = "pages";
   let pageSize = 20;
 
-  const baseQuery = firebase.articles().orderBy(field, "desc");
+  const baseQuery = firebase
+    .articles()
+    .orderBy(firstField, "desc")
+    .orderBy(secondField, "desc");
 
   const [query, setQuery] = useState(baseQuery.limit(pageSize));
 
@@ -25,11 +29,11 @@ function ArticleList({ firebase }) {
     setDownloading(true);
     const response = await query.get();
     const responseData = [];
-    response.forEach(doc => {
+    response.forEach((doc) => {
       responseData.push({
         id: doc.id,
         data: doc.data(),
-        ref: doc.ref
+        ref: doc.ref,
       });
     });
     if (subscribed && responseData.length > 0) {
@@ -45,16 +49,16 @@ function ArticleList({ firebase }) {
 
   function prevPage(first) {
     setPageNum(pageNum - 1);
-    setQuery(baseQuery.endBefore(first[field]).limitToLast(pageSize));
+    setQuery(baseQuery.endBefore(first[firstField]).limitToLast(pageSize));
   }
 
   function nextPage(last) {
     setPageNum(pageNum + 1);
-    setQuery(baseQuery.startAfter(last[field]).limit(pageSize));
+    setQuery(baseQuery.startAfter(last[firstField]).limit(pageSize));
   }
 
   function removeItem(article) {
-    setData(data.filter(element => element.data._id !== article.data._id));
+    setData(data.filter((element) => element.data._id !== article.data._id));
   }
 
   return (
@@ -87,6 +91,6 @@ function ArticleList({ firebase }) {
   );
 }
 
-const condition = authUser => !!authUser;
+const condition = (authUser) => !!authUser;
 
 export default withAuthorization(condition)(ArticleList);
