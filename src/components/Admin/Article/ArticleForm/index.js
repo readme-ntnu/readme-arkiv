@@ -1,10 +1,12 @@
 import React from "react";
 
+import SubmitButton from "../../Common/SubmitButton";
+
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { Form, Col, Button, Spinner, Alert, Fade } from "react-bootstrap";
+import { Form, Col, Button, Alert, Fade } from "react-bootstrap";
 
-import { articleForm, addButton } from "./ArticleForm.module.css";
+import { articleForm } from "./ArticleForm.module.css";
 
 function ArticleForm({ doHandleSubmit, article }) {
   const {
@@ -246,6 +248,8 @@ function ArticleForm({ doHandleSubmit, article }) {
                   <Form.Text className="text-muted">
                     Skriv inn som en liste med tall, separert med komma og
                     mellomrom: "10, 12, 13"
+                    <br />
+                    <i>Merk at dette er sidetall iht. utgaveplanen.</i>
                   </Form.Text>
                 </Form.Group>
                 <Form.Group as={Col}>
@@ -260,28 +264,19 @@ function ArticleForm({ doHandleSubmit, article }) {
                     isInvalid={!!errors.tags}
                   />
                   <Form.Text className="text-muted">
-                    Skriv inn som en liste med ord, separert med komma og
-                    mellomrom: "hei, på, deg"
+                    Skriv inn som en liste med ord som beskriver artikkelens
+                    innhold, separert med komma og mellomrom: "hei, på, deg"
                   </Form.Text>
                 </Form.Group>
               </Form.Row>
-              <Button
-                variant="primary"
-                type="submit"
-                disabled={!isValid || isSubmitting}
-                className={addButton}
-              >
-                {isSubmitting ? (
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />
-                ) : null}
-                {!article ? "Legg til artikkel" : "Oppdater artikkel"}
-              </Button>
+              <SubmitButton
+                isValid={isValid}
+                isSubmitting={isSubmitting}
+                buttonText={
+                  !article ? "Legg til artikkel" : "Oppdater artikkel"
+                }
+              />
+
               {status.error ? (
                 <Alert variant="warning">
                   Oups!
