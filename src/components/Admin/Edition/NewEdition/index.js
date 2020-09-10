@@ -196,6 +196,6 @@ function NewEditionPage({ firebase }) {
   );
 }
 
-const condition = (authUser) => !!authUser;
+const condition = (authUser) => !!authUser && !authUser.isAnonymous;
 
 export default withAuthorization(condition)(NewEditionPage);

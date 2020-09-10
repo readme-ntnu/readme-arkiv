@@ -30,7 +30,7 @@ function AppNavbar() {
         </Nav>
         <AuthUserContext.Consumer>
           {(authUser) =>
-            authUser ? (
+            authUser && !authUser.isAnonymous ? (
               <Nav>
                 <LinkContainer to={ROUTES.ADMIN}>
                   <Nav.Link>Admin</Nav.Link>

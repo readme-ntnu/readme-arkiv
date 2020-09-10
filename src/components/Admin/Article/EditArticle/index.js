@@ -36,8 +36,8 @@ function EditArticle({ firebase }) {
   function doHandleSubmit(valuesToPost, { setSubmitting, setStatus }) {
     // Make a proper copy to avoid pass-by-reference issues
     const values = JSON.parse(JSON.stringify(valuesToPost));
-    values.pages = values.pages.split(",").map(v => parseInt(v));
-    values.tags = values.tags.split(",").map(v => v.trim());
+    values.pages = values.pages.split(",").map((v) => parseInt(v));
+    values.tags = values.tags.split(",").map((v) => v.trim());
     values.edition = `${values.editionYear}-0${values.editionNumber}`;
     values._id = id;
     delete values.editionYear;
@@ -69,6 +69,6 @@ function EditArticle({ firebase }) {
   );
 }
 
-const condition = authUser => !!authUser;
+const condition = (authUser) => !!authUser && !authUser.isAnonymous;
 
 export default withAuthorization(condition)(EditArticle);
