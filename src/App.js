@@ -1,81 +1,65 @@
-import React, { useState } from "react";
-import { debounce } from "lodash";
-import { Image } from "react-bootstrap";
-import "./App.css";
+import React from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import useDarkMode from "use-dark-mode";
+import CrossfadeImage from "react-crossfade-image";
 
-import AppNavBar from "./components/Navbar.js";
-import Loading from "./components/Loading.js";
-import AppTable from "./components/Table.js";
+import { app, readmelogo, header, content } from "./App.module.css";
 
-import { useAnonymousLogin } from './auth'
+import * as ROUTES from "./constants/routes";
 
-const searchForArticles = async (searchString, token) => {
-  const host =
-  process.env.NODE_ENV === "production"
-  ? "https://us-central1-readme-arkiv.cloudfunctions.net/search"
-  : "http://localhost:5000/readme-arkiv/us-central1/search";
+import AppNavBar from "./components/Navbar";
+import Footer from "./components/Footer";
+import Home from "./components/Home";
+import Search from "./components/Search";
+import SignInPage from "./components/SignIn";
+import PasswordForgetPage from "./components/PasswordForget";
+import AdminPage from "./components/Admin";
+import NewEditionPage from "./components/Admin/Edition/NewEdition";
+import EditionList from "./components/Admin/Edition/EditionList";
+import NewArticlePage from "./components/Admin/Article/NewArticle";
+import EditArticle from "./components/Admin/Article/EditArticle";
+import ArticleList from "./components/Admin/Article/ArticleList";
 
-  try {
-    if (!token) {
-      throw new Error('No token, so why even bother?')
-    }
-
-    const res = await fetch(
-      `${host}?searchString=${encodeURIComponent(searchString)}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        }
-      }
-    );
-    const result = await res.json();
-    return result.articles || [];
-  } catch (error) {
-    return [];
-  }
-};
+import NoMatch from "./components/NoMatch";
+import { withAuthentication } from "./components/Session";
 
 function App() {
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [hasData, setHasData] = useState(false);
-
-  const { token } = useAnonymousLogin()
-
-  const search = debounce(async searchString => {
-    if (!searchString) {
-      setArticles([]);
-      setHasData(false);
-      return;
-    }
-    setLoading(true);
-    setHasData(false);
-    const newArticles = await searchForArticles(searchString, token);
-    setArticles(newArticles);
-    setLoading(false);
-    setHasData(true);
-  }, 300);
+  const darkmode = useDarkMode();
+  const logoSrc = `${process.env.PUBLIC_URL}/readme${
+    darkmode.value ? "_hvit" : ""
+  }.png`;
 
   return (
-    <div className="App">
-      <AppNavBar />
-      <header className="App-header">
-        <Image id="readmelogo" src="readme.png" alt="Logo" responsive />
-        <h1>Artikkelsøk</h1>
-      </header>
-      <div>
-        <input
-          onChange={event => search(event.currentTarget.value)}
-          placeholder="Søk..."
-          size="32"
-        />
-        {loading ? <Loading /> : null}
-        {hasData ? <AppTable articles={articles} /> : null}
+    <Router>
+      <div className={app}>
+        <AppNavBar />
+        <header className={header}>
+          <div className={readmelogo}>
+            <CrossfadeImage src={logoSrc} alt="Logo" />
+          </div>
+        </header>
+        <div className={content}>
+          <Switch>
+            <Route exact path={ROUTES.HOME} component={Home} />
+            <Route path={ROUTES.SEARCH} component={Search} />
+            <Route path={ROUTES.SIGN_IN} component={SignInPage} />
+            <Route
+              path={ROUTES.PASSWORD_FORGET}
+              component={PasswordForgetPage}
+            />
+            <Route path={ROUTES.ADMIN} component={AdminPage} />
+            <Route path={ROUTES.NEW_EDITION} component={NewEditionPage} />
+            <Route path={ROUTES.EDITION_LIST} component={EditionList} />
+            <Route path={ROUTES.NEW_ARTICLE} component={NewArticlePage} />
+            <Route path={ROUTES.EDIT_ARTICLE} component={EditArticle} />
+            <Route path={ROUTES.ARTICLE_LIST} component={ArticleList} />
+            <Route component={NoMatch} />
+          </Switch>
+        </div>
+        <Footer />
       </div>
-    </div>
+    </Router>
   );
 }
 
-export default App;
+export default withAuthentication(App);

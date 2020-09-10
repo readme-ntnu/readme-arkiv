@@ -1,0 +1,15 @@
+.row-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  overflow-x: hidden;
+}
+
+@media only screen and (max-width: 650px) {
+  .row-container {
+    max-width: 350px;
+    text-align: center;
+    margin: auto;
+  }
+}

@@ -1,0 +1,40 @@
+.RowImage {
+  margin: 0px 2vw;
+  margin-bottom: 8.5px;
+  width: 200px;
+  box-shadow: 5px 5px 12px #888;
+  -webkit-transition: transform 0.1s ease-in-out;
+  transition: transform 0.1s ease-in-out;
+  background: #fff;
+  align-self: center;
+}
+
+.RowImage:hover {
+  -ms-transform: scale(1.02); /* IE 9 */
+  -webkit-transform: scale(1.02); /* Safari */
+  transform: scale(1.02);
+  box-shadow: 8px 8px 15px #888;
+}
+
+.ImageRow {
+  margin: auto;
+  margin-bottom: 15px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 0;
+}
+
+@media only screen and (max-width: 690px) {
+  .row {
+    flex-direction: column;
+  }
+}
+
+.row-loader {
+  min-height: 490px !important;
+}
