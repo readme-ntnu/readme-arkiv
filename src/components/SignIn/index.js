@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { compose } from "recompose";
-import { Form, Button, Alert, Spinner } from "react-bootstrap";
+import { Form, Alert } from "react-bootstrap";
 
 import { withFirebase } from "../Firebase";
 import { PasswordForgetLink } from "../PasswordForget";
@@ -9,6 +9,7 @@ import { PasswordForgetLink } from "../PasswordForget";
 import * as ROUTES from "../../constants/routes";
 
 import "./SignIn.css";
+import SubmitButton from "../Admin/Common/SubmitButton";
 
 const SignInPage = () => (
   <div className="SignInForm">
@@ -21,33 +22,33 @@ const INITIAL_STATE = {
   email: "",
   password: "",
   error: null,
-  submitting: false
+  submitting: false,
 };
 class SignInFormBase extends Component {
   constructor(props) {
     super(props);
     this.state = { ...INITIAL_STATE };
   }
-  onSubmit = event => {
+  onSubmit = (event) => {
     const { email, password } = this.state;
     this.setState({ submitting: true });
     this.props.firebase
       .doSignInWithEmailAndPassword(email, password)
       .then(() => {
         this.setState({ ...INITIAL_STATE });
-        this.props.history.push(ROUTES.HOME);
+        this.props.history.push(ROUTES.ADMIN);
       })
-      .catch(error => {
+      .catch((error) => {
         this.setState({ error, submitting: false });
       });
     event.preventDefault();
   };
-  onChange = event => {
+  onChange = (event) => {
     this.setState({ [event.target.name]: event.target.value });
   };
   render() {
     const { email, password, error } = this.state;
-    const isInvalid = password === "" || email === "";
+    const isValid = password !== "" && email !== "";
     return (
       <Form onSubmit={this.onSubmit}>
         {error && <Alert variant="danger">{error.message}</Alert>}
@@ -71,16 +72,11 @@ class SignInFormBase extends Component {
             placeholder="Passord"
           />
         </Form.Group>
-        <Button
-          variant="primary"
-          disabled={isInvalid || this.state.submitting}
-          type="submit"
-        >
-          {this.state.submitting ? (
-            <Spinner animation="border" size="sm" />
-          ) : null}
-          Logg inn
-        </Button>
+        <SubmitButton
+          buttonText="Logg inn"
+          isSubmitting={this.state.submitting}
+          isValid={isValid}
+        />
       </Form>
     );
   }

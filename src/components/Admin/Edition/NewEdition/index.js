@@ -1,19 +1,11 @@
 import React from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import {
-  Form,
-  Button,
-  Col,
-  Spinner,
-  Alert,
-  ProgressBar,
-  Fade
-} from "react-bootstrap";
+import { Form, Button, Col, Alert, ProgressBar, Fade } from "react-bootstrap";
+import SubmitButton from "../../Common/SubmitButton";
+import { withAuthorization } from "../../../Session";
 
 import { editionForm, alertInfo, progressBar } from "./NewEdition.module.css";
-
-import { withAuthorization } from "../../../Session";
 
 const schema = Yup.object().shape({
   editionYear: Yup.number()
@@ -29,10 +21,10 @@ const schema = Yup.object().shape({
     .test(
       "file type",
       "Dette må være en PDF-fil",
-      value =>
+      (value) =>
         value && value.name.endsWith(".pdf") && value.type === "application/pdf"
     ),
-  listingslop: Yup.bool()
+  listingslop: Yup.bool(),
 });
 
 function NewEditionPage({ firebase }) {
@@ -52,7 +44,7 @@ function NewEditionPage({ firebase }) {
         setStatus({ success: true, progress: 100 });
       },
       () => setStatus({ error: true }),
-      progress => setStatus({ progress: progress })
+      (progress) => setStatus({ progress: progress })
     );
   }
 
@@ -71,7 +63,7 @@ function NewEditionPage({ firebase }) {
           editionYear: year,
           editionNumber: 1,
           editionFile: undefined,
-          listingslop: false
+          listingslop: false,
         }}
         initialStatus={{ success: false, error: false, progress: 0 }}
       >
@@ -86,7 +78,7 @@ function NewEditionPage({ firebase }) {
           isSubmitting,
           setValues,
           resetForm,
-          setStatus
+          setStatus,
         }) => {
           return (
             <Fade appear in>
@@ -128,7 +120,7 @@ function NewEditionPage({ firebase }) {
                     <Form.Control
                       name="editionFile"
                       type="file"
-                      onChange={event => {
+                      onChange={(event) => {
                         const newValues = { ...values }; // copy the original object
                         newValues.editionFile = event.currentTarget.files[0];
                         setValues(newValues);
@@ -148,23 +140,12 @@ function NewEditionPage({ firebase }) {
                     id="validationFormik0"
                   />
                 </Form.Group>
+                <SubmitButton
+                  buttonText="Last opp utgave"
+                  isSubmitting={isSubmitting}
+                  isValid={isValid}
+                />
 
-                <Button
-                  variant="primary"
-                  type="submit"
-                  disabled={!isValid || isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <Spinner
-                      as="span"
-                      animation="border"
-                      size="sm"
-                      role="status"
-                      aria-hidden="true"
-                    />
-                  ) : null}
-                  Last opp utgave
-                </Button>
                 {isSubmitting || status.success ? (
                   <ProgressBar
                     className={progressBar}
@@ -189,7 +170,7 @@ function NewEditionPage({ firebase }) {
                           setStatus({
                             success: false,
                             error: false,
-                            progress: 0
+                            progress: 0,
                           });
                         }}
                       >
@@ -215,6 +196,6 @@ function NewEditionPage({ firebase }) {
   );
 }
 
-const condition = authUser => !!authUser;
+const condition = (authUser) => !!authUser;
 
 export default withAuthorization(condition)(NewEditionPage);

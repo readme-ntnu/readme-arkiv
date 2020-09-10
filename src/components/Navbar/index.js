@@ -29,7 +29,7 @@ function AppNavbar() {
           <LightSwitch />
         </Nav>
         <AuthUserContext.Consumer>
-          {authUser =>
+          {(authUser) =>
             authUser ? (
               <Nav>
                 <LinkContainer to={ROUTES.ADMIN}>
@@ -37,13 +37,7 @@ function AppNavbar() {
                 </LinkContainer>
                 <SignOutButton />
               </Nav>
-            ) : (
-              <Nav>
-                <LinkContainer to={ROUTES.SIGN_IN}>
-                  <Nav.Link>Logg inn</Nav.Link>
-                </LinkContainer>
-              </Nav>
-            )
+            ) : null
           }
         </AuthUserContext.Consumer>
       </Navbar.Collapse>
