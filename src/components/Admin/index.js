@@ -42,6 +42,6 @@ function AdminPage() {
   );
 }
 
-const condition = authUser => !!authUser;
+const condition = (authUser) => !!authUser && !authUser.isAnonymous;
 
 export default withAuthorization(condition)(AdminPage);

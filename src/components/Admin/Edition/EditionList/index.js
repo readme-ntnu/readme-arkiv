@@ -32,7 +32,7 @@ function EditionList({ firebase }) {
         <Loading />
       ) : (
         <div className="row-container">
-          {data.map(year => {
+          {data.map((year) => {
             return (
               <div key={year} className="row-wrapper">
                 <ListPage year={year} key={year} />
@@ -45,6 +45,6 @@ function EditionList({ firebase }) {
   );
 }
 
-const condition = authUser => !!authUser;
+const condition = (authUser) => !!authUser && !authUser.isAnonymous;
 
 export default withAuthorization(condition)(EditionList);
