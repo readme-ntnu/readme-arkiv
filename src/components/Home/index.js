@@ -3,11 +3,12 @@ import { Fade } from "react-bootstrap";
 import LazyLoad from "react-lazyload";
 
 import "./Home.css";
-import { withFirebase } from "../Firebase";
+import { withFirebase, useAnonymousLogin } from "../Firebase";
 import ImageRow, { setRowMinHeight } from "./ImageRow/";
 import Loading from "../Loading";
 
 function Home({ firebase }) {
+  useAnonymousLogin();
   const [data, setData] = useState([]);
   const [showListing, setShowListing] = useState(false);
   const [downloading, setDownloading] = useState(true);
@@ -33,7 +34,7 @@ function Home({ firebase }) {
   } else {
     return (
       <div className="row-container">
-        {data.map(year => {
+        {data.map((year) => {
           return (
             <div key={year} className="row-wrapper">
               <Fade appear in>
