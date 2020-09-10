@@ -4,13 +4,13 @@ import "firebase/firestore";
 import "firebase/storage";
 
 const config = {
-  apiKey: process.env.REACT_APP_API_KEY,
-  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-  databaseURL: process.env.REACT_APP_DATABASE_URL,
-  projectId: process.env.REACT_APP_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_APP_ID
+  apiKey: "AIzaSyCLhIKGOYZilQuXirB_W-1UmKNfQygETqw",
+  authDomain: "readme-arkiv.firebaseapp.com",
+  databaseURL: "https://readme-arkiv.firebaseio.com",
+  projectId: "readme-arkiv",
+  storageBucket: "readme-arkiv.appspot.com",
+  messagingSenderId: "884912593534",
+  appId: "1:884912593534:web:994587a01eb1bd1d85d62f",
 };
 
 class Firebase {
@@ -29,12 +29,12 @@ class Firebase {
   doSignInWithEmailAndPassword = (email, password) =>
     this.auth.signInWithEmailAndPassword(email, password);
 
-  doPasswordReset = email => this.auth.sendPasswordResetEmail(email);
+  doPasswordReset = (email) => this.auth.sendPasswordResetEmail(email);
 
   doSignOut = () => this.auth.signOut();
 
   // *** Articles API ***
-  article = id => this.db.collection("articles").doc(`${id}`);
+  article = (id) => this.db.collection("articles").doc(`${id}`);
 
   articles = () => this.db.collection("articles");
 
@@ -45,9 +45,9 @@ class Firebase {
     this.updateArticleInDB(article, callback, errorCallback);
 
   // *** Editions API ***
-  editions = year => this.fetchEditionDataForYear(year);
+  editions = (year) => this.fetchEditionDataForYear(year);
 
-  editionListData = year => this.fetchEditionListDataForYear(year);
+  editionListData = (year) => this.fetchEditionListDataForYear(year);
 
   editionYearPrefixes = () => this.fetchYearPrefixes();
 
@@ -69,7 +69,7 @@ class Firebase {
   // *** Settings API ***
   getSettings = () => this.fetchSettings();
 
-  setShowListing = value => this.setShowListingSetting(value);
+  setShowListing = (value) => this.setShowListingSetting(value);
 
   // *** Helper functions ***
   fetchYearPrefixes = async () => {
@@ -77,11 +77,11 @@ class Firebase {
     return list.prefixes.reverse();
   };
 
-  fetchEditionDataForYear = async yearPrefix => {
+  fetchEditionDataForYear = async (yearPrefix) => {
     let object = {};
     let response = await Promise.all([
       this.fetchImagesForAYear(yearPrefix),
-      this.fetchPDFsForAYear(yearPrefix)
+      this.fetchPDFsForAYear(yearPrefix),
     ]);
     object.year = yearPrefix.name;
     object.urls = response[0];
@@ -89,36 +89,38 @@ class Firebase {
     return object;
   };
 
-  fetchImagesForAYear = async yearPrefix => {
+  fetchImagesForAYear = async (yearPrefix) => {
     let imgRefs = await yearPrefix.list();
     let imgRefsItems = imgRefs.items.reverse();
-    let urls = await Promise.all(imgRefsItems.map(ref => ref.getDownloadURL()));
+    let urls = await Promise.all(
+      imgRefsItems.map((ref) => ref.getDownloadURL())
+    );
     return urls;
   };
 
-  fetchPDFsForAYear = async yearPrefix => {
+  fetchPDFsForAYear = async (yearPrefix) => {
     let year = yearPrefix.name;
     let PDFRefs = await this.storage.ref("pdf/" + year).list();
     let PDFRefsItems = PDFRefs.items.reverse();
     const pdfUrls = Promise.all(
-      PDFRefsItems.map(async ref => {
+      PDFRefsItems.map(async (ref) => {
         const dataFromServer = await ref
           .getMetadata()
-          .then(data => data.customMetadata.listinglop)
-          .catch(error => {
+          .then((data) => data.customMetadata.listinglop)
+          .catch((error) => {
             console.warn("Fond no metadata with error: ", error);
             return false;
           });
         return {
           listinglop: dataFromServer === "true",
-          url: await ref.getDownloadURL()
+          url: await ref.getDownloadURL(),
         };
       })
     );
     return pdfUrls;
   };
 
-  fetchEditionListDataForYear = async yearPrefix => {
+  fetchEditionListDataForYear = async (yearPrefix) => {
     let imgRefs = (await yearPrefix.list()).items;
     let year = yearPrefix.name;
     let PDFRefs = (await this.storage.ref("pdf/" + year).list()).items;
@@ -126,7 +128,7 @@ class Firebase {
       return {
         edition: `${year}-0${index + 1}`,
         imgRef,
-        pdfRef: PDFRefs[index]
+        pdfRef: PDFRefs[index],
       };
     });
     return yearObject;
@@ -145,14 +147,14 @@ class Firebase {
     const metadata = {
       contentType: "application/pdf",
       customMetadata: {
-        listinglop: String(listinglop)
-      }
+        listinglop: String(listinglop),
+      },
     };
     const editionPDFRef = this.storage.ref(path);
     const uploadTask = editionPDFRef.put(editionFile, metadata);
     uploadTask.on(
       app.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
-      function(snapshot) {
+      function (snapshot) {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         if (
@@ -162,7 +164,7 @@ class Firebase {
           updateProgessCallback(progress);
         }
       },
-      function(error) {
+      function (error) {
         // A full list of error codes is available at
         // https://firebase.google.com/docs/storage/web/handle-errors
         switch (error.code) {
@@ -177,9 +179,9 @@ class Firebase {
           errorCallback();
         }
       },
-      function() {
+      function () {
         // Upload completed successfully, now we can get the download URL
-        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+        uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
           console.log("File available at", downloadURL);
           const editionName = editionFile.name.replace(".pdf", "");
           updateArticlePDFURL(editionName, downloadURL);
@@ -197,9 +199,9 @@ class Firebase {
       .where("edition", "==", editionName)
       .get();
     if (articles && !articles.empty) {
-      articles.forEach(async docSnap => {
+      articles.forEach(async (docSnap) => {
         await docSnap.ref.update({
-          url: `${newURL}#page=${this.getPageNumber(docSnap.data())}`
+          url: `${newURL}#page=${this.getPageNumber(docSnap.data())}`,
         });
       });
     }
@@ -246,7 +248,7 @@ class Firebase {
     }
   };
 
-  getArticlePDFURL = async article => {
+  getArticlePDFURL = async (article) => {
     const year = article.edition.split("-")[0];
     const fileName = `${article.edition}.pdf`;
     const path = `pdf/${year}/${fileName}`;
@@ -261,7 +263,7 @@ class Firebase {
     }
   };
 
-  getPageNumber = article => {
+  getPageNumber = (article) => {
     const [editionYear, editionNumber] = article.edition.split("-");
     if (
       editionYear > 2013 ||
@@ -278,10 +280,10 @@ class Firebase {
     return settings.docs[0].data();
   };
 
-  setShowListingSetting = async value => {
+  setShowListingSetting = async (value) => {
     const settings = await this.db.collection("settings").get();
     await settings.docs[0].ref.update({
-      showListing: value
+      showListing: value,
     });
   };
 }
