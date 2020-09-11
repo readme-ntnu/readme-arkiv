@@ -7,17 +7,7 @@ function ReadmeLogo() {
   const logoSrc = `${process.env.PUBLIC_URL}/readme_liten${
     darkmode.value ? "_hvit" : ""
   }.png`;
-  return (
-    <span
-      style={{
-        fontFamily: "OCR A Extended",
-        fontWeight: "400",
-        textTransform: "lowercase",
-      }}
-    >
-      <CrossfadeImage src={logoSrc} />
-    </span>
-  );
+  return <CrossfadeImage style={{ maxHeight: "1em" }} src={logoSrc} />;
 }
 
 export default ReadmeLogo;
