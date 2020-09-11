@@ -8,7 +8,7 @@ import ImageRow, { setRowMinHeight } from "./ImageRow/";
 import Loading from "../Loading";
 
 function Home({ firebase }) {
-  useAnonymousLogin();
+  const { user } = useAnonymousLogin();
   const [data, setData] = useState([]);
   const [showListing, setShowListing] = useState(false);
   const [downloading, setDownloading] = useState(true);
@@ -26,8 +26,10 @@ function Home({ firebase }) {
       }
       return () => (isSubscribed = false);
     }
-    fetchData();
-  }, [firebase]);
+    if (user != null) {
+      fetchData();
+    }
+  }, [firebase, user]);
 
   if (downloading) {
     return <Loading />;
