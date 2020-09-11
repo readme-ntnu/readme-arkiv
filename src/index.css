@@ -37,6 +37,10 @@ body.dark-mode * input::placeholder {
   color: #ffffff5e;
 }
 
+body.dark-mode * td:hover {
+  color: #ddd;
+}
+
 body.dark-mode * .RowImage {
   box-shadow: unset;
 }
