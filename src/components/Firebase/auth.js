@@ -7,14 +7,16 @@ function useAnonymousLogin() {
   const [token, setToken] = useState();
 
   useEffect(() => {
-    firebase
-      .auth()
-      .signInAnonymously()
-      .catch(console.error);
+    if (!firebase.auth().currentUser) {
+      firebase.auth().signInAnonymously().catch(console.error);
+    } else {
+      setUser(firebase.auth().currentUser);
+      setToken(firebase.auth().currentUser.getIdToken());
+    }
   }, []);
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(function(user) {
+    firebase.auth().onAuthStateChanged(function (user) {
       if (!user) {
         setUser(null);
         setToken(null);
@@ -33,7 +35,7 @@ function useAnonymousLogin() {
 
   return {
     user,
-    token
+    token,
   };
 }
 
