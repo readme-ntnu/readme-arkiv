@@ -1,4 +1,5 @@
 import React from "react";
+import useDarkMode from "use-dark-mode";
 import { Navbar, Nav } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
@@ -7,13 +8,19 @@ import { AuthUserContext } from "../Session";
 import SignOutButton from "../SignOut";
 import LightSwitch from "../LightSwitch";
 
-import { lightSwitch } from "./Navbar.module.css";
+import { lightSwitch, navbar } from "./Navbar.module.css";
 
 import * as ROUTES from "../../constants/routes.js";
 
 function AppNavbar() {
+  const isDark = useDarkMode();
   return (
-    <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark">
+    <Navbar
+      className={navbar}
+      collapseOnSelect
+      expand="sm"
+      variant={isDark.value ? "dark" : "light"}
+    >
       <LinkContainer to={ROUTES.HOME}>
         <Navbar.Brand>Arkiv</Navbar.Brand>
       </LinkContainer>
