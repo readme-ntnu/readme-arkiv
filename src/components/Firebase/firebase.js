@@ -93,7 +93,9 @@ class Firebase {
     let imgRefs = await yearPrefix.list();
     let imgRefsItems = imgRefs.items.reverse();
     let urls = await Promise.all(
-      imgRefsItems.map((ref) => ref.getDownloadURL())
+      imgRefsItems.map((ref) =>
+        this.getImageDownloadURL(yearPrefix.name, ref.name)
+      )
     );
     return urls;
   };
@@ -113,7 +115,7 @@ class Firebase {
           });
         return {
           listinglop: dataFromServer === "true",
-          url: await ref.getDownloadURL(),
+          url: this.getPDFDownloadURL(yearPrefix.name, ref.name),
         };
       })
     );
@@ -141,7 +143,7 @@ class Firebase {
     errorCallback,
     updateProgessCallback
   ) => {
-    const updateArticlePDFURL = this.updateArticlePDFURL;
+    const self = this;
     const year = editionFile.name.split("-")[0];
     const path = `pdf/${year}/${editionFile.name}`;
     const metadata = {
@@ -181,11 +183,11 @@ class Firebase {
       },
       function () {
         // Upload completed successfully, now we can get the download URL
-        uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
-          console.log("File available at", downloadURL);
-          const editionName = editionFile.name.replace(".pdf", "");
-          updateArticlePDFURL(editionName, downloadURL);
-        });
+        const downloadURL = self.getPDFDownloadURL(year, editionFile.name);
+        console.log("File available at", downloadURL);
+        const editionName = editionFile.name.replace(".pdf", "");
+        self.updateArticlePDFURL(editionName, downloadURL);
+
         if (callback && typeof callback === "function") {
           callback();
         }
@@ -250,10 +252,8 @@ class Firebase {
 
   getArticlePDFURL = async (article) => {
     const year = article.edition.split("-")[0];
-    const fileName = `${article.edition}.pdf`;
-    const path = `pdf/${year}/${fileName}`;
     try {
-      let pdfURL = await this.storage.ref(path).getDownloadURL();
+      let pdfURL = this.getPDFDownloadURL(year, article.edition);
       if (article.pages) {
         pdfURL = `${pdfURL}#page=${this.getPageNumber(article)}`;
       }
@@ -273,6 +273,14 @@ class Firebase {
     } else {
       return article.pages[0];
     }
+  };
+
+  getPDFDownloadURL = (year, name) => {
+    return `https://storage.googleapis.com/${process.env.REACT_APP_STORAGE_BUCKET}/pdf/${year}/${name}`;
+  };
+
+  getImageDownloadURL = (year, name) => {
+    return `https://storage.googleapis.com/${process.env.REACT_APP_STORAGE_BUCKET}/images/${year}/${name}`;
   };
 
   fetchSettings = async () => {
