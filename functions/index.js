@@ -99,7 +99,7 @@ app.get("/editionData", verifyToken, async (request, response) => {
       pdfs: pdfUrls.reverse(),
       urls: imageUrls.reverse(),
     };
-    response.set("Cache-Control", "public, max-age=86400");
+    response.set("Cache-Control", "public, max-age=10800");
     response.json(returnObject);
   } catch (error) {
     response.status(500).json({ message: error.toString() });
