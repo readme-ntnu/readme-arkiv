@@ -78,48 +78,22 @@ class Firebase {
   };
 
   fetchEditionDataForYear = async (yearPrefix) => {
-    let object = {};
-    let response = await Promise.all([
-      this.fetchImagesForAYear(yearPrefix),
-      this.fetchPDFsForAYear(yearPrefix),
-    ]);
-    object.year = yearPrefix.name;
-    object.urls = response[0];
-    object.pdfs = response[1];
-    return object;
-  };
-
-  fetchImagesForAYear = async (yearPrefix) => {
-    let imgRefs = await yearPrefix.list();
-    let imgRefsItems = imgRefs.items.reverse();
-    let urls = await Promise.all(
-      imgRefsItems.map((ref) =>
-        this.getImageDownloadURL(yearPrefix.name, ref.name)
-      )
+    const host =
+      process.env.NODE_ENV === "production"
+        ? "https://us-central1-readme-arkiv.cloudfunctions.net/api/editionData"
+        : "http://localhost:5000/readme-arkiv/us-central1/api/editionData";
+    const res = await fetch(
+      `${host}?year=${encodeURIComponent(yearPrefix.name)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${await this.auth.currentUser.getIdToken()}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
     );
-    return urls;
-  };
-
-  fetchPDFsForAYear = async (yearPrefix) => {
-    let year = yearPrefix.name;
-    let PDFRefs = await this.storage.ref("pdf/" + year).list();
-    let PDFRefsItems = PDFRefs.items.reverse();
-    const pdfUrls = Promise.all(
-      PDFRefsItems.map(async (ref) => {
-        const dataFromServer = await ref
-          .getMetadata()
-          .then((data) => data.customMetadata.listinglop)
-          .catch((error) => {
-            console.warn("Fond no metadata with error: ", error);
-            return false;
-          });
-        return {
-          listinglop: dataFromServer === "true",
-          url: this.getPDFDownloadURL(yearPrefix.name, ref.name),
-        };
-      })
-    );
-    return pdfUrls;
+    const result = await res.json();
+    return result;
   };
 
   fetchEditionListDataForYear = async (yearPrefix) => {
