@@ -1,7 +1,7 @@
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const express = require("express");
-const cors = require("cors")({ origin: true });
+const cors = require("cors");
 const Fuse = require("fuse.js");
 
 const path = require("path");
@@ -14,7 +14,7 @@ admin.initializeApp();
 const db = admin.firestore();
 
 const app = express();
-app.use(cors);
+app.use(cors({ origin: true }));
 
 const fuzzySearchOptions = {
   shouldSort: true,
@@ -106,9 +106,7 @@ app.get("/editionData", verifyToken, async (request, response) => {
   }
 });
 
-exports.api = functions.https.onRequest((request, response) =>
-  app(request, response)
-);
+exports.api = functions.https.onRequest(app);
 
 const runtimeOpts = {
   timeoutSeconds: 180,
