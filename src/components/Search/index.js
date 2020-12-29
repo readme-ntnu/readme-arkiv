@@ -10,8 +10,8 @@ import { searchBox, end } from "./Search.module.css";
 const searchForArticles = async (searchString, token) => {
   const host =
     process.env.NODE_ENV === "production"
-      ? "https://us-central1-readme-arkiv.cloudfunctions.net/search"
-      : "http://localhost:5000/readme-arkiv/us-central1/search";
+      ? "https://us-central1-readme-arkiv.cloudfunctions.net/api/search"
+      : "http://localhost:5000/readme-arkiv/us-central1/api/search";
 
   try {
     if (!token) {
@@ -24,8 +24,8 @@ const searchForArticles = async (searchString, token) => {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       }
     );
     const result = await res.json();
@@ -42,7 +42,7 @@ function Search() {
 
   const { token } = useAnonymousLogin();
 
-  const search = debounce(async searchString => {
+  const search = debounce(async (searchString) => {
     if (!searchString) {
       setArticles([]);
       setHasData(false);
@@ -61,7 +61,7 @@ function Search() {
       <h1>Artikkelsøk</h1>
       <div className={searchBox}>
         <input
-          onChange={event => search(event.currentTarget.value)}
+          onChange={(event) => search(event.currentTarget.value)}
           placeholder="Søk..."
           size="32"
         />

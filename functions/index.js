@@ -45,7 +45,7 @@ async function verifyToken(req, res, next) {
   }
 }
 
-app.get("/", verifyToken, async (request, response) => {
+app.get("/search", verifyToken, async (request, response) => {
   try {
     const searchString = request.query.searchString;
     if (!articles) {
@@ -66,7 +66,47 @@ app.get("/", verifyToken, async (request, response) => {
   }
 });
 
-exports.search = functions.https.onRequest((request, response) =>
+app.get("/editionData", verifyToken, async (request, response) => {
+  try {
+    const year = request.query.year;
+    const bucket = admin.storage().bucket();
+    const pdfs = await bucket.getFiles({
+      prefix: `pdf/${year}`,
+    });
+    const images = await bucket.getFiles({
+      prefix: `images/${year}`,
+    });
+    const pdfUrls = await Promise.all(
+      pdfs[0].map(async (file) => {
+        const isListing = await file
+          .getMetadata()
+          .then((data) => Boolean(data[0].metadata.listinglop))
+          .catch((error) => {
+            console.warn("Fond no metadata with error: ", error);
+            return false;
+          });
+        return {
+          listinglop: isListing,
+          url: getDownloadURL(file.name, file.bucket.name),
+        };
+      })
+    );
+    const imageUrls = images[0].map((file) =>
+      getDownloadURL(file.name, file.bucket.name)
+    );
+    const returnObject = {
+      year,
+      pdfs: pdfUrls.reverse(),
+      urls: imageUrls.reverse(),
+    };
+    response.set("Cache-Control", "public, max-age=10800");
+    response.json(returnObject);
+  } catch (error) {
+    response.status(500).json({ message: error.toString() });
+  }
+});
+
+exports.api = functions.https.onRequest((request, response) =>
   app(request, response)
 );
 
@@ -147,3 +187,7 @@ exports.handlePDFUpload = functions
 
     return fs.remove(workingDir);
   });
+
+getDownloadURL = (name, bucketName) => {
+  return `https://storage.googleapis.com/${bucketName}/${name}`;
+};
