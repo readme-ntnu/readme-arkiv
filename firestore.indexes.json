@@ -6,6 +6,20 @@
       "fields": [
         {
           "fieldPath": "edition",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "pages",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "articles",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "edition",
           "order": "DESCENDING"
         },
         {
