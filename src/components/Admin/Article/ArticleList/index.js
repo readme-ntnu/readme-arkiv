@@ -49,12 +49,18 @@ function ArticleList({ firebase }) {
 
   function prevPage(first) {
     setPageNum(pageNum - 1);
-    setQuery(baseQuery.endBefore(first[firstField]).limitToLast(pageSize));
+    setQuery(
+      baseQuery
+        .endBefore(first[firstField], first[secondField])
+        .limitToLast(pageSize)
+    );
   }
 
   function nextPage(last) {
     setPageNum(pageNum + 1);
-    setQuery(baseQuery.startAfter(last[firstField]).limit(pageSize));
+    setQuery(
+      baseQuery.startAfter(last[firstField], last[secondField]).limit(pageSize)
+    );
   }
 
   function removeItem(article) {
