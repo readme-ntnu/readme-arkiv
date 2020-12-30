@@ -1,7 +1,16 @@
+import { isArray } from "lodash";
 import React from "react";
 import { Table, Fade } from "react-bootstrap";
 
 import { searchTable } from "./Table.module.css";
+
+const parseTags = (tags) => {
+  if (isArray(tags)) {
+    return tags.join(", ");
+  } else {
+    return tags;
+  }
+};
 
 function AppTable(props) {
   return (
@@ -27,7 +36,7 @@ function AppTable(props) {
               <td>{article.author}</td>
               <td>{article.layout}</td>
               <td>{article.type}</td>
-              <td>{article.tags.join(", ")}</td>
+              <td>{parseTags(article.tags)}</td>
             </tr>
           ))}
         </tbody>
