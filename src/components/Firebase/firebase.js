@@ -250,11 +250,11 @@ class Firebase {
   };
 
   getPDFDownloadURL = (year, name) => {
-    return `https://storage.googleapis.com/${process.env.REACT_APP_STORAGE_BUCKET}/pdf/${year}/${name}`;
+    return `https://storage.googleapis.com/${process.env.REACT_APP_STORAGE_BUCKET}/pdf/${year}/${name}.pdf`;
   };
 
   getImageDownloadURL = (year, name) => {
-    return `https://storage.googleapis.com/${process.env.REACT_APP_STORAGE_BUCKET}/images/${year}/${name}`;
+    return `https://storage.googleapis.com/${process.env.REACT_APP_STORAGE_BUCKET}/images/${year}/${name}.jpg`;
   };
 
   fetchSettings = async () => {
