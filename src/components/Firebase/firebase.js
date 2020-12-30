@@ -185,7 +185,7 @@ class Firebase {
 
   addArticleToDB = async (article, callback, errorCallback) => {
     try {
-      const url = await this.getArticlePDFURL(article);
+      const url = this.getArticlePDFURL(article);
       article.url = url;
       await this.db.collection("articles").add(article);
       console.log("Article added to DB");
@@ -205,7 +205,7 @@ class Firebase {
 
   updateArticleInDB = async (article, callback, errorCallback) => {
     try {
-      const url = await this.getArticlePDFURL(article);
+      const url = this.getArticlePDFURL(article);
       article.url = url;
       const articleRef = this.article(article._id);
       await articleRef.update(article);
@@ -224,17 +224,13 @@ class Firebase {
     }
   };
 
-  getArticlePDFURL = async (article) => {
+  getArticlePDFURL = (article) => {
     const year = article.edition.split("-")[0];
-    try {
-      let pdfURL = this.getPDFDownloadURL(year, article.edition);
-      if (article.pages) {
-        pdfURL = `${pdfURL}#page=${this.getPageNumber(article)}`;
-      }
-      return pdfURL;
-    } catch (error) {
-      throw Error("Failed to get article PDF URL, with error: ", error);
+    let pdfURL = this.getPDFDownloadURL(year, article.edition);
+    if (article.pages) {
+      pdfURL = `${pdfURL}#page=${this.getPageNumber(article)}`;
     }
+    return pdfURL;
   };
 
   getPageNumber = (article) => {
@@ -250,11 +246,11 @@ class Firebase {
   };
 
   getPDFDownloadURL = (year, name) => {
-    return `https://storage.googleapis.com/${process.env.REACT_APP_STORAGE_BUCKET}/pdf/${year}/${name}.pdf`;
+    return `https://storage.googleapis.com/${process.env.REACT_APP_STORAGE_BUCKET}/pdf/${year}/${name}`;
   };
 
   getImageDownloadURL = (year, name) => {
-    return `https://storage.googleapis.com/${process.env.REACT_APP_STORAGE_BUCKET}/images/${year}/${name}.jpg`;
+    return `https://storage.googleapis.com/${process.env.REACT_APP_STORAGE_BUCKET}/images/${year}/${name}`;
   };
 
   fetchSettings = async () => {
