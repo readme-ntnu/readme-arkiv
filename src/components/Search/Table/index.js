@@ -18,7 +18,7 @@ function AppTable(props) {
           </tr>
         </thead>
         <tbody>
-          {props.articles.map(article => (
+          {props.articles.map((article) => (
             <tr key={article._id}>
               <td>
                 <a href={article.url}>{article.edition}</a>
@@ -27,7 +27,7 @@ function AppTable(props) {
               <td>{article.author}</td>
               <td>{article.layout}</td>
               <td>{article.type}</td>
-              <td>{article.tags}</td>
+              <td>{article.tags.join(", ")}</td>
             </tr>
           ))}
         </tbody>
