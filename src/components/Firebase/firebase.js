@@ -1,4 +1,4 @@
-import app from "firebase/app";
+import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import "firebase/storage";
@@ -15,13 +15,13 @@ const config = {
 
 class Firebase {
   constructor() {
-    this.app = app.initializeApp(config);
+    this.app = firebase.initializeApp(config);
 
-    this.auth = app.auth();
+    this.auth = firebase.auth();
 
-    this.storage = app.storage();
+    this.storage = firebase.storage();
 
-    this.db = app.firestore();
+    this.db = firebase.firestore();
   }
 
   // *** Auth API ***
@@ -129,7 +129,7 @@ class Firebase {
     const editionPDFRef = this.storage.ref(path);
     const uploadTask = editionPDFRef.put(editionFile, metadata);
     uploadTask.on(
-      app.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+      firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
       function (snapshot) {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
