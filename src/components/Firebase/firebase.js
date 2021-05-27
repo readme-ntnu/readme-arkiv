@@ -22,6 +22,12 @@ class Firebase {
     this.storage = firebase.storage();
 
     this.db = firebase.firestore();
+    // eslint-disable-next-line no-restricted-globals
+    if (location.hostname === "localhost") {
+      this.storage.useEmulator("localhost", 9199);
+      this.auth.useEmulator("http://localhost:9099");
+      this.db.useEmulator("localhost", 8080);
+    }
   }
 
   // *** Auth API ***
@@ -79,7 +85,7 @@ class Firebase {
 
   fetchEditionDataForYear = async (yearPrefix) => {
     const host =
-      process.env.NODE_ENV === "production"
+      process.env.REACT_APP_USE_EMULATOR !== "1"
         ? "https://us-central1-readme-arkiv.cloudfunctions.net/api/editionData"
         : "http://localhost:5000/readme-arkiv/us-central1/api/editionData";
     const res = await fetch(
