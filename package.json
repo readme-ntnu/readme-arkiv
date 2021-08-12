@@ -22,8 +22,11 @@
     "yup": "^0.32.9"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "npm run watch & npm run start:emulators",
+    "start:app": "react-scripts start",
+    "start:emulators": "firebase emulators:start --import=./firebase-fixtures",
     "build": "react-scripts build",
+    "watch": "cra-build-watch",
     "test": "react-scripts test",
     "serve": "firebase serve --only functions",
     "eject": "react-scripts eject",
@@ -44,5 +47,7 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "cra-build-watch": "^3.4.0"
+  }
 }
