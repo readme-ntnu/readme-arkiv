@@ -6,9 +6,8 @@ function useAnonymousLogin() {
   const [user, setUser] = useState();
   const [token, setToken] = useState();
 
-  // eslint-disable-next-line no-restricted-globals
-  if (location.hostname === "localhost") {
-    firebase.auth().useEmulator("http://localhost:9099")
+  if (process.env.NODE_ENV === "development") {
+    firebase.auth().useEmulator("http://localhost:9099");
   }
 
   useEffect(() => {

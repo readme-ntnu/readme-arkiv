@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "firebase": "8.6.2",
-    "firebase-admin": "9.9.0",
     "formik": "^2.2.8",
     "lodash": "^4.17.20",
     "react": "^16.14.0",

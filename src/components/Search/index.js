@@ -9,10 +9,9 @@ import { searchBox, end } from "./Search.module.css";
 
 const searchForArticles = async (searchString, token) => {
   const host =
-    process.env.REACT_APP_USE_EMULATOR !== "1"
+    process.env.NODE_ENV === "production"
       ? "https://us-central1-readme-arkiv.cloudfunctions.net/api/search"
-      : "http://localhost:5000/readme-arkiv/us-central1/api/search";
-
+      : "http://localhost:5001/readme-arkiv/us-central1/api/search";
   try {
     if (!token) {
       throw new Error("No token, so why even bother?");

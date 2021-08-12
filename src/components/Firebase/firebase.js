@@ -85,7 +85,7 @@ class Firebase {
 
   fetchEditionDataForYear = async (yearPrefix) => {
     const host =
-      process.env.REACT_APP_USE_EMULATOR !== "1"
+      process.env.NODE_ENV === "production"
         ? "https://us-central1-readme-arkiv.cloudfunctions.net/api/editionData"
         : "http://localhost:5001/readme-arkiv/us-central1/api/editionData";
     const res = await fetch(
