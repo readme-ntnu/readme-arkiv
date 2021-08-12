@@ -87,7 +87,7 @@ class Firebase {
     const host =
       process.env.REACT_APP_USE_EMULATOR !== "1"
         ? "https://us-central1-readme-arkiv.cloudfunctions.net/api/editionData"
-        : "http://localhost:5000/readme-arkiv/us-central1/api/editionData";
+        : "http://localhost:5001/readme-arkiv/us-central1/api/editionData";
     const res = await fetch(
       `${host}?year=${encodeURIComponent(yearPrefix.name)}`,
       {
@@ -252,11 +252,11 @@ class Firebase {
   };
 
   getPDFDownloadURL = (year, name) => {
-    return `https://storage.googleapis.com/${process.env.REACT_APP_STORAGE_BUCKET}/pdf/${year}/${name}`;
-  };
-
-  getImageDownloadURL = (year, name) => {
-    return `https://storage.googleapis.com/${process.env.REACT_APP_STORAGE_BUCKET}/images/${year}/${name}`;
+    const root =
+      process.env.NODE_ENV === "development"
+        ? "localhost:9199"
+        : "https://storage.googleapis.com";
+    return `${root}/${process.env.REACT_APP_STORAGE_BUCKET}/pdf/${year}/${name}`;
   };
 
   fetchSettings = async () => {

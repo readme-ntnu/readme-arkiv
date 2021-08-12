@@ -27,22 +27,25 @@ function ImageRow({ year, firebase, showListing }) {
 
   let images, imagesLen, images1, images2;
 
-  if (info.urls) {
-    images = info.urls.map((url, index) => {
-      return !showListing && info.pdfs[index].listinglop ? null : (
-        <a
-          className="RowImage"
-          key={url}
-          href={info.pdfs[index].url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image src={url} fluid />
-        </a>
-      );
-    });
-
-    images = images.filter(image => image !== null);
+  if (info.pdfs) {
+    images = info.pdfs
+      .map((pdf) =>
+        !showListing && pdf.listinglop ? null : (
+          <a
+            className="RowImage"
+            key={pdf.url}
+            href={pdf.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              src={`${process.env.PUBLIC_URL}/editionImage?year=${pdf.year}&edition=${pdf.edition}`}
+              fluid
+            />
+          </a>
+        )
+      )
+      .filter((image) => image);
 
     imagesLen = images.length;
     images1 = images.slice(0, 3);
@@ -55,7 +58,7 @@ function ImageRow({ year, firebase, showListing }) {
         <RowLoader minHeight={setRowMinHeight(year.name)} />
       ) : (
         <FadeIn height={setRowMinHeight(year.name)}>
-          {onLoad => (
+          {(onLoad) => (
             <>
               <div
                 onLoad={onLoad}
@@ -72,7 +75,7 @@ function ImageRow({ year, firebase, showListing }) {
                   minHeight:
                     images2 && images2.length
                       ? setImageMinHeight(year.name)
-                      : "0px"
+                      : "0px",
                 }}
               >
                 {images2 && images2.length ? images2 : null}

@@ -1,3 +1,5 @@
+const https = require("http");
+
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const express = require("express");
@@ -15,6 +17,8 @@ const db = admin.firestore();
 
 const app = express();
 app.use(cors({ origin: true }));
+
+const cacheMaxAge = 5 * 60 * 60; // 5 hrs
 
 const fuzzySearchOptions = {
   shouldSort: true,
@@ -73,9 +77,7 @@ app.get("/editionData", verifyToken, async (request, response) => {
     const pdfs = await bucket.getFiles({
       prefix: `pdf/${year}`,
     });
-    const images = await bucket.getFiles({
-      prefix: `images/${year}`,
-    });
+
     const pdfUrls = await Promise.all(
       pdfs[0].map(async (file) => {
         const isListing = await file
@@ -85,19 +87,19 @@ app.get("/editionData", verifyToken, async (request, response) => {
             console.warn("Fond no metadata with error: ", error);
             return false;
           });
+        const edition = file.name.replace(".pdf", "").split("-")[1];
         return {
           listinglop: isListing,
           url: getDownloadURL(file.name, file.bucket.name),
+          year: year,
+          edition: edition,
         };
       })
     );
-    const imageUrls = images[0].map((file) =>
-      getDownloadURL(file.name, file.bucket.name)
-    );
+
     const returnObject = {
       year,
       pdfs: pdfUrls.reverse(),
-      urls: imageUrls.reverse(),
     };
     response.set("Cache-Control", "public, max-age=10800");
     response.json(returnObject);
@@ -107,6 +109,27 @@ app.get("/editionData", verifyToken, async (request, response) => {
 });
 
 exports.api = functions.https.onRequest(app);
+
+exports.editionImage = functions.https.onRequest((request, response) => {
+  try {
+    const { year, edition } = request.query;
+
+    const downloadURL = getDownloadURL(
+      `images/${year}/${year}-${edition}.jpg`,
+      admin.storage().bucket().name
+    );
+
+    const responsePipe = response.set(
+      "Cache-Control",
+      `public, max-age=${cacheMaxAge}`
+    );
+    console.log(downloadURL);
+
+    https.get(downloadURL, (res) => res.pipe(responsePipe));
+  } catch (error) {
+    response.status(500).json({ message: error.toString() });
+  }
+});
 
 const runtimeOpts = {
   timeoutSeconds: 180,
@@ -144,7 +167,7 @@ exports.handlePDFUpload = functions
 
     await new Promise((resolve, reject) => {
       gs()
-        .executablePath("ghostscript/./gs-950-linux-x86_64")
+        .executablePath("gs")
         .batch()
         .nopause()
         .device("jpeg")
@@ -187,5 +210,9 @@ exports.handlePDFUpload = functions
   });
 
 getDownloadURL = (name, bucketName) => {
-  return `https://storage.googleapis.com/${bucketName}/${name}`;
+  return `${
+    process.env.NODE_ENV === "production"
+      ? "https://storage.googleapis.com"
+      : "http://localhost:9199"
+  }/${bucketName}/${name}`;
 };

@@ -12,6 +12,10 @@
     ],
     "rewrites": [
       {
+        "source": "/editionImage",
+        "function": "editionImage"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
