@@ -10,7 +10,6 @@ import Loading from "../Loading";
 function Home({ firebase }) {
   const { user } = useAnonymousLogin();
   const [data, setData] = useState([]);
-  const [showListing, setShowListing] = useState(false);
   const [downloading, setDownloading] = useState(true);
 
   useEffect(() => {
@@ -18,10 +17,8 @@ function Home({ firebase }) {
       let isSubscribed = true;
       setDownloading(true);
       const items = await firebase.editionYearPrefixes();
-      const settings = await firebase.getSettings();
       if (isSubscribed) {
         setData(items);
-        setShowListing(settings.showListing);
         setDownloading(false);
       }
       return () => (isSubscribed = false);
@@ -43,7 +40,7 @@ function Home({ firebase }) {
                 <h2 className="year">{year.name}</h2>
               </Fade>
               <LazyLoad height={setRowMinHeight(year.name)} offset={100} once>
-                <ImageRow year={year} key={year} showListing={showListing} />
+                <ImageRow year={year} key={year} />
               </LazyLoad>
             </div>
           );

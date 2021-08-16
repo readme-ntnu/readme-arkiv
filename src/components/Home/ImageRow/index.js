@@ -7,7 +7,7 @@ import FadeIn from "react-lazyload-fadein";
 import "./ImageRow.css";
 import RowLoader from "./RowLoader";
 
-function ImageRow({ year, firebase, showListing }) {
+function ImageRow({ year, firebase }) {
   const [downloading, setDownloading] = useState(true);
   const [info, setInfo] = useState([]);
 
@@ -29,22 +29,20 @@ function ImageRow({ year, firebase, showListing }) {
 
   if (info.pdfs) {
     images = info.pdfs
-      .map((pdf) =>
-        !showListing && pdf.listinglop ? null : (
-          <a
-            className="RowImage"
-            key={pdf.url}
-            href={pdf.url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src={`${process.env.PUBLIC_URL}/editionImage?year=${pdf.year}&edition=${pdf.edition}`}
-              fluid
-            />
-          </a>
-        )
-      )
+      .map((pdf) => (
+        <a
+          className="RowImage"
+          key={pdf.url}
+          href={pdf.url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            src={`${process.env.PUBLIC_URL}/editionImage?year=${pdf.year}&edition=${pdf.edition}`}
+            fluid
+          />
+        </a>
+      ))
       .filter((image) => image);
 
     imagesLen = images.length;

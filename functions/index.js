@@ -77,29 +77,28 @@ app.get("/editionData", verifyToken, async (request, response) => {
     const pdfs = await bucket.getFiles({
       prefix: `pdf/${year}`,
     });
+    const showListing = (
+      await admin.firestore().collection("settings").get()
+    ).docs[0].get("showListing");
 
-    const pdfUrls = await Promise.all(
-      pdfs[0].map(async (file) => {
-        const isListing = await file
-          .getMetadata()
-          .then((data) => Boolean(data[0].metadata.listinglop))
-          .catch((error) => {
-            console.warn("Fond no metadata with error: ", error);
-            return false;
-          });
-        const edition = file.name.replace(".pdf", "").split("-")[1];
-        return {
-          listinglop: isListing,
-          url: getDownloadURL(file.name, file.bucket.name),
-          year: year,
-          edition: edition,
-        };
-      })
-    );
+    const pdfUrls = pdfs[0].map((file) => {
+      const isListing =
+        file.metadata.metadata.listinglop.toLowerCase() === "true";
+
+      const edition = file.name.replace(".pdf", "").split("-")[1];
+      return {
+        listinglop: isListing,
+        url: getDownloadURL(file.name, file.bucket.name),
+        year: year,
+        edition: edition,
+      };
+    });
 
     const returnObject = {
       year,
-      pdfs: pdfUrls.reverse(),
+      pdfs: pdfUrls
+        .filter((data) => (data.listinglop && showListing) || !data.listinglop)
+        .reverse(),
     };
     response.set("Cache-Control", "public, max-age=10800");
     response.json(returnObject);
@@ -123,7 +122,6 @@ exports.editionImage = functions.https.onRequest((request, response) => {
       "Cache-Control",
       `public, max-age=${cacheMaxAge}`
     );
-    console.log(downloadURL);
 
     https.get(downloadURL, (res) => res.pipe(responsePipe));
   } catch (error) {
@@ -160,7 +158,9 @@ exports.handlePDFUpload = functions
 
     await fs.ensureDir(workingDir);
 
-    await bucket.file(filePath).download({ destination: tempFilePath });
+    await bucket
+      .file(filePath)
+      .download({ destination: tempFilePath, validation: false });
     console.log("PDF downloaded locally to", tempFilePath);
 
     await fs.ensureFile(tempJPGFilePath);
