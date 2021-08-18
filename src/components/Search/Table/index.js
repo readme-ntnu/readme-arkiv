@@ -30,7 +30,9 @@ function AppTable(props) {
           {props.articles.map((article) => (
             <tr key={article._id}>
               <td>
-                <a href={article.url}>{article.edition}</a>
+                <a href={article.url} target="_blank" rel="noopener noreferrer">
+                  {article.edition}
+                </a>
               </td>
               <td>{article.title}</td>
               <td>{article.author}</td>
