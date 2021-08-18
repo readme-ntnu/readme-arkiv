@@ -100,7 +100,6 @@ app.get("/editionData", verifyToken, async (request, response) => {
         .filter((data) => (data.listinglop && showListing) || !data.listinglop)
         .reverse(),
     };
-    response.set("Cache-Control", "public, max-age=10800");
     response.json(returnObject);
   } catch (error) {
     response.status(500).json({ message: error.toString() });
@@ -212,7 +211,7 @@ exports.handlePDFUpload = functions
 getDownloadURL = (name, bucketName) => {
   return `${
     process.env.NODE_ENV === "production"
-      ? "https://storage.googleapis.com"
+      ? "http://storage.googleapis.com"
       : "http://localhost:9199"
   }/${bucketName}/${name}`;
 };
