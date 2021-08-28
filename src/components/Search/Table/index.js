@@ -44,9 +44,11 @@ function AppTable({ hits, refineNext, hasMore }) {
             </tr>
           ))}
         </tbody>
-        <Button className={showMore} onClick={refineNext} disabled={!hasMore}>
-          Show more
-        </Button>
+        {hasMore && (
+          <Button className={showMore} onClick={refineNext}>
+            Show more
+          </Button>
+        )}
       </Table>
     </Fade>
   );
