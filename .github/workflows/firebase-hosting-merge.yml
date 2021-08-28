@@ -14,22 +14,16 @@ jobs:
         uses: actions/checkout@v2
       - name: Install FE dependencies and build
         run: npm ci && npm run build
-      - name: Deploy to Firebase Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_README_ARKIV }}"
-          channelId: live
-          projectId: readme-arkiv
 
       - name: Install Functions packages
         run: |
           cd functions
           npm ci
+          cd ..
       # Deploying the functions to Firebase
-      - name: Deploy to Firebase Functions
+      - name: Deploy to Firebase Functions and hosting
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --only functions
+          args: deploy
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
