@@ -1,0 +1,9 @@
+.hit {
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+}
+
+.hit > * {
+  margin-right: 5px;
+}

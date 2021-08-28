@@ -1,78 +1,32 @@
-import React, { useState } from "react";
-import { debounce } from "lodash";
+import React from "react";
 import { Spinner } from "react-bootstrap";
-import { useAnonymousLogin } from "../Firebase";
+import {
+  InstantSearch,
+  SearchBox,
+  Hits,
+  Pagination,
+} from "react-instantsearch-dom";
 
-import AppTable from "./Table";
+import "instantsearch.css/themes/satellite.css";
 
-import { searchBox, end } from "./Search.module.css";
+import algoliasearch from "algoliasearch/lite";
 
-const searchForArticles = async (searchString, token) => {
-  const host =
-    process.env.NODE_ENV === "production"
-      ? "https://us-central1-readme-arkiv.cloudfunctions.net/api/search"
-      : "http://localhost:5001/readme-arkiv/us-central1/api/search";
-  try {
-    if (!token) {
-      throw new Error("No token, so why even bother?");
-    }
+import Hit from "./Hit";
 
-    const res = await fetch(
-      `${host}?searchString=${encodeURIComponent(searchString)}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const result = await res.json();
-    return result.articles || [];
-  } catch (error) {
-    return [];
-  }
-};
+const searchClient = algoliasearch(
+  "K9OSMLFRD3",
+  "e9162c9f16b6ca303aa413e062713697"
+);
 
 function Search() {
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [hasData, setHasData] = useState(false);
-
-  const { token } = useAnonymousLogin();
-
-  const search = debounce(async (searchString) => {
-    if (!searchString) {
-      setArticles([]);
-      setHasData(false);
-      return;
-    }
-    setLoading(true);
-    setHasData(false);
-    const newArticles = await searchForArticles(searchString, token);
-    setArticles(newArticles);
-    setLoading(false);
-    setHasData(true);
-  }, 300);
-
   return (
     <>
       <h1>Artikkelsøk</h1>
-      <div className={searchBox}>
-        <input
-          onChange={(event) => search(event.currentTarget.value)}
-          placeholder="Søk..."
-          size="32"
-        />
-        <div className={end}>
-          {loading ? (
-            <Spinner animation="border" />
-          ) : (
-            <i className={`material-icons md-36 ${search}`}>search</i>
-          )}
-        </div>
-      </div>
-      {hasData ? <AppTable articles={articles} /> : null}
+      <InstantSearch searchClient={searchClient} indexName="Articles">
+        <SearchBox />
+        <Hits hitComponent={Hit} />
+        <Pagination />
+      </InstantSearch>
     </>
   );
 }
