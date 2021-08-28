@@ -16,6 +16,8 @@ Deretter klon repoet og installer avhengigheter:
 git clone git@github.com:readme-ntnu/readme-arkiv.git
 cd readme-arkiv
 npm install
+cd functions
+npm install
 ```
 
 Så må du logge inn på Firebase i terminalen din:
