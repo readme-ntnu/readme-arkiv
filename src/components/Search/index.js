@@ -1,17 +1,11 @@
 import React from "react";
-import { Spinner } from "react-bootstrap";
-import {
-  InstantSearch,
-  SearchBox,
-  Hits,
-  Pagination,
-} from "react-instantsearch-dom";
-
-import "instantsearch.css/themes/satellite.css";
+import AppTable from "./Table";
+import SearchBox from "./SearchBox";
+import { InstantSearch } from "react-instantsearch-dom";
 
 import algoliasearch from "algoliasearch/lite";
 
-import Hit from "./Hit";
+import "instantsearch.css/themes/reset.css";
 
 const searchClient = algoliasearch(
   "K9OSMLFRD3",
@@ -24,8 +18,7 @@ function Search() {
       <h1>Artikkelsøk</h1>
       <InstantSearch searchClient={searchClient} indexName="Articles">
         <SearchBox />
-        <Hits hitComponent={Hit} />
-        <Pagination />
+        <AppTable />
       </InstantSearch>
     </>
   );

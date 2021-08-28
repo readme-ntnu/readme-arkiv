@@ -1,8 +1,10 @@
 import { isArray } from "lodash";
 import React from "react";
-import { Table, Fade } from "react-bootstrap";
+import { Table, Fade, Button } from "react-bootstrap";
 
-import { searchTable } from "./Table.module.css";
+import { searchTable, showMore } from "./Table.module.css";
+
+import { connectInfiniteHits } from "react-instantsearch-dom";
 
 const parseTags = (tags) => {
   if (isArray(tags)) {
@@ -12,7 +14,7 @@ const parseTags = (tags) => {
   }
 };
 
-function AppTable(props) {
+function AppTable({ hits, refineNext, hasMore }) {
   return (
     <Fade in appear>
       <Table striped bordered hover responsive="lg" className={searchTable}>
@@ -27,24 +29,27 @@ function AppTable(props) {
           </tr>
         </thead>
         <tbody>
-          {props.articles.map((article) => (
-            <tr key={article._id}>
+          {hits.map((hit) => (
+            <tr key={hit._id}>
               <td>
-                <a href={article.url} target="_blank" rel="noopener noreferrer">
-                  {article.edition}
+                <a href={hit.url} target="_blank" rel="noopener noreferrer">
+                  {hit.edition}
                 </a>
               </td>
-              <td>{article.title}</td>
-              <td>{article.author}</td>
-              <td>{article.layout}</td>
-              <td>{article.type}</td>
-              <td>{parseTags(article.tags)}</td>
+              <td>{hit.title}</td>
+              <td>{hit.author}</td>
+              <td>{hit.layout}</td>
+              <td>{hit.type}</td>
+              <td>{parseTags(hit.tags)}</td>
             </tr>
           ))}
         </tbody>
+        <Button className={showMore} onClick={refineNext} disabled={!hasMore}>
+          Show more
+        </Button>
       </Table>
     </Fade>
   );
 }
 
-export default AppTable;
+export default connectInfiniteHits(AppTable);
