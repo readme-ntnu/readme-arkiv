@@ -1,10 +1,13 @@
-import { isArray } from "lodash";
 import React from "react";
+import { isArray } from "lodash";
+import { compose } from "recompose";
 import { Table, Fade, Button } from "react-bootstrap";
+import {
+  connectInfiniteHits,
+  connectStateResults,
+} from "react-instantsearch-dom";
 
 import { searchTable, showMore } from "./Table.module.css";
-
-import { connectInfiniteHits } from "react-instantsearch-dom";
 
 const parseTags = (tags) => {
   if (isArray(tags)) {
@@ -14,8 +17,8 @@ const parseTags = (tags) => {
   }
 };
 
-function AppTable({ hits, refineNext, hasMore }) {
-  return (
+function AppTable({ hits, refineNext, hasMore, searchState }) {
+  return searchState && searchState.query ? (
     <Fade in appear>
       <Table striped bordered hover responsive="lg" className={searchTable}>
         <thead>
@@ -51,7 +54,7 @@ function AppTable({ hits, refineNext, hasMore }) {
         )}
       </Table>
     </Fade>
-  );
+  ) : null;
 }
 
-export default connectInfiniteHits(AppTable);
+export default compose(connectInfiniteHits, connectStateResults)(AppTable);
