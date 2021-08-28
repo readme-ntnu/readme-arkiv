@@ -1,11 +1,13 @@
 import React from "react";
 import AppTable from "./Table";
 import SearchBox from "./SearchBox";
-import { InstantSearch } from "react-instantsearch-dom";
+import { InstantSearch, PoweredBy } from "react-instantsearch-dom";
 
 import algoliasearch from "algoliasearch/lite";
 
 import "instantsearch.css/themes/reset.css";
+
+import { poweredBy } from "./Search.module.css";
 
 const searchClient = algoliasearch(
   "K9OSMLFRD3",
@@ -19,6 +21,12 @@ function Search() {
       <InstantSearch searchClient={searchClient} indexName="Articles">
         <SearchBox />
         <AppTable />
+        <PoweredBy
+          translations={{
+            searchBy: "Søk levert av",
+          }}
+          className={poweredBy}
+        />
       </InstantSearch>
     </>
   );
