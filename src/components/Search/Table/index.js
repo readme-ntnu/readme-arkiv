@@ -1,8 +1,13 @@
-import { isArray } from "lodash";
 import React from "react";
-import { Table, Fade } from "react-bootstrap";
+import { isArray } from "lodash";
+import { compose } from "recompose";
+import { Table, Fade, Button } from "react-bootstrap";
+import {
+  connectInfiniteHits,
+  connectStateResults,
+} from "react-instantsearch-dom";
 
-import { searchTable } from "./Table.module.css";
+import { searchTable, showMore } from "./Table.module.css";
 
 const parseTags = (tags) => {
   if (isArray(tags)) {
@@ -12,8 +17,8 @@ const parseTags = (tags) => {
   }
 };
 
-function AppTable(props) {
-  return (
+function AppTable({ hits, refineNext, hasMore, searchState }) {
+  return searchState && searchState.query ? (
     <Fade in appear>
       <Table striped bordered hover responsive="lg" className={searchTable}>
         <thead>
@@ -27,24 +32,29 @@ function AppTable(props) {
           </tr>
         </thead>
         <tbody>
-          {props.articles.map((article) => (
-            <tr key={article._id}>
+          {hits.map((hit) => (
+            <tr key={hit._id}>
               <td>
-                <a href={article.url} target="_blank" rel="noopener noreferrer">
-                  {article.edition}
+                <a href={hit.url} target="_blank" rel="noopener noreferrer">
+                  {hit.edition}
                 </a>
               </td>
-              <td>{article.title}</td>
-              <td>{article.author}</td>
-              <td>{article.layout}</td>
-              <td>{article.type}</td>
-              <td>{parseTags(article.tags)}</td>
+              <td>{hit.title}</td>
+              <td>{hit.author}</td>
+              <td>{hit.layout}</td>
+              <td>{hit.type}</td>
+              <td>{parseTags(hit.tags)}</td>
             </tr>
           ))}
         </tbody>
+        {hasMore && (
+          <Button className={showMore} onClick={refineNext}>
+            Show more
+          </Button>
+        )}
       </Table>
     </Fade>
-  );
+  ) : null;
 }
 
-export default AppTable;
+export default compose(connectInfiniteHits, connectStateResults)(AppTable);

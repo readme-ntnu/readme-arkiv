@@ -4,7 +4,7 @@ Artikkel og utgavedatabase for studentmagasinet [readme](https://readme.abakus.n
 
 ## Hvordan fungerer dette?
 
-Dette er et Firebase-prosjekt. Utgavene med forside-bilde og PDF ligger i Firebase Storage, mens artiklene ligger i en Firestore-database. Klienten kan søke etter artikler i denne ved bruk av en Cloud Function ved navn `search`. Den functionen fungerer altså som en enkel backend-server. Klienten er laga med Create React App.
+Dette er et Firebase-prosjekt. Utgavene med forside-bilde og PDF ligger i Firebase Storage, mens artiklene ligger i en Firestore-database. Klienten kan søke etter artikler i denne ved hjelp av et søkegrensersnitt som drives av Algolia. Klienten er laga med Create React App.
 
 ## Kom i gang
 
@@ -59,3 +59,6 @@ Dette vil bygge klienten og deploye både den og functions.
 ## Bidrag
 
 Om du ønsker å bidra, er du hjertelig velkommen til det. Prosjektet benytter seg av [git flow](https://danielkummer.github.io/git-flow-cheatsheet/index.html) som branching-modell. Det ønskes at man følger denne.
+
+## Andre ting du bør vite
+Søket i applikasjonen drives av [Algolia](https://www.algolia.com). Dersom du ønsker å gjøre endringer i oppsettet der, trenger du tilgang til Algolia-applikasjonen. Spør Andreas Hammer Håversen. 
