@@ -49,7 +49,7 @@ function AppTable({ hits, refineNext, hasMore, searchState }) {
         </tbody>
         {hasMore && (
           <Button className={showMore} onClick={refineNext}>
-            Show more
+            Vis mer
           </Button>
         )}
       </Table>
