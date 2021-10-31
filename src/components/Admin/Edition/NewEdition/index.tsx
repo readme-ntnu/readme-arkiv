@@ -5,7 +5,7 @@ import { Form, Button, Col, Alert, ProgressBar, Fade } from "react-bootstrap";
 import SubmitButton from "../../Common/SubmitButton";
 import { withAuthorization } from "../../../Session";
 
-import { editionForm, alertInfo, progressBar } from "./NewEdition.module.css";
+import styles from "./NewEdition.module.css";
 
 const schema = Yup.object().shape({
   editionYear: Yup.number()
@@ -82,7 +82,7 @@ function NewEditionPage({ firebase }) {
         }) => {
           return (
             <Fade appear in>
-              <Form className={editionForm} onSubmit={handleSubmit}>
+              <Form className={styles.editionForm} onSubmit={handleSubmit}>
                 <Form.Row>
                   <Form.Group as={Col}>
                     <Form.Label>Utgaveår</Form.Label>
@@ -148,7 +148,7 @@ function NewEditionPage({ firebase }) {
 
                 {isSubmitting || status.success ? (
                   <ProgressBar
-                    className={progressBar}
+                    className={styles.progressBar}
                     striped
                     animated={isSubmitting}
                     now={status.progress}
@@ -156,7 +156,7 @@ function NewEditionPage({ firebase }) {
                   />
                 ) : null}
                 {status.error ? (
-                  <Alert className={alertInfo} variant="error">
+                  <Alert className={styles.alertInfo} variant="error">
                     Noe gikk galt!
                     <br />
                     Vent litt, og prøv igjen. Dersom problemet vedvarer, kontakt
@@ -180,7 +180,7 @@ function NewEditionPage({ firebase }) {
                   </Alert>
                 ) : null}
                 {status.success ? (
-                  <Alert className={alertInfo} variant="primary">
+                  <Alert className={styles.alertInfo} variant="primary">
                     Opplasting fullført!
                     <br />
                     Merk at det kan ta litt tid før utgaven dukker opp på

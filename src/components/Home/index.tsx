@@ -4,13 +4,13 @@ import LazyLoad from "react-lazyload";
 
 import "./Home.css";
 import { withFirebase, useAnonymousLogin } from "../Firebase";
-import ImageRow, { setRowMinHeight } from "./ImageRow/";
+import ImageRow, { setRowMinHeight } from "./ImageRow";
 import Loading from "../Loading";
 
 function Home({ firebase }) {
   const { user } = useAnonymousLogin();
   const [data, setData] = useState([]);
-  const [downloading, setDownloading] = useState(true);
+  const [downloading, setDownloading] = useState<boolean>(true);
 
   useEffect(() => {
     async function fetchData() {

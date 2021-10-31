@@ -7,7 +7,7 @@ import algoliasearch from "algoliasearch/lite";
 
 import "instantsearch.css/themes/reset.css";
 
-import { poweredBy } from "./Search.module.css";
+import styles from "./Search.module.css";
 
 const searchClient = algoliasearch(
   "K9OSMLFRD3",
@@ -25,7 +25,7 @@ function Search() {
           translations={{
             searchBy: "Søk levert av",
           }}
-          className={poweredBy}
+          className={styles.poweredBy}
         />
       </InstantSearch>
     </>

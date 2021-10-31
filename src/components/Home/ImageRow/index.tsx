@@ -7,7 +7,7 @@ import FadeIn from "react-lazyload-fadein";
 import "./ImageRow.css";
 import RowLoader from "./RowLoader";
 
-function ImageRow({ year, firebase }) {
+function ImageRow({ year, firebase}) {
   const [downloading, setDownloading] = useState(true);
   const [info, setInfo] = useState([]);
 

@@ -14,6 +14,11 @@ const config = {
 };
 
 class Firebase {
+  app: firebase.app.App;
+  auth: firebase.auth.Auth;
+  storage: firebase.storage.Storage;
+  db: firebase.firestore.Firestore;
+
   constructor() {
     this.app = firebase.initializeApp(config);
 
@@ -32,15 +37,16 @@ class Firebase {
 
   // *** Auth API ***
 
-  doSignInWithEmailAndPassword = (email, password) =>
+  doSignInWithEmailAndPassword = (email: string, password: string) =>
     this.auth.signInWithEmailAndPassword(email, password);
 
-  doPasswordReset = (email) => this.auth.sendPasswordResetEmail(email);
+  doPasswordReset = (email: string) => this.auth.sendPasswordResetEmail(email);
 
   doSignOut = () => this.auth.signOut();
 
   // *** Articles API ***
-  article = (id) => this.db.collection("articles").doc(`${id}`);
+  article = (id: string | number) =>
+    this.db.collection("articles").doc(`${id}`);
 
   articles = () => this.db.collection("articles");
 
@@ -51,18 +57,19 @@ class Firebase {
     this.updateArticleInDB(article, callback, errorCallback);
 
   // *** Editions API ***
-  editions = (year) => this.fetchEditionDataForYear(year);
+  editions = (year: string | number) => this.fetchEditionDataForYear(year);
 
-  editionListData = (year) => this.fetchEditionListDataForYear(year);
+  editionListData = (year: string | number) =>
+    this.fetchEditionListDataForYear(year);
 
   editionYearPrefixes = () => this.fetchYearPrefixes();
 
   uploadEdition = (
-    editionFile,
-    listinglop,
-    callback = undefined,
-    errorCallback = undefined,
-    updateProgessCallback = undefined
+    editionFile: File,
+    listinglop: boolean,
+    callback: () => void = undefined,
+    errorCallback: () => void = undefined,
+    updateProgessCallback: () => void = undefined
   ) =>
     this.doEditionUpload(
       editionFile,
@@ -75,7 +82,7 @@ class Firebase {
   // *** Settings API ***
   getSettings = () => this.fetchSettings();
 
-  setShowListing = (value) => this.setShowListingSetting(value);
+  setShowListing = (value: boolean) => this.setShowListingSetting(value);
 
   // *** Helper functions ***
   fetchYearPrefixes = async () => {
@@ -117,11 +124,11 @@ class Firebase {
   };
 
   doEditionUpload = async (
-    editionFile,
-    listinglop,
-    callback,
-    errorCallback,
-    updateProgessCallback
+    editionFile: File,
+    listinglop: boolean,
+    callback: () => void,
+    errorCallback: () => void,
+    updateProgessCallback: (progress: number) => void
   ) => {
     const self = this;
     const year = editionFile.name.split("-")[0];
@@ -175,7 +182,7 @@ class Firebase {
     );
   };
 
-  updateArticlePDFURL = async (editionName, newURL) => {
+  updateArticlePDFURL = async (editionName: string, newURL: string) => {
     const articles = await this.db
       .collection("articles")
       .where("edition", "==", editionName)
@@ -189,7 +196,11 @@ class Firebase {
     }
   };
 
-  addArticleToDB = async (article, callback, errorCallback) => {
+  addArticleToDB = async (
+    article,
+    callback: () => void,
+    errorCallback: () => void
+  ) => {
     try {
       const url = this.getArticlePDFURL(article);
       article.url = url;
@@ -209,7 +220,11 @@ class Firebase {
     }
   };
 
-  updateArticleInDB = async (article, callback, errorCallback) => {
+  updateArticleInDB = async (
+    article,
+    callback: () => void,
+    errorCallback: () => void
+  ) => {
     try {
       const url = this.getArticlePDFURL(article);
       article.url = url;
@@ -251,7 +266,7 @@ class Firebase {
     }
   };
 
-  getPDFDownloadURL = (year, name) => {
+  getPDFDownloadURL = (year: string, name: string) => {
     const root =
       process.env.NODE_ENV === "development"
         ? "localhost:9199"
@@ -268,7 +283,7 @@ class Firebase {
     return settings.docs[0].data();
   };
 
-  setShowListingSetting = async (value) => {
+  setShowListingSetting = async (value: boolean) => {
     const settings = await this.db.collection("settings").get();
     await settings.docs[0].ref.update({
       showListing: value,

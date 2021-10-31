@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import useDarkMode from "use-dark-mode";
 import CrossfadeImage from "react-crossfade-image";
 
-import { app, readmelogo, header, content } from "./App.module.css";
+import styles from "./App.module.css";
 
 import * as ROUTES from "./constants/routes";
 
@@ -31,14 +31,14 @@ function App() {
 
   return (
     <Router>
-      <div className={app}>
+      <div className={styles.app}>
         <AppNavBar />
-        <header className={header}>
-          <div className={readmelogo}>
+        <header className={styles.header}>
+          <div className={styles.readmelogo}>
             <CrossfadeImage src={logoSrc} alt="Logo" />
           </div>
         </header>
-        <div className={content}>
+        <div className={styles.content}>
           <Switch>
             <Route exact path={ROUTES.HOME} component={Home} />
             <Route path={ROUTES.SEARCH} component={Search} />

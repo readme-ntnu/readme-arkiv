@@ -3,8 +3,8 @@ import firebase from "firebase/app";
 import "firebase/auth";
 
 function useAnonymousLogin() {
-  const [user, setUser] = useState();
-  const [token, setToken] = useState();
+  const [user, setUser] = useState<firebase.User>();
+  const [token, setToken] = useState<string>();
 
   if (process.env.NODE_ENV === "development") {
     firebase.auth().useEmulator("http://localhost:9099");
@@ -15,7 +15,10 @@ function useAnonymousLogin() {
       firebase.auth().signInAnonymously().catch(console.error);
     } else {
       setUser(firebase.auth().currentUser);
-      setToken(firebase.auth().currentUser.getIdToken());
+      firebase
+        .auth()
+        .currentUser.getIdToken()
+        .then((token) => setToken(token));
     }
   }, []);
 

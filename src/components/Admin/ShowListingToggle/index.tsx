@@ -4,10 +4,10 @@ import Switch from "react-switch";
 
 import { withFirebase } from "../../Firebase";
 
-import { toggleContainer } from "./ShowListingToggle.module.css";
+import style from "./ShowListingToggle.module.css";
 
 function ShowListingToggle({ firebase }) {
-  const [settings, setSettings] = useState({});
+  const [settings, setSettings] = useState<{showListing: boolean}>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ function ShowListingToggle({ firebase }) {
   }
 
   return (
-    <div className={toggleContainer}>
+    <div className={style.toggleContainer}>
       <p>Vis listingsutgaver:</p>
       <Switch
         onChange={toggleShowListing}

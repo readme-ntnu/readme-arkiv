@@ -25,6 +25,12 @@ const INITIAL_STATE = {
   submitting: false,
 };
 class SignInFormBase extends Component {
+  state: {
+    email: string,
+    password: string,
+    error: Error | null,
+    submitting: boolean
+  }
   constructor(props) {
     super(props);
     this.state = { ...INITIAL_STATE };

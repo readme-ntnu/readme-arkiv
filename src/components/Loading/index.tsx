@@ -5,7 +5,13 @@ import { Fade, Spinner } from "react-bootstrap";
 
 import "./Loading.css";
 
-function Loading({ styles, msg = "Laster..." }) {
+function Loading({
+  styles,
+  msg = "Laster...",
+}: {
+  styles?: React.StyleHTMLAttributes<HTMLDivElement>,
+  msg?: string,
+}) {
   const darkmode = useDarkMode();
   return (
     <Fade appear in>

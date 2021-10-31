@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Spinner } from "react-bootstrap";
-import { submitButton, submitSpinner } from "./SubmitButton.module.css";
+import styles from "./SubmitButton.module.css";
 
 function SubmitButton({ isValid, isSubmitting, buttonText }) {
   return (
@@ -8,11 +8,11 @@ function SubmitButton({ isValid, isSubmitting, buttonText }) {
       variant="primary"
       type="submit"
       disabled={!isValid || isSubmitting}
-      className={submitButton}
+      className={styles.submitButton}
     >
       {isSubmitting ? (
         <Spinner
-          className={submitSpinner}
+          className={styles.submitSpinner}
           as="span"
           animation="border"
           size="sm"

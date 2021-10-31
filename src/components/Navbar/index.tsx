@@ -8,7 +8,7 @@ import { AuthUserContext } from "../Session";
 import SignOutButton from "../SignOut";
 import LightSwitch from "../LightSwitch";
 
-import { lightSwitch, navbar } from "./Navbar.module.css";
+import styles from "./Navbar.module.css";
 
 import * as ROUTES from "../../constants/routes.js";
 
@@ -16,7 +16,7 @@ function AppNavbar() {
   const isDark = useDarkMode();
   return (
     <Navbar
-      className={navbar}
+      className={styles.navbar}
       collapseOnSelect
       expand="sm"
       variant={isDark.value ? "dark" : "light"}
@@ -32,7 +32,7 @@ function AppNavbar() {
           </LinkContainer>
           <Nav.Link href="https://abakus.no/">Abakus.no</Nav.Link>
         </Nav>
-        <Nav className={lightSwitch}>
+        <Nav className={styles.lightSwitch}>
           <LightSwitch />
         </Nav>
         <AuthUserContext.Consumer>

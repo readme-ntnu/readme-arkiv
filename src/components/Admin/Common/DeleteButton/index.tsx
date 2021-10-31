@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Spinner } from "react-bootstrap";
 
-import { deleteButton } from "./DeleteButton.module.css";
+import styles from "./DeleteButton.module.css";
 
 function DeleteButton({ docRef, removeSelf }) {
   const [isDeleting, setIsDeleting] = useState(false);
@@ -20,7 +20,7 @@ function DeleteButton({ docRef, removeSelf }) {
   }
 
   return (
-    <div className={deleteButton}>
+    <div className={styles.deleteButton}>
       {isDeleting ? (
         <Spinner animation="border" />
       ) : (

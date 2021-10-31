@@ -1,4 +1,4 @@
-import React from "react";
+import React, {FC} from "react";
 import { isArray } from "lodash";
 import { compose } from "recompose";
 import { Table, Fade, Button } from "react-bootstrap";
@@ -7,7 +7,7 @@ import {
   connectStateResults,
 } from "react-instantsearch-dom";
 
-import { searchTable, showMore } from "./Table.module.css";
+import styles from "./Table.module.css";
 
 const parseTags = (tags) => {
   if (isArray(tags)) {
@@ -17,10 +17,17 @@ const parseTags = (tags) => {
   }
 };
 
-function AppTable({ hits, refineNext, hasMore, searchState }) {
+interface SearchTableProps {
+  hits: any;
+  refineNext: any;
+  hasMore: any;
+  searchState: any;
+}
+
+function AppTable({ hits, refineNext, hasMore, searchState }): FC<SearchTableProps> {
   return searchState && searchState.query ? (
     <Fade in appear>
-      <Table striped bordered hover responsive="lg" className={searchTable}>
+      <Table striped bordered hover responsive="lg" className={styles.searchTable}>
         <thead>
           <tr>
             <th>Utgave</th>
@@ -48,7 +55,7 @@ function AppTable({ hits, refineNext, hasMore, searchState }) {
           ))}
         </tbody>
         {hasMore && (
-          <Button className={showMore} onClick={refineNext}>
+          <Button className={styles.showMore} onClick={refineNext}>
             Vis mer
           </Button>
         )}

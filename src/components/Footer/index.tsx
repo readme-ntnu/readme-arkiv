@@ -1,11 +1,11 @@
 import React from "react";
 import ReadmeLogo from "../ReadmeLogo";
 
-import { footer } from "./Footer.module.css";
+import style from "./Footer.module.css";
 
 function Footer() {
   return (
-    <div className={footer}>
+    <div className={style.footer}>
       <p>
         Laget med ❤ av <ReadmeLogo />
       </p>

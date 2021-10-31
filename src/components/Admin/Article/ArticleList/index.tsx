@@ -5,7 +5,7 @@ import { Button, Fade } from "react-bootstrap";
 import Loading from "../../../Loading";
 import ListElement from "./ListElement";
 
-import { articleList, pagination } from "./ArticleList.module.css";
+import styles from "./ArticleList.module.css";
 
 function ArticleList({ firebase }) {
   const firstField = "edition";
@@ -69,7 +69,7 @@ function ArticleList({ firebase }) {
 
   return (
     <Fade in appear>
-      <div className={articleList}>
+      <div className={styles.articleList}>
         <h1>Artikler</h1>
         {downloading ? (
           <Loading />
@@ -79,7 +79,7 @@ function ArticleList({ firebase }) {
               <ListElement key={i} obj={article} removeSelf={removeItem} />
             ))}
 
-            <div className={pagination}>
+            <div className={styles.pagination}>
               <Button
                 disabled={pageNum === 0}
                 onClick={() => prevPage(data[0].data)}

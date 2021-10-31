@@ -20,7 +20,9 @@ const INITIAL_STATE = {
 };
 
 class PasswordForgetFormBase extends Component {
-  constructor(props) {
+  state: { email: string, error: Error | null }
+  
+  constructor(props}) {
     super(props);
     this.state = { ...INITIAL_STATE };
   }

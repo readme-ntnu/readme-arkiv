@@ -1,18 +1,18 @@
 import { connectSearchBox } from "react-instantsearch-dom";
 import { Spinner } from "react-bootstrap";
 
-import { searchBox, end } from "./SearchBox.module.css";
+import styles from "./SearchBox.module.css";
 
 function SearchBox({ currentRefinement, refine, isSearchStalled }) {
   return (
-    <div className={searchBox}>
+    <div className={styles.searchBox}>
       <input
         value={currentRefinement}
         onChange={(event) => refine(event.currentTarget.value)}
         placeholder="Søk..."
-        size="32"
+        size={32}
       />
-      <div className={end}>
+      <div className={styles.end}>
         {isSearchStalled ? (
           <Spinner animation="border" />
         ) : (

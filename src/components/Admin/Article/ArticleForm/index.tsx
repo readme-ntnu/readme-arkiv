@@ -6,7 +6,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { Form, Col, Button, Alert, Fade } from "react-bootstrap";
 
-import { articleForm } from "./ArticleForm.module.css";
+import styles from "./ArticleForm.module.css";
 
 function ArticleForm({ doHandleSubmit, article }) {
   const {
@@ -103,7 +103,7 @@ function ArticleForm({ doHandleSubmit, article }) {
         }
         return (
           <Fade appear in>
-            <Form className={articleForm} onSubmit={handleSubmit}>
+            <Form className={styles.articleForm} onSubmit={handleSubmit}>
               <Form.Row>
                 <Form.Group as={Col}>
                   <Form.Label>Tittel</Form.Label>
