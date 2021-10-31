@@ -169,7 +169,7 @@ exports.handlePDFUpload = functions
 getDownloadURL = (name, bucketName) => {
   return `${
     process.env.NODE_ENV === "production"
-      ? "http://storage.googleapis.com"
+      ? "https://storage.googleapis.com"
       : "http://localhost:9199"
   }/${bucketName}/${name}`;
 };
