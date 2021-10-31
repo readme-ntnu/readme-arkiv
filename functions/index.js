@@ -1,4 +1,4 @@
-const https = require("http");
+const https = require("https");
 
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
@@ -80,7 +80,7 @@ exports.editionImage = functions.https.onRequest((request, response) => {
       `public, max-age=${cacheMaxAge}`
     );
 
-    http.get(downloadURL, (res) => res.pipe(responsePipe));
+    https.get(downloadURL, (res) => res.pipe(responsePipe));
   } catch (error) {
     response.status(500).json({ message: error.toString() });
   }
