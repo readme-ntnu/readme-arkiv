@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REACT_APP_STORAGE_BUCKET: readme-arkiv.appspot.com
+    concurrency:
+      group: deploy_to_prod
+      cancel-in-progress: true
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
