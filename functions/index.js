@@ -80,7 +80,7 @@ exports.editionImage = functions.https.onRequest((request, response) => {
       `public, max-age=${cacheMaxAge}`
     );
 
-    https.get(downloadURL, (res) => res.pipe(responsePipe));
+    http.get(downloadURL, (res) => res.pipe(responsePipe));
   } catch (error) {
     response.status(500).json({ message: error.toString() });
   }
