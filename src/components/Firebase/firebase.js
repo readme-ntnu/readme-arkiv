@@ -256,7 +256,7 @@ class Firebase {
       process.env.NODE_ENV === "development"
         ? "localhost:9199"
         : "https://storage.googleapis.com";
-    return `${root}/${process.env.REACT_APP_STORAGE_BUCKET}/pdf/${year}/${name}`;
+    return `${root}/${process.env.REACT_APP_STORAGE_BUCKET}/pdf/${year}/${name}.pdf`;
   };
 
   fetchSettings = async () => {
