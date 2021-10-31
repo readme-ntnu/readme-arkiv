@@ -38,7 +38,7 @@ function ImageRow({ year, firebase }) {
           rel="noopener noreferrer"
         >
           <Image
-            src={`https://${process.env.PUBLIC_URL}/editionImage?year=${pdf.year}&edition=${pdf.edition}`}
+            src={`${process.env.PUBLIC_URL}/editionImage?year=${pdf.year}&edition=${pdf.edition}`}
             fluid
           />
         </a>
