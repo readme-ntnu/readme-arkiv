@@ -1,26 +1,29 @@
-import { useState, useEffect } from "react";
-import firebase from "firebase/app";
-import "firebase/auth";
+import { useState, useEffect, useContext } from "react";
+import {
+  connectAuthEmulator,
+  signInAnonymously,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { FirebaseContext } from "../Firebase";
 
 function useAnonymousLogin() {
   const [user, setUser] = useState();
   const [token, setToken] = useState();
-
-  if (process.env.NODE_ENV === "development") {
-    firebase.auth().useEmulator("http://localhost:9099");
-  }
+  const firebase = useContext(FirebaseContext);
 
   useEffect(() => {
-    if (!firebase.auth().currentUser) {
-      firebase.auth().signInAnonymously().catch(console.error);
+    const auth = firebase.auth;
+    if (!auth.currentUser) {
+      signInAnonymously(auth).catch(console.error);
     } else {
-      setUser(firebase.auth().currentUser);
-      setToken(firebase.auth().currentUser.getIdToken());
+      setUser(auth.currentUser);
+      setToken(auth.currentUser.getIdToken());
     }
-  }, []);
+  }, [firebase.auth]);
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(function (user) {
+    const auth = firebase.auth;
+    onAuthStateChanged(auth, function (user) {
       if (!user) {
         setUser(null);
         setToken(null);
@@ -29,13 +32,9 @@ function useAnonymousLogin() {
 
       setUser(user);
 
-      firebase
-        .auth()
-        .currentUser.getIdToken()
-        .then(setToken)
-        .catch(console.error);
+      auth.currentUser.getIdToken().then(setToken).catch(console.error);
     });
-  }, []);
+  }, [firebase.auth]);
 
   return {
     user,

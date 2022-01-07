@@ -1,6 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { withAuthorization } from "../../../Session";
 import { Button, Fade } from "react-bootstrap";
+import {
+  query,
+  orderBy,
+  limit,
+  getDocs,
+  endBefore,
+  limitToLast,
+  startAfter,
+} from "firebase/firestore";
 
 import Loading from "../../../Loading";
 import ListElement from "./ListElement";
@@ -12,12 +21,13 @@ function ArticleList({ firebase }) {
   const secondField = "pages";
   let pageSize = 20;
 
-  const baseQuery = firebase
-    .articles()
-    .orderBy(firstField, "desc")
-    .orderBy(secondField, "desc");
+  const baseQuery = [
+    firebase.articles(),
+    orderBy(firstField, "desc"),
+    orderBy(secondField, "desc"),
+  ];
 
-  const [query, setQuery] = useState(baseQuery.limit(pageSize));
+  const [dynamicQuery, setQuery] = useState([...baseQuery, limit(pageSize)]);
 
   const [data, setData] = useState([]);
   const [pageNum, setPageNum] = useState(0);
@@ -27,7 +37,7 @@ function ArticleList({ firebase }) {
   const fetchData = useCallback(async () => {
     let subscribed = true;
     setDownloading(true);
-    const response = await query.get();
+    const response = await getDocs(query(...dynamicQuery));
     const responseData = [];
     response.forEach((doc) => {
       responseData.push({
@@ -41,7 +51,7 @@ function ArticleList({ firebase }) {
     }
     setDownloading(false);
     return () => (subscribed = false);
-  }, [query]);
+  }, [dynamicQuery]);
 
   useEffect(() => {
     fetchData();
@@ -49,18 +59,20 @@ function ArticleList({ firebase }) {
 
   function prevPage(first) {
     setPageNum(pageNum - 1);
-    setQuery(
-      baseQuery
-        .endBefore(first[firstField], first[secondField])
-        .limitToLast(pageSize)
-    );
+    setQuery([
+      ...baseQuery,
+      endBefore(first[firstField], first[secondField]),
+      limitToLast(pageSize),
+    ]);
   }
 
   function nextPage(last) {
     setPageNum(pageNum + 1);
-    setQuery(
-      baseQuery.startAfter(last[firstField], last[secondField]).limit(pageSize)
-    );
+    setQuery([
+      ...baseQuery,
+      startAfter(last[firstField], last[secondField]),
+      limit(pageSize),
+    ]);
   }
 
   function removeItem(article) {
