@@ -1,7 +1,32 @@
-import firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/firestore";
-import "firebase/storage";
+import { FirebaseApp, initializeApp } from "firebase/app";
+import {
+  getFirestore,
+  collection,
+  doc,
+  query,
+  addDoc,
+  getDocs,
+  updateDoc,
+  connectFirestoreEmulator,
+  where,
+  Firestore,
+} from "firebase/firestore";
+import {
+  getStorage,
+  connectStorageEmulator,
+  ref,
+  uploadBytesResumable,
+  listAll,
+  FirebaseStorage,
+} from "firebase/storage";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signOut,
+  connectAuthEmulator,
+  Auth,
+} from "firebase/auth";
 
 const config = {
   apiKey: "AIzaSyCLhIKGOYZilQuXirB_W-1UmKNfQygETqw",
@@ -14,41 +39,40 @@ const config = {
 };
 
 class Firebase {
-  app: firebase.app.App;
-  auth: firebase.auth.Auth;
-  storage: firebase.storage.Storage;
-  db: firebase.firestore.Firestore;
+  app: FirebaseApp;
+  auth: Auth;
+  storage: FirebaseStorage;
+  db: Firestore;
 
   constructor() {
-    this.app = firebase.initializeApp(config);
+    this.app = initializeApp(config);
 
-    this.auth = firebase.auth();
+    this.auth = getAuth(this.app);
 
-    this.storage = firebase.storage();
+    this.storage = getStorage(this.app);
 
-    this.db = firebase.firestore();
-    // eslint-disable-next-line no-restricted-globals
-    if (location.hostname === "localhost") {
-      this.storage.useEmulator("localhost", 9199);
-      this.auth.useEmulator("http://localhost:9099");
-      this.db.useEmulator("localhost", 8080);
+    this.db = getFirestore(this.app);
+
+    if (process.env.NODE_ENV === "development") {
+      connectStorageEmulator(this.storage, "localhost", 9199);
+      connectAuthEmulator(this.auth, "http://localhost:9099");
+      connectFirestoreEmulator(this.db, "localhost", 8080);
     }
   }
 
   // *** Auth API ***
 
-  doSignInWithEmailAndPassword = (email: string, password: string) =>
-    this.auth.signInWithEmailAndPassword(email, password);
+  doSignInWithEmailAndPassword = (email, password) =>
+    signInWithEmailAndPassword(this.auth, email, password);
 
-  doPasswordReset = (email: string) => this.auth.sendPasswordResetEmail(email);
+  doPasswordReset = (email) => sendPasswordResetEmail(this.auth, email);
 
-  doSignOut = () => this.auth.signOut();
+  doSignOut = () => signOut(this.auth);
 
   // *** Articles API ***
-  article = (id: string | number) =>
-    this.db.collection("articles").doc(`${id}`);
+  article = (id) => doc(this.db, `articles/${id}`);
 
-  articles = () => this.db.collection("articles");
+  articles = () => collection(this.db, "articles");
 
   addArticle = (article, callback = undefined, errorCallback = undefined) =>
     this.addArticleToDB(article, callback, errorCallback);
@@ -86,7 +110,7 @@ class Firebase {
 
   // *** Helper functions ***
   fetchYearPrefixes = async () => {
-    const list = await this.storage.ref("images").listAll();
+    const list = await listAll(ref(this.storage, "images"));
     return list.prefixes.reverse();
   };
 
@@ -110,9 +134,9 @@ class Firebase {
   };
 
   fetchEditionListDataForYear = async (yearPrefix) => {
-    let imgRefs = (await yearPrefix.list()).items;
+    let imgRefs = (await listAll(yearPrefix)).items;
     let year = yearPrefix.name;
-    let PDFRefs = (await this.storage.ref("pdf/" + year).list()).items;
+    let PDFRefs = (await listAll(ref(this.storage, "pdf/" + year))).items;
     const yearObject = imgRefs.map((imgRef, index) => {
       return {
         edition: `${year}-0${index + 1}`,
@@ -139,10 +163,14 @@ class Firebase {
         listinglop: String(listinglop),
       },
     };
-    const editionPDFRef = this.storage.ref(path);
-    const uploadTask = editionPDFRef.put(editionFile, metadata);
+    const editionPDFRef = ref(this.storage, path);
+    const uploadTask = uploadBytesResumable(
+      editionPDFRef,
+      editionFile,
+      metadata
+    );
     uploadTask.on(
-      firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+      "state_changed",
       function (snapshot) {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -182,14 +210,16 @@ class Firebase {
     );
   };
 
-  updateArticlePDFURL = async (editionName: string, newURL: string) => {
-    const articles = await this.db
-      .collection("articles")
-      .where("edition", "==", editionName)
-      .get();
+  updateArticlePDFURL = async (editionName, newURL) => {
+    const articles = await getDocs(
+      query(
+        collection(this.db, "articles"),
+        where("edition", "==", editionName)
+      )
+    );
     if (articles && !articles.empty) {
       articles.forEach(async (docSnap) => {
-        await docSnap.ref.update({
+        await updateDoc(docSnap.ref, {
           url: `${newURL}#page=${this.getPageNumber(docSnap.data())}`,
         });
       });
@@ -204,7 +234,7 @@ class Firebase {
     try {
       const url = this.getArticlePDFURL(article);
       article.url = url;
-      await this.db.collection("articles").add(article);
+      await addDoc(collection(this.db, "articles"), article);
       console.log("Article added to DB");
       if (callback && typeof callback === "function") {
         callback();
@@ -229,7 +259,7 @@ class Firebase {
       const url = this.getArticlePDFURL(article);
       article.url = url;
       const articleRef = this.article(article._id);
-      await articleRef.update(article);
+      await updateDoc(articleRef, article);
       console.log("Article added to DB");
       if (callback && typeof callback === "function") {
         callback();
@@ -279,13 +309,13 @@ class Firebase {
   };
 
   fetchSettings = async () => {
-    const settings = await this.db.collection("settings").get();
+    const settings = await getDocs(query(collection(this.db, "settings")));
     return settings.docs[0].data();
   };
 
-  setShowListingSetting = async (value: boolean) => {
-    const settings = await this.db.collection("settings").get();
-    await settings.docs[0].ref.update({
+  setShowListingSetting = async (value) => {
+    const settings = await getDocs(query(collection(this.db, "settings")));
+    await updateDoc(settings.docs[0].ref, {
       showListing: value,
     });
   };
