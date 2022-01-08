@@ -1,9 +1,9 @@
 import React, { FC } from "react";
 import { Link } from "react-router-dom";
-import { IArticleListData } from "..";
 
 import * as ROUTES from "../../../../../constants/routes";
 import { DeleteButton } from "../../../Common/DeleteButton";
+import { IArticleListData } from "../../types";
 
 import styles from "./ListElement.module.css";
 

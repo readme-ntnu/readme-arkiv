@@ -17,23 +17,7 @@ import { Loading } from "../../../Loading";
 import { ListElement } from "./ListElement";
 
 import styles from "./ArticleList.module.css";
-export interface IArticle {
-  author: string;
-  title: string;
-  content: string;
-  edition: string;
-  layout: string;
-  pages: number[];
-  photo: string;
-  tags: string[];
-  type: string;
-  url: string;
-}
-export interface IArticleListData {
-  id: string;
-  data: IArticle;
-  ref: DocumentReference;
-}
+import { IArticle, IArticleListData } from "../types";
 
 const PlainArticleList: FC<WithFirebaseProps> = ({ firebase }) => {
   const firstField = "edition";
