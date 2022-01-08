@@ -1,4 +1,4 @@
-const https = require("http");
+const https = require("https");
 
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
@@ -165,7 +165,7 @@ exports.handlePDFUpload = functions
 getDownloadURL = (name, bucketName) => {
   return `${
     process.env.NODE_ENV === "production"
-      ? "http://storage.googleapis.com"
+      ? "https://storage.googleapis.com"
       : "http://localhost:9199"
   }/${bucketName}/${name}`;
 };
