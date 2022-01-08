@@ -2,8 +2,6 @@ const https = require("https");
 
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
-const express = require("express");
-const cors = require("cors");
 
 const path = require("path");
 const sharp = require("sharp");
@@ -13,21 +11,7 @@ const gs = require("gs");
 
 admin.initializeApp();
 
-const app = express();
-app.use(cors({ origin: true }));
-
 const cacheMaxAge = 5 * 60 * 60; // 5 hrs
-
-async function verifyToken(req, res, next) {
-  try {
-    const token = (req.get("Authorization") || "").replace("Bearer ", "");
-    await admin.auth().verifyIdToken(token);
-    return next();
-  } catch (error) {
-    console.log(error);
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-}
 
 exports.editionData = functions.https.onCall(async (data, context) => {
   const year = data.year;
@@ -60,8 +44,6 @@ exports.editionData = functions.https.onCall(async (data, context) => {
   };
 });
 
-exports.api = functions.https.onRequest(app);
-
 exports.editionImage = functions.https.onRequest((request, response) => {
   try {
     const { year, edition } = request.query;
@@ -71,12 +53,9 @@ exports.editionImage = functions.https.onRequest((request, response) => {
       admin.storage().bucket().name
     );
 
-    const responsePipe = response.set(
-      "Cache-Control",
-      `public, max-age=${cacheMaxAge}`
-    );
+    response.set("Cache-Control", `public, max-age=${cacheMaxAge}`);
 
-    https.get(downloadURL, (res) => res.pipe(responsePipe));
+    https.get(downloadURL, (res) => res.pipe(response));
   } catch (error) {
     response.status(500).json({ message: error.toString() });
   }
