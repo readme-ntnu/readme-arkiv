@@ -29,6 +29,12 @@ import {
   connectAuthEmulator,
   Auth,
 } from "firebase/auth";
+import {
+  getFunctions,
+  httpsCallable,
+  Functions,
+  connectFunctionsEmulator,
+} from "firebase/functions";
 import { IArticle } from "../Admin/Article/types";
 
 const config = {
@@ -63,6 +69,7 @@ export class Firebase {
   auth: Auth;
   storage: FirebaseStorage;
   db: Firestore;
+  functions: Functions;
 
   constructor() {
     this.app = initializeApp(config);
@@ -73,10 +80,13 @@ export class Firebase {
 
     this.db = getFirestore(this.app);
 
+    this.functions = getFunctions(this.app);
+
     if (process.env.NODE_ENV === "development") {
       connectStorageEmulator(this.storage, "localhost", 9199);
       connectAuthEmulator(this.auth, "http://localhost:9099");
       connectFirestoreEmulator(this.db, "localhost", 8080);
+      connectFunctionsEmulator(this.functions, "localhost", 5001);
     }
   }
 
@@ -141,23 +151,16 @@ export class Firebase {
   };
 
   fetchEditionDataForYear = async (yearPrefix: StorageReference) => {
-    const host =
-      process.env.NODE_ENV === "production"
-        ? "https://us-central1-readme-arkiv.cloudfunctions.net/api/editionData"
-        : "http://localhost:5001/readme-arkiv/us-central1/api/editionData";
-    const res = await fetch(
-      `${host}?year=${encodeURIComponent(yearPrefix.name)}`,
-      {
-        headers: {
-          Authorization: `Bearer ${await this.auth.currentUser?.getIdToken()}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
+    const editionData = httpsCallable<{ year: string }, IEditionDataForYear>(
+      this.functions,
+      "editionData"
     );
-    const result = await res.json();
-
-    return result as IEditionDataForYear;
+    try {
+      const result = await editionData({ year: yearPrefix.name });
+      return result.data;
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   fetchEditionListDataForYear = async (

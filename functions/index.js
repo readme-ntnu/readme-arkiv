@@ -24,44 +24,40 @@ async function verifyToken(req, res, next) {
     await admin.auth().verifyIdToken(token);
     return next();
   } catch (error) {
+    console.log(error);
     return res.status(401).json({ message: "Unauthorized" });
   }
 }
 
-app.get("/editionData", verifyToken, async (request, response) => {
-  try {
-    const year = request.query.year;
-    const bucket = admin.storage().bucket();
-    const pdfs = await bucket.getFiles({
-      prefix: `pdf/${year}`,
-    });
-    const showListing = (
-      await admin.firestore().collection("settings").get()
-    ).docs[0].get("showListing");
+exports.editionData = functions.https.onCall(async (data, context) => {
+  const year = data.year;
+  const bucket = admin.storage().bucket();
+  const pdfs = await bucket.getFiles({
+    prefix: `pdf/${year}`,
+  });
+  const showListing = (
+    await admin.firestore().collection("settings").get()
+  ).docs[0].get("showListing");
 
-    const pdfUrls = pdfs[0].map((file) => {
-      const isListing =
-        file.metadata.metadata.listinglop.toLowerCase() === "true";
+  const pdfUrls = pdfs[0].map((file) => {
+    const isListing =
+      file.metadata.metadata.listinglop.toLowerCase() === "true";
 
-      const edition = file.name.replace(".pdf", "").split("-")[1];
-      return {
-        listinglop: isListing,
-        url: getDownloadURL(file.name, file.bucket.name),
-        year: year,
-        edition: edition,
-      };
-    });
-
-    const returnObject = {
-      year,
-      pdfs: pdfUrls
-        .filter((data) => (data.listinglop && showListing) || !data.listinglop)
-        .reverse(),
+    const edition = file.name.replace(".pdf", "").split("-")[1];
+    return {
+      listinglop: isListing,
+      url: getDownloadURL(file.name, file.bucket.name),
+      year: year,
+      edition: edition,
     };
-    response.json(returnObject);
-  } catch (error) {
-    response.status(500).json({ message: error.toString() });
-  }
+  });
+
+  return {
+    year,
+    pdfs: pdfUrls
+      .filter((data) => (data.listinglop && showListing) || !data.listinglop)
+      .reverse(),
+  };
 });
 
 exports.api = functions.https.onRequest(app);
