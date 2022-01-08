@@ -18,6 +18,7 @@ import {
   uploadBytesResumable,
   listAll,
   FirebaseStorage,
+  StorageReference,
 } from "firebase/storage";
 import {
   getAuth,
@@ -37,8 +38,25 @@ const config = {
   messagingSenderId: "884912593534",
   appId: "1:884912593534:web:994587a01eb1bd1d85d62f",
 };
+export interface IEditionData {
+  listinglop: boolean;
+  url: string;
+  year: string;
+  edition: string;
+}
 
-class Firebase {
+export interface IEditionListData {
+  edition: string;
+  imgRef: StorageReference;
+  pdfRef: StorageReference;
+}
+
+export interface IEditionDataForYear {
+  year: string;
+  pdfs: IEditionData[];
+}
+
+export class Firebase {
   app: FirebaseApp;
   auth: Auth;
   storage: FirebaseStorage;
@@ -81,9 +99,9 @@ class Firebase {
     this.updateArticleInDB(article, callback, errorCallback);
 
   // *** Editions API ***
-  editions = (year: string | number) => this.fetchEditionDataForYear(year);
+  editions = (year: StorageReference) => this.fetchEditionDataForYear(year);
 
-  editionListData = (year: string | number) =>
+  editionListData = (year: StorageReference) =>
     this.fetchEditionListDataForYear(year);
 
   editionYearPrefixes = () => this.fetchYearPrefixes();
@@ -93,7 +111,7 @@ class Firebase {
     listinglop: boolean,
     callback: () => void = undefined,
     errorCallback: () => void = undefined,
-    updateProgessCallback: () => void = undefined
+    updateProgessCallback: (progress: number) => void = undefined
   ) =>
     this.doEditionUpload(
       editionFile,
@@ -114,7 +132,7 @@ class Firebase {
     return list.prefixes.reverse();
   };
 
-  fetchEditionDataForYear = async (yearPrefix) => {
+  fetchEditionDataForYear = async (yearPrefix: StorageReference) => {
     const host =
       process.env.NODE_ENV === "production"
         ? "https://us-central1-readme-arkiv.cloudfunctions.net/api/editionData"
@@ -130,10 +148,13 @@ class Firebase {
       }
     );
     const result = await res.json();
-    return result;
+
+    return result as IEditionDataForYear;
   };
 
-  fetchEditionListDataForYear = async (yearPrefix) => {
+  fetchEditionListDataForYear = async (
+    yearPrefix: StorageReference
+  ): Promise<IEditionListData[]> => {
     let imgRefs = (await listAll(yearPrefix)).items;
     let year = yearPrefix.name;
     let PDFRefs = (await listAll(ref(this.storage, "pdf/" + year))).items;
@@ -320,5 +341,3 @@ class Firebase {
     });
   };
 }
-
-export default Firebase;

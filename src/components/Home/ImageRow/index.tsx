@@ -1,15 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import { withFirebase } from "../../Firebase";
 
 import { Image } from "react-bootstrap";
 import FadeIn from "react-lazyload-fadein";
 
 import "./ImageRow.css";
-import RowLoader from "./RowLoader";
+import { WithFirebaseProps } from "../../Firebase/context";
+import { StorageReference } from "firebase/storage";
+import { IEditionDataForYear } from "../../Firebase/firebase";
+import { RowLoader } from "./RowLoader";
 
-function ImageRow({ year, firebase}) {
+interface ImageRowProps extends WithFirebaseProps {
+  year: StorageReference;
+}
+
+const PlainImageRow: FC<ImageRowProps> = ({ year, firebase }) => {
   const [downloading, setDownloading] = useState(true);
-  const [info, setInfo] = useState([]);
+  const [info, setInfo] = useState<IEditionDataForYear>();
 
   useEffect(() => {
     async function fetchData() {
@@ -25,10 +32,10 @@ function ImageRow({ year, firebase}) {
     fetchData();
   }, [firebase, year]);
 
-  let images, imagesLen, images1, images2;
+  let imagesLen, images1, images2;
 
   if (info.pdfs) {
-    images = info.pdfs
+    const images = info.pdfs
       .map((pdf) => (
         <a
           className="RowImage"
@@ -84,7 +91,7 @@ function ImageRow({ year, firebase}) {
       )}
     </div>
   );
-}
+};
 
 function setRowMinHeight(year) {
   year = parseInt(year);
@@ -111,4 +118,4 @@ function setImageMinHeight(year) {
 }
 
 export { setRowMinHeight };
-export default withFirebase(ImageRow);
+export const ImageRow = withFirebase(PlainImageRow);

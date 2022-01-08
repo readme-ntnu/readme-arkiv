@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 import { compose } from "recompose";
 import { Form, Alert } from "react-bootstrap";
 
@@ -9,9 +9,10 @@ import { PasswordForgetLink } from "../PasswordForget";
 import * as ROUTES from "../../constants/routes";
 
 import "./SignIn.css";
-import SubmitButton from "../Admin/Common/SubmitButton";
+import { WithFirebaseProps } from "../Firebase/context";
+import { SubmitButton } from "../Admin/Common/SubmitButton";
 
-const SignInPage = () => (
+export const SignInPage = () => (
   <div className="SignInForm">
     <h1>Logg inn</h1>
     <SignInForm />
@@ -24,13 +25,15 @@ const INITIAL_STATE = {
   error: null,
   submitting: false,
 };
-class SignInFormBase extends Component {
+class SignInFormBase extends Component<
+  WithFirebaseProps & RouteComponentProps
+> {
   state: {
-    email: string,
-    password: string,
-    error: Error | null,
-    submitting: boolean
-  }
+    email: string;
+    password: string;
+    error: Error | null;
+    submitting: boolean;
+  };
   constructor(props) {
     super(props);
     this.state = { ...INITIAL_STATE };
@@ -87,6 +90,4 @@ class SignInFormBase extends Component {
     );
   }
 }
-const SignInForm = compose(withRouter, withFirebase)(SignInFormBase);
-export default SignInPage;
-export { SignInForm };
+export const SignInForm = compose(withRouter, withFirebase)(SignInFormBase);

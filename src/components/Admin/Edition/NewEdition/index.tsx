@@ -1,11 +1,12 @@
-import React from "react";
+import React, { FC } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Form, Button, Col, Alert, ProgressBar, Fade } from "react-bootstrap";
-import SubmitButton from "../../Common/SubmitButton";
 import { withAuthorization } from "../../../Session";
+import { SubmitButton } from "../../Common/SubmitButton";
 
 import styles from "./NewEdition.module.css";
+import { WithFirebaseProps } from "../../../Firebase/context";
 
 const schema = Yup.object().shape({
   editionYear: Yup.number()
@@ -27,7 +28,7 @@ const schema = Yup.object().shape({
   listingslop: Yup.bool(),
 });
 
-function NewEditionPage({ firebase }) {
+const PlainNewEditionPage: FC<WithFirebaseProps> = ({ firebase }) => {
   function handleSubmit(values, { setSubmitting, setStatus }) {
     const { editionYear, editionNumber, editionFile, listingslop } = values;
     const fileToUpload = new File(
@@ -122,7 +123,9 @@ function NewEditionPage({ firebase }) {
                       type="file"
                       onChange={(event) => {
                         const newValues = { ...values }; // copy the original object
-                        newValues.editionFile = event.currentTarget.files[0];
+                        newValues.editionFile = (
+                          event.currentTarget as any
+                        ).files[0];
                         setValues(newValues);
                       }}
                     ></Form.Control>
@@ -194,8 +197,8 @@ function NewEditionPage({ firebase }) {
       </Formik>
     </>
   );
-}
+};
 
 const condition = (authUser) => !!authUser && !authUser.isAnonymous;
 
-export default withAuthorization(condition)(NewEditionPage);
+export const newEditionPage = withAuthorization(condition)(PlainNewEditionPage);

@@ -7,7 +7,7 @@ import { onAuthStateChanged, Unsubscribe } from "firebase/auth";
 import { AuthUserContext } from ".";
 import * as ROUTES from "../../constants/routes";
 
-const withAuthorization = (condition) => (Component) => {
+export const withAuthorization = (condition) => (Component) => {
   class WithAuthorization extends React.Component<
     WithFirebaseProps & RouteComponentProps
   > {
@@ -39,5 +39,3 @@ const withAuthorization = (condition) => (Component) => {
 
   return withRouter(withFirebase(WithAuthorization));
 };
-
-export default withAuthorization;

@@ -1,15 +1,20 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { StorageReference } from "firebase/storage";
+import React, { useState, useEffect, useCallback, FC } from "react";
 import { Fade } from "react-bootstrap";
 import { withFirebase } from "../../../../Firebase";
-
-import ListElement from "../ListElement";
-import Loading from "../../../../Loading";
+import { WithFirebaseProps } from "../../../../Firebase/context";
+import { IEditionListData } from "../../../../Firebase/firebase";
+import { Loading } from "../../../../Loading";
+import { ListElement } from "../ListElement";
 
 import styles from "./ListPage.module.css";
 
-function ListPage({ firebase, year }) {
+const PlainListPage: FC<WithFirebaseProps & { year: StorageReference }> = ({
+  firebase,
+  year,
+}) => {
   const [downloading, setDownloading] = useState(true);
-  const [info, setInfo] = useState([]);
+  const [info, setInfo] = useState<IEditionListData[]>([]);
 
   const fetchData = useCallback(async () => {
     let isSubscribed = true;
@@ -43,6 +48,6 @@ function ListPage({ firebase, year }) {
       {!downloading && listElements ? listElements : null}
     </div>
   );
-}
+};
 
-export default withFirebase(ListPage);
+export const ListPage = withFirebase(PlainListPage);

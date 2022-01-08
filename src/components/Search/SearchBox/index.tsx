@@ -2,8 +2,14 @@ import { connectSearchBox } from "react-instantsearch-dom";
 import { Spinner } from "react-bootstrap";
 
 import styles from "./SearchBox.module.css";
+import { SearchBoxProvided } from "react-instantsearch-core";
+import { FC } from "react";
 
-function SearchBox({ currentRefinement, refine, isSearchStalled }) {
+const PlainSearchBox: FC<SearchBoxProvided> = ({
+  currentRefinement,
+  refine,
+  isSearchStalled,
+}) => {
   return (
     <div className={styles.searchBox}>
       <input
@@ -21,6 +27,6 @@ function SearchBox({ currentRefinement, refine, isSearchStalled }) {
       </div>
     </div>
   );
-}
+};
 
-export default connectSearchBox(SearchBox);
+export const SearchBox = connectSearchBox(PlainSearchBox);

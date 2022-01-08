@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import { Fade } from "react-bootstrap";
 import LazyLoad from "react-lazyload";
 
 import "./Home.css";
 import { withFirebase, useAnonymousLogin } from "../Firebase";
-import ImageRow, { setRowMinHeight } from "./ImageRow";
-import Loading from "../Loading";
+import { ImageRow, setRowMinHeight } from "./ImageRow";
+import { WithFirebaseProps } from "../Firebase/context";
+import { StorageReference } from "firebase/storage";
+import { Loading } from "../Loading";
 
-function Home({ firebase }) {
+const PlainHome: FC<WithFirebaseProps> = ({ firebase }) => {
   const { user } = useAnonymousLogin();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<StorageReference[]>([]);
   const [downloading, setDownloading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -35,7 +37,7 @@ function Home({ firebase }) {
       <div className="row-container">
         {data.map((year) => {
           return (
-            <div key={year} className="row-wrapper">
+            <div key={year.name} className="row-wrapper">
               <Fade appear in>
                 <h2 className="year">{year.name}</h2>
               </Fade>
@@ -48,6 +50,6 @@ function Home({ firebase }) {
       </div>
     );
   }
-}
+};
 
-export default withFirebase(Home);
+export const Home = withFirebase(PlainHome);

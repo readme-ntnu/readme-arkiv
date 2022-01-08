@@ -1,18 +1,20 @@
-import React from "react";
-import Loading from "../../../Loading";
+import React, { FC } from "react";
+import { Loading } from "../../../Loading";
 
-function RowLoader({ minHeight }) {
+interface RowLoaderProps {
+  minHeight: number;
+}
+
+export const RowLoader: FC<RowLoaderProps> = ({ minHeight }) => {
   return (
     <Loading
-      styles={{
+      style={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         minHeight: `${minHeight}px`,
-        marginBottom: "15px"
+        marginBottom: "15px",
       }}
     />
   );
-}
-
-export default RowLoader;
+};

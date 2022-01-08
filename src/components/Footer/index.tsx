@@ -1,9 +1,9 @@
-import React from "react";
-import ReadmeLogo from "../ReadmeLogo";
+import React, { FC } from "react";
+import { ReadmeLogo } from "../ReadmeLogo";
 
 import style from "./Footer.module.css";
 
-function Footer() {
+export const Footer: FC = () => {
   return (
     <div className={style.footer}>
       <p>
@@ -11,6 +11,4 @@ function Footer() {
       </p>
     </div>
   );
-}
-
-export default Footer;
+};

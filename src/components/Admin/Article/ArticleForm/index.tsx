@@ -1,14 +1,22 @@
-import React from "react";
-
-import SubmitButton from "../../Common/SubmitButton";
+import React, { FC } from "react";
 
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Form, Col, Button, Alert, Fade } from "react-bootstrap";
 
 import styles from "./ArticleForm.module.css";
+import { SubmitButton } from "../../Common/SubmitButton";
+import { ISubmitFunction, IEditArticle } from "../types";
 
-function ArticleForm({ doHandleSubmit, article }) {
+interface ArticleFormProps {
+  doHandleSubmit: ISubmitFunction;
+  article?: IEditArticle;
+}
+
+export const ArticleForm: FC<ArticleFormProps> = ({
+  doHandleSubmit,
+  article,
+}) => {
   const {
     title,
     type,
@@ -45,24 +53,28 @@ function ArticleForm({ doHandleSubmit, article }) {
   const now = new Date();
   const year = now.getFullYear();
 
+  const initialFormValues = {
+    title: title || "",
+    type: type || "",
+    author: author || "",
+    layout: layout || "",
+    photo: photo || "",
+    editionYear: editionYear || year,
+    editionNumber: editionNumber || 1,
+    content: content || "",
+    pages: pages || "",
+    tags: tags || "",
+  };
+
   return (
     <Formik
       enableReinitialize
       validationSchema={schema}
-      onSubmit={(values, actions) => doHandleSubmit(values, actions)}
+      onSubmit={(values, actions) =>
+        doHandleSubmit(values as IEditArticle, actions)
+      }
       initialStatus={{ success: false, error: false }}
-      initialValues={{
-        title: title || "",
-        type: type || "",
-        author: author || "",
-        layout: layout || "",
-        photo: photo || "",
-        editionYear: editionYear || year,
-        editionNumber: editionNumber || 1,
-        content: content || "",
-        pages: pages || "",
-        tags: tags || "",
-      }}
+      initialValues={initialFormValues}
     >
       {({
         handleSubmit,
@@ -184,7 +196,7 @@ function ArticleForm({ doHandleSubmit, article }) {
                 <Form.Group as={Col}>
                   <Form.Label>Utgaveår</Form.Label>
                   <Form.Control
-                    placehoder="Utgaveår"
+                    placeholder="Utgaveår"
                     type="number"
                     name="editionYear"
                     value={values.editionYear}
@@ -199,7 +211,7 @@ function ArticleForm({ doHandleSubmit, article }) {
                 <Form.Group as={Col}>
                   <Form.Label>Utgavenummer</Form.Label>
                   <Form.Control
-                    placehoder="Utgavenummer"
+                    placeholder="Utgavenummer"
                     type="number"
                     name="editionNumber"
                     value={values.editionNumber}
@@ -217,7 +229,7 @@ function ArticleForm({ doHandleSubmit, article }) {
                   <Form.Label>Tekst</Form.Label>
                   <Form.Control
                     as="textarea"
-                    rows="5"
+                    rows={5}
                     name="content"
                     value={values.content}
                     onChange={handleChange}
@@ -310,8 +322,11 @@ function ArticleForm({ doHandleSubmit, article }) {
                           variant="secondary"
                           onClick={() => {
                             resetForm({
-                              editionYear: values.editionYear,
-                              editionNumber: values.editionNumber,
+                              values: {
+                                ...initialFormValues,
+                                editionYear: values.editionYear,
+                                editionNumber: values.editionNumber,
+                              },
                             });
                             setStatus({ success: false });
                           }}
@@ -329,6 +344,4 @@ function ArticleForm({ doHandleSubmit, article }) {
       }}
     </Formik>
   );
-}
-
-export default ArticleForm;
+};

@@ -1,22 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import { useParams } from "react-router-dom";
 import { Fade } from "react-bootstrap";
+import { getDoc } from "firebase/firestore";
 
 import { withAuthorization } from "../../../Session";
 
-import ArticleForm from "../ArticleForm";
-import Loading from "../../../Loading";
+import { WithFirebaseProps } from "../../../Firebase/context";
+import { Loading } from "../../../Loading";
+import { IEditArticle } from "../types";
+import { ArticleForm } from "../ArticleForm";
 
-function EditArticle({ firebase }) {
-  const { id } = useParams();
+const PlainEditArticle: FC<WithFirebaseProps> = ({ firebase }) => {
+  const { id } = useParams<{ id: string }>();
 
-  const [article, setArticle] = useState({});
+  const [article, setArticle] = useState<IEditArticle>(null);
   const [downloading, setDownloading] = useState(true);
 
   useEffect(() => {
     let isSubscribed = true;
     const fetchData = async () => {
-      const articleDoc = await firebase.article(id).get();
+      const articleDoc = await getDoc(firebase.article(id));
+
       const article = articleDoc.data();
       const [editionYear, editionNumber] = article.edition.split("-");
       article.editionYear = Number(editionYear);
@@ -25,12 +29,14 @@ function EditArticle({ firebase }) {
       article.tags = article.tags.join(", ");
       delete article.edition;
       if (isSubscribed) {
-        setArticle(article);
+        setArticle(article as IEditArticle);
         setDownloading(false);
       }
     };
     fetchData();
-    return () => (isSubscribed = false);
+    return () => {
+      isSubscribed = false;
+    };
   }, [firebase, id]);
 
   function doHandleSubmit(valuesToPost, { setSubmitting, setStatus }) {
@@ -67,8 +73,8 @@ function EditArticle({ firebase }) {
       )}
     </>
   );
-}
+};
 
 const condition = (authUser) => !!authUser && !authUser.isAnonymous;
 
-export default withAuthorization(condition)(EditArticle);
+export const EditArticle = withAuthorization(condition)(PlainEditArticle);

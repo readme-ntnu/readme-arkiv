@@ -1,6 +1,6 @@
-import React from "react";
-import AppTable from "./Table";
-import SearchBox from "./SearchBox";
+import React, { FC } from "react";
+import { AppTable } from "./Table";
+import { SearchBox } from "./SearchBox";
 import { InstantSearch, PoweredBy } from "react-instantsearch-dom";
 
 import algoliasearch from "algoliasearch/lite";
@@ -14,7 +14,7 @@ const searchClient = algoliasearch(
   "e9162c9f16b6ca303aa413e062713697"
 );
 
-function Search() {
+export const Search: FC = () => {
   return (
     <>
       <h1>Artikkelsøk</h1>
@@ -30,6 +30,4 @@ function Search() {
       </InstantSearch>
     </>
   );
-}
-
-export default Search;
+};

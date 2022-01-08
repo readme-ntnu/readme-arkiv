@@ -1,8 +1,18 @@
-import React from "react";
+import React, { FC } from "react";
 import { Button, Spinner } from "react-bootstrap";
 import styles from "./SubmitButton.module.css";
 
-function SubmitButton({ isValid, isSubmitting, buttonText }) {
+interface SubmitButtonProps {
+  isValid: boolean;
+  isSubmitting: boolean;
+  buttonText: string;
+}
+
+export const SubmitButton: FC<SubmitButtonProps> = ({
+  isValid,
+  isSubmitting,
+  buttonText,
+}) => {
   return (
     <Button
       variant="primary"
@@ -23,6 +33,4 @@ function SubmitButton({ isValid, isSubmitting, buttonText }) {
       {buttonText}
     </Button>
   );
-}
-
-export default SubmitButton;
+};

@@ -1,9 +1,9 @@
-import React from "react";
+import React, { FC } from "react";
 import { Image, Fade } from "react-bootstrap";
 
 import redaktør from "../../Assets/Images/Shjolberg.png";
 
-function NoMatch() {
+export const NoMatch: FC = () => {
   return (
     <Fade appear in>
       <div className="404Container">
@@ -13,6 +13,4 @@ function NoMatch() {
       </div>
     </Fade>
   );
-}
-
-export default NoMatch;
+};

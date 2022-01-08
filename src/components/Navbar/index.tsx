@@ -1,18 +1,17 @@
-import React from "react";
+import React, { FC } from "react";
 import useDarkMode from "use-dark-mode";
 import { Navbar, Nav } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
 import { AuthUserContext } from "../Session";
 
-import SignOutButton from "../SignOut";
-import LightSwitch from "../LightSwitch";
-
+import { LightSwitch } from "../LightSwitch";
+import { SignOutButton } from "../SignOut";
 import styles from "./Navbar.module.css";
 
 import * as ROUTES from "../../constants/routes.js";
 
-function AppNavbar() {
+export const AppNavbar: FC = () => {
   const isDark = useDarkMode();
   return (
     <Navbar
@@ -52,6 +51,4 @@ function AppNavbar() {
       </Navbar.Collapse>
     </Navbar>
   );
-}
-
-export default AppNavbar;
+};

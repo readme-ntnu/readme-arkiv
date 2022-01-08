@@ -1,14 +1,14 @@
-import React from "react";
+import React, { FC } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 import { Button, Fade } from "react-bootstrap";
 
 import { withAuthorization } from "../Session";
+import { ShowListingToggle } from "./ShowListingToggle";
 
 import * as ROUTES from "../../constants/routes";
 import "./AdminPage.css";
-import ShowListingToggle from "./ShowListingToggle";
 
-function AdminPage() {
+export const PlainAdminPage: FC = () => {
   return (
     <Fade appear in>
       <div>
@@ -40,8 +40,8 @@ function AdminPage() {
       </div>
     </Fade>
   );
-}
+};
 
 const condition = (authUser) => !!authUser && !authUser.isAnonymous;
 
-export default withAuthorization(condition)(AdminPage);
+export const AdminPage = withAuthorization(condition)(PlainAdminPage);

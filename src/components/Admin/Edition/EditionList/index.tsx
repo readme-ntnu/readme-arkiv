@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import { withAuthorization } from "../../../Session";
 import { Fade } from "react-bootstrap";
 
-import ListPage from "./ListPage";
-import Loading from "../../../Loading";
+import { Loading } from "../../../Loading";
+import { ListPage } from "./ListPage";
+import { WithFirebaseProps } from "../../../Firebase/context";
+import { StorageReference } from "firebase/storage";
 
-function EditionList({ firebase }) {
-  const [data, setData] = useState([]);
+const PlainEditionList: FC<WithFirebaseProps> = ({ firebase }) => {
+  const [data, setData] = useState<StorageReference[]>([]);
   const [downloading, setDownloading] = useState(true);
 
   useEffect(() => {
@@ -34,7 +36,7 @@ function EditionList({ firebase }) {
         <div className="row-container">
           {data.map((year) => {
             return (
-              <div key={year} className="row-wrapper">
+              <div key={year.name} className="row-wrapper">
                 <ListPage year={year} key={year} />
               </div>
             );
@@ -43,8 +45,8 @@ function EditionList({ firebase }) {
       )}
     </>
   );
-}
+};
 
 const condition = (authUser) => !!authUser && !authUser.isAnonymous;
 
-export default withAuthorization(condition)(EditionList);
+export const EditionList = withAuthorization(condition)(PlainEditionList);

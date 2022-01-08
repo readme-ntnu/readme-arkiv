@@ -1,13 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import { Spinner } from "react-bootstrap";
 import Switch from "react-switch";
 
 import { withFirebase } from "../../Firebase";
+import { WithFirebaseProps } from "../../Firebase/context";
 
 import style from "./ShowListingToggle.module.css";
 
-function ShowListingToggle({ firebase }) {
-  const [settings, setSettings] = useState<{showListing: boolean}>(null);
+const PlainShowListingToggle: FC<WithFirebaseProps> = ({ firebase }) => {
+  interface ISettings {
+    showListing: boolean;
+  }
+
+  const [settings, setSettings] = useState<ISettings>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -15,7 +20,7 @@ function ShowListingToggle({ firebase }) {
       let isSubscribed = true;
       const settings = await firebase.getSettings();
       if (isSubscribed) {
-        setSettings(settings);
+        setSettings(settings as ISettings);
       }
       setLoading(false);
       return () => (isSubscribed = false);
@@ -43,6 +48,6 @@ function ShowListingToggle({ firebase }) {
       </div>
     </div>
   );
-}
+};
 
-export default withFirebase(ShowListingToggle);
+export const ShowListingToggle = withFirebase(PlainShowListingToggle);

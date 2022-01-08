@@ -1,17 +1,21 @@
-import React from "react";
+import React, { FC } from "react";
 
 import styles from "./ListElement.module.css";
-import DeleteButton from "../../../Common/DeleteButton";
+import { IEditionListData } from "../../../../Firebase/firebase";
+import { DeleteButton } from "../../../Common/DeleteButton";
 
-function ListElement({ obj, removeSelf }) {
+interface ListElementProps {
+  obj: IEditionListData;
+  removeSelf: () => void;
+}
+
+export const ListElement: FC<ListElementProps> = ({ obj, removeSelf }) => {
   const refs = [obj.imgRef, obj.pdfRef];
 
   return (
     <div className={styles.elementStyle}>
       <p>{obj.edition}</p>
-      <DeleteButton docRef={refs} removeSelf={() => removeSelf()} />
+      <DeleteButton storageRef={refs} removeSelf={() => removeSelf()} />
     </div>
   );
-}
-
-export default ListElement;
+};

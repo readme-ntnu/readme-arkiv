@@ -1,12 +1,18 @@
-import React from "react";
+import React, { FC } from "react";
 import { Link } from "react-router-dom";
+import { IArticleListData } from "..";
 
 import * as ROUTES from "../../../../../constants/routes";
+import { DeleteButton } from "../../../Common/DeleteButton";
 
 import styles from "./ListElement.module.css";
-import DeleteButton from "../../../Common/DeleteButton";
 
-function ListElement({ obj, removeSelf }) {
+interface ListElementProps {
+  obj: IArticleListData;
+  removeSelf: (obj: IArticleListData) => void;
+}
+
+export const ListElement: FC<ListElementProps> = ({ obj, removeSelf }) => {
   const { data, ref, id } = obj;
   const { edition, title, url } = data;
   return (
@@ -16,7 +22,9 @@ function ListElement({ obj, removeSelf }) {
       </p>
       <div className={styles.end}>
         <a href={url} target="_blank" rel="noopener noreferrer">
-          <i className={`material-icons md-36 ${styles.open}`}>remove_red_eye</i>
+          <i className={`material-icons md-36 ${styles.open}`}>
+            remove_red_eye
+          </i>
         </a>
         <Link to={ROUTES.EDIT_ARTICLE.replace(":id", id)}>
           <i className={`material-icons md-36 ${styles.edit}`}>edit</i>
@@ -25,6 +33,4 @@ function ListElement({ obj, removeSelf }) {
       </div>
     </div>
   );
-}
-
-export default ListElement;
+};

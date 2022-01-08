@@ -1,12 +1,17 @@
-import React from "react";
+import React, { FC } from "react";
 import { Fade } from "react-bootstrap";
+import { WithFirebaseProps } from "../../../Firebase/context";
 
 import { withAuthorization } from "../../../Session";
 
-import ArticleForm from "../ArticleForm";
+import { ArticleForm } from "../ArticleForm";
+import { ISubmitFunction } from "../types";
 
-function NewArticlePage({ firebase }) {
-  function doHandleSubmit(valuesToSubmit, { setSubmitting, setStatus }) {
+const PlainNewArticlePage: FC<WithFirebaseProps> = ({ firebase }) => {
+  const doHandleSubmit: ISubmitFunction = (
+    valuesToSubmit,
+    { setSubmitting, setStatus }
+  ) => {
     // Making a true copy to avoid pass-by-reference issues
     const values = JSON.parse(JSON.stringify(valuesToSubmit));
     values.pages = values.pages.split(",").map((v) => parseInt(v));
@@ -25,7 +30,7 @@ function NewArticlePage({ firebase }) {
         setStatus({ error: true });
       }
     );
-  }
+  };
 
   return (
     <>
@@ -35,8 +40,8 @@ function NewArticlePage({ firebase }) {
       <ArticleForm doHandleSubmit={doHandleSubmit} />
     </>
   );
-}
+};
 
 const condition = (authUser) => !!authUser && !authUser.isAnonymous;
 
-export default withAuthorization(condition)(NewArticlePage);
+export const NewArticlePage = withAuthorization(condition)(PlainNewArticlePage);

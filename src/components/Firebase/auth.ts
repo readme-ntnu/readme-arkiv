@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { signInAnonymously, onAuthStateChanged, User } from "firebase/auth";
 import { FirebaseContext } from "../Firebase";
 
-function useAnonymousLogin() {
+export const useAnonymousLogin = () => {
   const [user, setUser] = useState<User>();
   const [token, setToken] = useState<string>();
   const firebase = useContext(FirebaseContext);
@@ -38,6 +38,4 @@ function useAnonymousLogin() {
     user,
     token,
   };
-}
-
-export default useAnonymousLogin;
+};

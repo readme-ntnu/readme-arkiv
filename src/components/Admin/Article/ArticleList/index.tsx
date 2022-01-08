@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, FC } from "react";
 import { withAuthorization } from "../../../Session";
 import { Button, Fade } from "react-bootstrap";
 import {
@@ -9,23 +9,38 @@ import {
   endBefore,
   limitToLast,
   startAfter,
+  DocumentReference,
 } from "firebase/firestore";
 
-import Loading from "../../../Loading";
-import ListElement from "./ListElement";
+import { WithFirebaseProps } from "../../../Firebase/context";
+import { Loading } from "../../../Loading";
+import { ListElement } from "./ListElement";
 
 import styles from "./ArticleList.module.css";
+export interface IArticle {
+  author: string;
+  title: string;
+  content: string;
+  edition: string;
+  layout: string;
+  pages: number[];
+  photo: string;
+  tags: string[];
+  type: string;
+  url: string;
+}
+export interface IArticleListData {
+  id: string;
+  data: IArticle;
+  ref: DocumentReference;
+}
 
-function ArticleList({ firebase }) {
+const PlainArticleList: FC<WithFirebaseProps> = ({ firebase }) => {
   const firstField = "edition";
   const secondField = "pages";
   let pageSize = 20;
 
-  const baseQuery = [
-    firebase.articles(),
-    orderBy(firstField, "desc"),
-    orderBy(secondField, "desc"),
-  ];
+  const baseQuery = [orderBy(firstField, "desc"), orderBy(secondField, "desc")];
 
   const [dynamicQuery, setQuery] = useState([...baseQuery, limit(pageSize)]);
 
@@ -37,12 +52,13 @@ function ArticleList({ firebase }) {
   const fetchData = useCallback(async () => {
     let subscribed = true;
     setDownloading(true);
-    const response = await getDocs(query(...dynamicQuery));
-    const responseData = [];
+    const response = await getDocs(query(firebase.articles(), ...dynamicQuery));
+
+    const responseData: IArticleListData[] = [];
     response.forEach((doc) => {
       responseData.push({
         id: doc.id,
-        data: doc.data(),
+        data: doc.data() as IArticle,
         ref: doc.ref,
       });
     });
@@ -51,7 +67,7 @@ function ArticleList({ firebase }) {
     }
     setDownloading(false);
     return () => (subscribed = false);
-  }, [dynamicQuery]);
+  }, [dynamicQuery, firebase]);
 
   useEffect(() => {
     fetchData();
@@ -107,8 +123,8 @@ function ArticleList({ firebase }) {
       </div>
     </Fade>
   );
-}
+};
 
 const condition = (authUser) => !!authUser && !authUser.isAnonymous;
 
-export default withAuthorization(condition)(ArticleList);
+export const ArticleList = withAuthorization(condition)(PlainArticleList);

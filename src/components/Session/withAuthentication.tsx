@@ -1,14 +1,17 @@
 import React from "react";
 
-import firebase from "firebase/app";
-
-import AuthUserContext from "./context";
+import { AuthUserContext } from "./context";
 import { withFirebase } from "../Firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, Unsubscribe, User } from "firebase/auth";
+import { WithFirebaseProps } from "../Firebase/context";
 
-const withAuthentication = (Component) => {
-  class WithAuthentication extends React.Component {
-    state: {authUser: firebase.User | null}
+export const withAuthentication = (Component) => {
+  class WithAuthentication extends React.Component<
+    WithFirebaseProps,
+    { authUser: User | null }
+  > {
+    listener: Unsubscribe;
+
     constructor(props) {
       super(props);
       this.state = {
@@ -38,4 +41,3 @@ const withAuthentication = (Component) => {
   }
   return withFirebase(WithAuthentication);
 };
-export default withAuthentication;
