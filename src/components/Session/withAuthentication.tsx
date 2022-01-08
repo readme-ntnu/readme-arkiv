@@ -1,18 +1,20 @@
-import React from "react";
+import React, { ComponentType } from "react";
 
 import { AuthUserContext } from "./context";
 import { withFirebase } from "../Firebase";
 import { onAuthStateChanged, Unsubscribe, User } from "firebase/auth";
 import { WithFirebaseProps } from "../Firebase/context";
 
-export const withAuthentication = (Component) => {
+export const withAuthentication = <P extends WithFirebaseProps>(
+  Component: ComponentType<P>
+) => {
   class WithAuthentication extends React.Component<
-    WithFirebaseProps,
+    WithFirebaseProps & P,
     { authUser: User | null }
   > {
-    listener: Unsubscribe;
+    listener: Unsubscribe | null = null;
 
-    constructor(props) {
+    constructor(props: WithFirebaseProps & P) {
       super(props);
       this.state = {
         authUser: null,
@@ -29,7 +31,9 @@ export const withAuthentication = (Component) => {
       );
     }
     componentWillUnmount() {
-      this.listener();
+      if (this.listener) {
+        this.listener();
+      }
     }
     render() {
       return (

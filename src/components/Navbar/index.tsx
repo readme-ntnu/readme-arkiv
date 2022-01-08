@@ -9,7 +9,7 @@ import { LightSwitch } from "../LightSwitch";
 import { SignOutButton } from "../SignOut";
 import styles from "./Navbar.module.css";
 
-import * as ROUTES from "../../constants/routes.js";
+import * as ROUTES from "../../constants/routes";
 
 export const AppNavbar: FC = () => {
   const isDark = useDarkMode();

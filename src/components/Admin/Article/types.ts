@@ -1,6 +1,6 @@
 import { DocumentReference } from "firebase/firestore";
 
-export type ISubmitFunction = (
+export type ISubmitArticleFunction = (
   valuesToSubmit: IEditArticle,
   statusFunctions: {
     setSubmitting: (value: boolean) => void;
@@ -39,6 +39,7 @@ export interface IArticle {
   tags: string[];
   type: string;
   url: string;
+  _id?: string;
 }
 export interface IArticleListData {
   id: string;

@@ -6,6 +6,7 @@ import { Loading } from "../../../Loading";
 import { ListPage } from "./ListPage";
 import { WithFirebaseProps } from "../../../Firebase/context";
 import { StorageReference } from "firebase/storage";
+import { User } from "firebase/auth";
 
 const PlainEditionList: FC<WithFirebaseProps> = ({ firebase }) => {
   const [data, setData] = useState<StorageReference[]>([]);
@@ -37,7 +38,7 @@ const PlainEditionList: FC<WithFirebaseProps> = ({ firebase }) => {
           {data.map((year) => {
             return (
               <div key={year.name} className="row-wrapper">
-                <ListPage year={year} key={year} />
+                <ListPage year={year} key={year.name} />
               </div>
             );
           })}
@@ -47,6 +48,6 @@ const PlainEditionList: FC<WithFirebaseProps> = ({ firebase }) => {
   );
 };
 
-const condition = (authUser) => !!authUser && !authUser.isAnonymous;
+const condition = (authUser: User) => !!authUser && !authUser.isAnonymous;
 
 export const EditionList = withAuthorization(condition)(PlainEditionList);

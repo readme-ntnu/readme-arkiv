@@ -3,8 +3,8 @@ import { signInAnonymously, onAuthStateChanged, User } from "firebase/auth";
 import { FirebaseContext } from "../Firebase";
 
 export const useAnonymousLogin = () => {
-  const [user, setUser] = useState<User>();
-  const [token, setToken] = useState<string>();
+  const [user, setUser] = useState<User | null>();
+  const [token, setToken] = useState<string | null>();
   const firebase = useContext(FirebaseContext);
 
   useEffect(() => {
@@ -21,16 +21,18 @@ export const useAnonymousLogin = () => {
 
   useEffect(() => {
     const auth = firebase.auth;
-    onAuthStateChanged(auth, function (user) {
-      if (!user) {
+    onAuthStateChanged(auth, (user) => {
+      if (user !== null) {
+        setUser(user);
+
+        user
+          .getIdToken()
+          .then((token) => setToken(token))
+          .catch(console.error);
+      } else {
         setUser(null);
         setToken(null);
-        return;
       }
-
-      setUser(user);
-
-      auth.currentUser.getIdToken().then(setToken).catch(console.error);
     });
   }, [firebase.auth]);
 

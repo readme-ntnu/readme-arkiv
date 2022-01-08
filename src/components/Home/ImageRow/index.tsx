@@ -32,9 +32,11 @@ const PlainImageRow: FC<ImageRowProps> = ({ year, firebase }) => {
     fetchData();
   }, [firebase, year]);
 
-  let imagesLen, images1, images2;
+  let imagesLen: number = 0;
+  let images1: JSX.Element[];
+  let images2: JSX.Element[];
 
-  if (info.pdfs) {
+  if (info?.pdfs) {
     const images = info.pdfs
       .map((pdf) => (
         <a
@@ -63,7 +65,7 @@ const PlainImageRow: FC<ImageRowProps> = ({ year, firebase }) => {
         <RowLoader minHeight={setRowMinHeight(year.name)} />
       ) : (
         <FadeIn height={setRowMinHeight(year.name)}>
-          {(onLoad) => (
+          {(onLoad: () => void) => (
             <>
               <div
                 onLoad={onLoad}
@@ -93,24 +95,24 @@ const PlainImageRow: FC<ImageRowProps> = ({ year, firebase }) => {
   );
 };
 
-function setRowMinHeight(year) {
-  year = parseInt(year);
-  if (year > 2014) {
+function setRowMinHeight(year: string) {
+  const parsedYear = parseInt(year);
+  if (parsedYear > 2014) {
     return 510;
-  } else if (year === 2014) {
+  } else if (parsedYear === 2014) {
     return 545;
-  } else if (year > 2010) {
+  } else if (parsedYear > 2010) {
     return 584;
   } else {
     return 583;
   }
 }
 
-function setImageMinHeight(year) {
-  year = parseInt(year);
-  if (year >= 2018) {
+function setImageMinHeight(year: string) {
+  const parsedYear = parseInt(year);
+  if (parsedYear >= 2018) {
     return "255.5px";
-  } else if (year >= 2014) {
+  } else if (parsedYear >= 2014) {
     return "253.5px";
   } else {
     return "291.5px";

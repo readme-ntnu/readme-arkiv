@@ -7,6 +7,7 @@ import { ShowListingToggle } from "./ShowListingToggle";
 
 import * as ROUTES from "../../constants/routes";
 import "./AdminPage.css";
+import { User } from "firebase/auth";
 
 export const PlainAdminPage: FC = () => {
   return (
@@ -42,6 +43,6 @@ export const PlainAdminPage: FC = () => {
   );
 };
 
-const condition = (authUser) => !!authUser && !authUser.isAnonymous;
+const condition = (authUser: User) => !!authUser && !authUser.isAnonymous;
 
 export const AdminPage = withAuthorization(condition)(PlainAdminPage);

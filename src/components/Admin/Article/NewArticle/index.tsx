@@ -1,3 +1,4 @@
+import { User } from "firebase/auth";
 import React, { FC } from "react";
 import { Fade } from "react-bootstrap";
 import { WithFirebaseProps } from "../../../Firebase/context";
@@ -5,20 +6,20 @@ import { WithFirebaseProps } from "../../../Firebase/context";
 import { withAuthorization } from "../../../Session";
 
 import { ArticleForm } from "../ArticleForm";
-import { ISubmitFunction } from "../types";
+import { IArticle, ISubmitArticleFunction } from "../types";
 
 const PlainNewArticlePage: FC<WithFirebaseProps> = ({ firebase }) => {
-  const doHandleSubmit: ISubmitFunction = (
-    valuesToSubmit,
+  const doHandleSubmit: ISubmitArticleFunction = (
+    valuesToPost,
     { setSubmitting, setStatus }
   ) => {
     // Making a true copy to avoid pass-by-reference issues
-    const values = JSON.parse(JSON.stringify(valuesToSubmit));
-    values.pages = values.pages.split(",").map((v) => parseInt(v));
-    values.tags = values.tags.split(",").map((v) => v.trim());
-    values.edition = `${values.editionYear}-0${values.editionNumber}`;
-    delete values.editionYear;
-    delete values.editionNumber;
+    const values: IArticle = {
+      ...valuesToPost,
+      pages: valuesToPost.pages.split(",").map((v) => parseInt(v)),
+      tags: valuesToPost.tags.split(",").map((v) => v.trim()),
+      edition: `${valuesToPost.editionYear}-0${valuesToPost.editionNumber}`,
+    };
     firebase.addArticle(
       values,
       () => {
@@ -42,6 +43,6 @@ const PlainNewArticlePage: FC<WithFirebaseProps> = ({ firebase }) => {
   );
 };
 
-const condition = (authUser) => !!authUser && !authUser.isAnonymous;
+const condition = (authUser: User) => !!authUser && !authUser.isAnonymous;
 
 export const NewArticlePage = withAuthorization(condition)(PlainNewArticlePage);

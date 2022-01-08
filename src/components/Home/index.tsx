@@ -42,7 +42,7 @@ const PlainHome: FC<WithFirebaseProps> = ({ firebase }) => {
                 <h2 className="year">{year.name}</h2>
               </Fade>
               <LazyLoad height={setRowMinHeight(year.name)} offset={100} once>
-                <ImageRow year={year} key={year} />
+                <ImageRow year={year} key={year.name} />
               </LazyLoad>
             </div>
           );

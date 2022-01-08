@@ -1,41 +1,46 @@
-import React from "react";
+import { ComponentType, FC, useEffect } from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { WithFirebaseProps } from "../Firebase/context";
 
 import { withFirebase } from "../Firebase";
-import { onAuthStateChanged, Unsubscribe } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 import { AuthUserContext } from ".";
 import * as ROUTES from "../../constants/routes";
 
-export const withAuthorization = (condition) => (Component) => {
-  class WithAuthorization extends React.Component<
-    WithFirebaseProps & RouteComponentProps
-  > {
-    listener: Unsubscribe;
-    componentDidMount() {
-      this.listener = onAuthStateChanged(
-        this.props.firebase.auth,
-        (authUser) => {
-          if (!condition(authUser)) {
-            this.props.history.push(ROUTES.SIGN_IN);
-          }
-        }
-      );
-    }
-    componentWillUnmount() {
-      this.listener();
-    }
+interface P extends WithFirebaseProps, RouteComponentProps {}
 
-    render() {
+export const withAuthorization =
+  (condition: (authUser: User) => boolean) =>
+  (
+    Component: ComponentType<P>
+  ): FC<
+    Pick<P, Exclude<keyof P, keyof WithFirebaseProps & RouteComponentProps>>
+  > => {
+    const WithAuthorizationInner = (
+      props: Pick<
+        P,
+        Exclude<keyof P, keyof WithFirebaseProps & RouteComponentProps>
+      >
+    ) => {
+      useEffect(() => {
+        const sub = onAuthStateChanged(props.firebase.auth, (authUser) => {
+          if (!authUser || !condition(authUser)) {
+            props.history.push(ROUTES.SIGN_IN);
+          }
+        });
+
+        return () => sub();
+      });
+
       return (
         <AuthUserContext.Consumer>
           {(authUser) =>
-            condition(authUser) ? <Component {...this.props} /> : null
+            authUser && condition(authUser) ? (
+              <Component {...(props as P)} />
+            ) : null
           }
         </AuthUserContext.Consumer>
       );
-    }
-  }
-
-  return withRouter(withFirebase(WithAuthorization));
-};
+    };
+    return withFirebase(withRouter(WithAuthorizationInner));
+  };

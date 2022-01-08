@@ -12,7 +12,7 @@ const PlainShowListingToggle: FC<WithFirebaseProps> = ({ firebase }) => {
     showListing: boolean;
   }
 
-  const [settings, setSettings] = useState<ISettings>(null);
+  const [settings, setSettings] = useState<ISettings>();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,8 +29,8 @@ const PlainShowListingToggle: FC<WithFirebaseProps> = ({ firebase }) => {
   }, [firebase]);
 
   function toggleShowListing() {
-    firebase.setShowListing(!settings.showListing);
-    setSettings({ ...settings, showListing: !settings.showListing });
+    firebase.setShowListing(!settings?.showListing);
+    setSettings({ ...settings, showListing: !settings?.showListing });
   }
 
   return (
@@ -38,7 +38,7 @@ const PlainShowListingToggle: FC<WithFirebaseProps> = ({ firebase }) => {
       <p>Vis listingsutgaver:</p>
       <Switch
         onChange={toggleShowListing}
-        checked={settings.showListing || false}
+        checked={settings?.showListing ?? false}
         disabled={loading}
       />
       <div>

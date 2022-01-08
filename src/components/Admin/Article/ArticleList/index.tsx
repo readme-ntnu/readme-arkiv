@@ -9,7 +9,6 @@ import {
   endBefore,
   limitToLast,
   startAfter,
-  DocumentReference,
 } from "firebase/firestore";
 
 import { WithFirebaseProps } from "../../../Firebase/context";
@@ -18,6 +17,7 @@ import { ListElement } from "./ListElement";
 
 import styles from "./ArticleList.module.css";
 import { IArticle, IArticleListData } from "../types";
+import { User } from "firebase/auth";
 
 const PlainArticleList: FC<WithFirebaseProps> = ({ firebase }) => {
   const firstField = "edition";
@@ -28,7 +28,7 @@ const PlainArticleList: FC<WithFirebaseProps> = ({ firebase }) => {
 
   const [dynamicQuery, setQuery] = useState([...baseQuery, limit(pageSize)]);
 
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<IArticleListData[]>([]);
   const [pageNum, setPageNum] = useState(0);
 
   const [downloading, setDownloading] = useState(true);
@@ -57,7 +57,7 @@ const PlainArticleList: FC<WithFirebaseProps> = ({ firebase }) => {
     fetchData();
   }, [fetchData]);
 
-  function prevPage(first) {
+  function prevPage(first: IArticle) {
     setPageNum(pageNum - 1);
     setQuery([
       ...baseQuery,
@@ -66,7 +66,7 @@ const PlainArticleList: FC<WithFirebaseProps> = ({ firebase }) => {
     ]);
   }
 
-  function nextPage(last) {
+  function nextPage(last: IArticle) {
     setPageNum(pageNum + 1);
     setQuery([
       ...baseQuery,
@@ -75,7 +75,7 @@ const PlainArticleList: FC<WithFirebaseProps> = ({ firebase }) => {
     ]);
   }
 
-  function removeItem(article) {
+  function removeItem(article: IArticleListData) {
     setData(data.filter((element) => element.data._id !== article.data._id));
   }
 
@@ -109,6 +109,6 @@ const PlainArticleList: FC<WithFirebaseProps> = ({ firebase }) => {
   );
 };
 
-const condition = (authUser) => !!authUser && !authUser.isAnonymous;
+const condition = (authUser: User) => !!authUser && !authUser.isAnonymous;
 
 export const ArticleList = withAuthorization(condition)(PlainArticleList);

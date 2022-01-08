@@ -7,13 +7,14 @@ import { withAuthorization } from "../../../Session";
 
 import { WithFirebaseProps } from "../../../Firebase/context";
 import { Loading } from "../../../Loading";
-import { IEditArticle } from "../types";
+import { IArticle, IEditArticle, ISubmitArticleFunction } from "../types";
 import { ArticleForm } from "../ArticleForm";
+import { User } from "firebase/auth";
 
 const PlainEditArticle: FC<WithFirebaseProps> = ({ firebase }) => {
   const { id } = useParams<{ id: string }>();
 
-  const [article, setArticle] = useState<IEditArticle>(null);
+  const [article, setArticle] = useState<IEditArticle>();
   const [downloading, setDownloading] = useState(true);
 
   useEffect(() => {
@@ -21,15 +22,17 @@ const PlainEditArticle: FC<WithFirebaseProps> = ({ firebase }) => {
     const fetchData = async () => {
       const articleDoc = await getDoc(firebase.article(id));
 
-      const article = articleDoc.data();
+      const article = articleDoc.data() as IArticle;
       const [editionYear, editionNumber] = article.edition.split("-");
-      article.editionYear = Number(editionYear);
-      article.editionNumber = Number(editionNumber);
-      article.pages = article.pages.join(", ");
-      article.tags = article.tags.join(", ");
-      delete article.edition;
+      const editArticle: IEditArticle = {
+        ...article,
+        editionYear: Number(editionYear),
+        editionNumber: Number(editionNumber),
+        pages: article.pages.join(", "),
+        tags: article.tags.join(", "),
+      };
       if (isSubscribed) {
-        setArticle(article as IEditArticle);
+        setArticle(editArticle);
         setDownloading(false);
       }
     };
@@ -39,15 +42,17 @@ const PlainEditArticle: FC<WithFirebaseProps> = ({ firebase }) => {
     };
   }, [firebase, id]);
 
-  function doHandleSubmit(valuesToPost, { setSubmitting, setStatus }) {
-    // Make a proper copy to avoid pass-by-reference issues
-    const values = JSON.parse(JSON.stringify(valuesToPost));
-    values.pages = values.pages.split(",").map((v) => parseInt(v));
-    values.tags = values.tags.split(",").map((v) => v.trim());
-    values.edition = `${values.editionYear}-0${values.editionNumber}`;
-    values._id = id;
-    delete values.editionYear;
-    delete values.editionNumber;
+  const doHandleSubmit: ISubmitArticleFunction = (
+    valuesToPost,
+    { setSubmitting, setStatus }
+  ) => {
+    const values: IArticle = {
+      ...valuesToPost,
+      pages: valuesToPost.pages.split(",").map((v) => parseInt(v)),
+      tags: valuesToPost.tags.split(",").map((v) => v.trim()),
+      edition: `${valuesToPost.editionYear}-0${valuesToPost.editionNumber}`,
+      _id: id,
+    };
     firebase.updateArticle(
       values,
       () => {
@@ -59,7 +64,7 @@ const PlainEditArticle: FC<WithFirebaseProps> = ({ firebase }) => {
         setStatus({ error: true });
       }
     );
-  }
+  };
 
   return (
     <>
@@ -75,6 +80,6 @@ const PlainEditArticle: FC<WithFirebaseProps> = ({ firebase }) => {
   );
 };
 
-const condition = (authUser) => !!authUser && !authUser.isAnonymous;
+const condition = (authUser: User) => !!authUser && !authUser.isAnonymous;
 
 export const EditArticle = withAuthorization(condition)(PlainEditArticle);

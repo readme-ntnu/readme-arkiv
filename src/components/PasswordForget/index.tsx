@@ -1,4 +1,4 @@
-import React, { ChangeEvent, Component } from "react";
+import { ChangeEvent, Component, FormEventHandler } from "react";
 import { Link } from "react-router-dom";
 import { Form, Button, Alert } from "react-bootstrap";
 
@@ -24,12 +24,12 @@ class PasswordForgetFormBase extends Component<
   WithFirebaseProps,
   { email: string; error: Error | null }
 > {
-  constructor(props) {
+  constructor(props: WithFirebaseProps) {
     super(props);
     this.state = { ...INITIAL_STATE };
   }
 
-  onSubmit = (event) => {
+  onSubmit: FormEventHandler = (event) => {
     const { email } = this.state;
     this.props.firebase
       .doPasswordReset(email)

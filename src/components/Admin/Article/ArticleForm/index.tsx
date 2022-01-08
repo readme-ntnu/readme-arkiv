@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, ClipboardEvent } from "react";
 
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -6,10 +6,10 @@ import { Form, Col, Button, Alert, Fade } from "react-bootstrap";
 
 import styles from "./ArticleForm.module.css";
 import { SubmitButton } from "../../Common/SubmitButton";
-import { ISubmitFunction, IEditArticle } from "../types";
+import { ISubmitArticleFunction, IEditArticle } from "../types";
 
 interface ArticleFormProps {
-  doHandleSubmit: ISubmitFunction;
+  doHandleSubmit: ISubmitArticleFunction;
   article?: IEditArticle;
 }
 
@@ -89,9 +89,9 @@ export const ArticleForm: FC<ArticleFormProps> = ({
         resetForm,
         setFieldValue,
       }) => {
-        function onPaste(event) {
+        function onPaste(event: ClipboardEvent<HTMLTextAreaElement>) {
           event.preventDefault();
-          const cursorPosition = event.currentTarget.selectionStart;
+          const cursorPosition = event.currentTarget.selectionStart ?? 0;
           const text = event.clipboardData.getData("text");
           const trimmedText = text
             .replace(/\s+/g, " ")
@@ -101,7 +101,7 @@ export const ArticleForm: FC<ArticleFormProps> = ({
             .replace(/\?^(?!\?\s)/g, ", ")
             .trim();
           const currentText = values.content;
-          let textToSet;
+          let textToSet: string;
           if (currentText) {
             textToSet = [
               currentText.slice(0, cursorPosition),
@@ -233,7 +233,9 @@ export const ArticleForm: FC<ArticleFormProps> = ({
                     name="content"
                     value={values.content}
                     onChange={handleChange}
-                    onPaste={(event) => onPaste(event)}
+                    onPaste={(event: ClipboardEvent<HTMLTextAreaElement>) =>
+                      onPaste(event)
+                    }
                     isValid={touched.content && !errors.content}
                     isInvalid={!!errors.content}
                   />

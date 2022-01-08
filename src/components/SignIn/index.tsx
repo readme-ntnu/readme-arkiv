@@ -1,6 +1,5 @@
-import React, { Component } from "react";
+import { ChangeEventHandler, Component, FormEventHandler } from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import { compose } from "recompose";
 import { Form, Alert } from "react-bootstrap";
 
 import { withFirebase } from "../Firebase";
@@ -34,11 +33,11 @@ class SignInFormBase extends Component<
     error: Error | null;
     submitting: boolean;
   };
-  constructor(props) {
+  constructor(props: WithFirebaseProps & RouteComponentProps) {
     super(props);
     this.state = { ...INITIAL_STATE };
   }
-  onSubmit = (event) => {
+  onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     const { email, password } = this.state;
     this.setState({ submitting: true });
     this.props.firebase
@@ -52,7 +51,7 @@ class SignInFormBase extends Component<
       });
     event.preventDefault();
   };
-  onChange = (event) => {
+  onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     this.setState({ [event.target.name]: event.target.value });
   };
   render() {
@@ -90,4 +89,4 @@ class SignInFormBase extends Component<
     );
   }
 }
-export const SignInForm = compose(withRouter, withFirebase)(SignInFormBase);
+export const SignInForm = withRouter(withFirebase(SignInFormBase));

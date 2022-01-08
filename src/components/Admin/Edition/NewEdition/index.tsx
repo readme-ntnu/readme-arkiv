@@ -7,6 +7,8 @@ import { SubmitButton } from "../../Common/SubmitButton";
 
 import styles from "./NewEdition.module.css";
 import { WithFirebaseProps } from "../../../Firebase/context";
+import { ISubmitEditionFunction } from "../types";
+import { User } from "firebase/auth";
 
 const schema = Yup.object().shape({
   editionYear: Yup.number()
@@ -29,12 +31,15 @@ const schema = Yup.object().shape({
 });
 
 const PlainNewEditionPage: FC<WithFirebaseProps> = ({ firebase }) => {
-  function handleSubmit(values, { setSubmitting, setStatus }) {
+  const handleSubmit: ISubmitEditionFunction = (
+    values,
+    { setSubmitting, setStatus }
+  ) => {
     const { editionYear, editionNumber, editionFile, listingslop } = values;
     const fileToUpload = new File(
-      [editionFile],
+      [editionFile as File],
       `${editionYear}-0${editionNumber}.pdf`,
-      { type: editionFile.type }
+      { type: (editionFile as File).type }
     );
     setSubmitting(true);
     firebase.uploadEdition(
@@ -47,7 +52,7 @@ const PlainNewEditionPage: FC<WithFirebaseProps> = ({ firebase }) => {
       () => setStatus({ error: true }),
       (progress) => setStatus({ progress: progress })
     );
-  }
+  };
 
   const now = new Date();
   const year = now.getFullYear();
@@ -199,6 +204,6 @@ const PlainNewEditionPage: FC<WithFirebaseProps> = ({ firebase }) => {
   );
 };
 
-const condition = (authUser) => !!authUser && !authUser.isAnonymous;
+const condition = (authUser: User) => !!authUser && !authUser.isAnonymous;
 
-export const newEditionPage = withAuthorization(condition)(PlainNewEditionPage);
+export const NewEditionPage = withAuthorization(condition)(PlainNewEditionPage);

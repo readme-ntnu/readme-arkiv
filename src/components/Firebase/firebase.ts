@@ -10,6 +10,7 @@ import {
   connectFirestoreEmulator,
   where,
   Firestore,
+  DocumentData,
 } from "firebase/firestore";
 import {
   getStorage,
@@ -28,6 +29,7 @@ import {
   connectAuthEmulator,
   Auth,
 } from "firebase/auth";
+import { IArticle } from "../Admin/Article/types";
 
 const config = {
   apiKey: "AIzaSyCLhIKGOYZilQuXirB_W-1UmKNfQygETqw",
@@ -80,23 +82,29 @@ export class Firebase {
 
   // *** Auth API ***
 
-  doSignInWithEmailAndPassword = (email, password) =>
+  doSignInWithEmailAndPassword = (email: string, password: string) =>
     signInWithEmailAndPassword(this.auth, email, password);
 
-  doPasswordReset = (email) => sendPasswordResetEmail(this.auth, email);
+  doPasswordReset = (email: string) => sendPasswordResetEmail(this.auth, email);
 
   doSignOut = () => signOut(this.auth);
 
   // *** Articles API ***
-  article = (id) => doc(this.db, `articles/${id}`);
+  article = (id: string) => doc(this.db, `articles/${id}`);
 
   articles = () => collection(this.db, "articles");
 
-  addArticle = (article, callback = undefined, errorCallback = undefined) =>
-    this.addArticleToDB(article, callback, errorCallback);
+  addArticle = (
+    article: IArticle,
+    callback?: () => void,
+    errorCallback?: () => void
+  ) => this.addArticleToDB(article, callback, errorCallback);
 
-  updateArticle = (article, callback = undefined, errorCallback = undefined) =>
-    this.updateArticleInDB(article, callback, errorCallback);
+  updateArticle = (
+    article: IArticle,
+    callback?: () => void,
+    errorCallback?: () => void
+  ) => this.updateArticleInDB(article, callback, errorCallback);
 
   // *** Editions API ***
   editions = (year: StorageReference) => this.fetchEditionDataForYear(year);
@@ -109,9 +117,9 @@ export class Firebase {
   uploadEdition = (
     editionFile: File,
     listinglop: boolean,
-    callback: () => void = undefined,
-    errorCallback: () => void = undefined,
-    updateProgessCallback: (progress: number) => void = undefined
+    callback?: () => void,
+    errorCallback?: () => void,
+    updateProgessCallback?: (progress: number) => void
   ) =>
     this.doEditionUpload(
       editionFile,
@@ -141,7 +149,7 @@ export class Firebase {
       `${host}?year=${encodeURIComponent(yearPrefix.name)}`,
       {
         headers: {
-          Authorization: `Bearer ${await this.auth.currentUser.getIdToken()}`,
+          Authorization: `Bearer ${await this.auth.currentUser?.getIdToken()}`,
           Accept: "application/json",
           "Content-Type": "application/json",
         },
@@ -171,9 +179,9 @@ export class Firebase {
   doEditionUpload = async (
     editionFile: File,
     listinglop: boolean,
-    callback: () => void,
-    errorCallback: () => void,
-    updateProgessCallback: (progress: number) => void
+    callback?: () => void,
+    errorCallback?: () => void,
+    updateProgessCallback?: (progress: number) => void
   ) => {
     const self = this;
     const year = editionFile.name.split("-")[0];
@@ -231,7 +239,7 @@ export class Firebase {
     );
   };
 
-  updateArticlePDFURL = async (editionName, newURL) => {
+  updateArticlePDFURL = async (editionName: unknown, newURL: string) => {
     const articles = await getDocs(
       query(
         collection(this.db, "articles"),
@@ -248,9 +256,9 @@ export class Firebase {
   };
 
   addArticleToDB = async (
-    article,
-    callback: () => void,
-    errorCallback: () => void
+    article: IArticle,
+    callback?: () => void,
+    errorCallback?: () => void
   ) => {
     try {
       const url = this.getArticlePDFURL(article);
@@ -272,15 +280,15 @@ export class Firebase {
   };
 
   updateArticleInDB = async (
-    article,
-    callback: () => void,
-    errorCallback: () => void
+    article: IArticle,
+    callback?: () => void,
+    errorCallback?: () => void
   ) => {
     try {
       const url = this.getArticlePDFURL(article);
       article.url = url;
-      const articleRef = this.article(article._id);
-      await updateDoc(articleRef, article);
+      const articleRef = this.article(article._id as string);
+      await updateDoc(articleRef, article as { [x: string]: any });
       console.log("Article added to DB");
       if (callback && typeof callback === "function") {
         callback();
@@ -296,7 +304,7 @@ export class Firebase {
     }
   };
 
-  getArticlePDFURL = (article) => {
+  getArticlePDFURL = (article: { edition: string; pages: any }) => {
     const year = article.edition.split("-")[0];
     let pdfURL = this.getPDFDownloadURL(year, article.edition);
     if (article.pages) {
@@ -305,7 +313,7 @@ export class Firebase {
     return pdfURL;
   };
 
-  getPageNumber = (article) => {
+  getPageNumber = (article: DocumentData) => {
     const [editionYear, editionNumber] = article.edition.split("-");
     if (
       editionYear > 2013 ||
@@ -334,7 +342,7 @@ export class Firebase {
     return settings.docs[0].data();
   };
 
-  setShowListingSetting = async (value) => {
+  setShowListingSetting = async (value: boolean) => {
     const settings = await getDocs(query(collection(this.db, "settings")));
     await updateDoc(settings.docs[0].ref, {
       showListing: value,

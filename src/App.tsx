@@ -1,41 +1,48 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import useDarkMode from "use-dark-mode";
-import CrossfadeImage from "react-crossfade-image";
 
 import styles from "./App.module.css";
 
 import * as ROUTES from "./constants/routes";
 
-import AppNavBar from "./components/Navbar";
-import Footer from "./components/Footer";
-import Home from "./components/Home";
-import Search from "./components/Search";
-import SignInPage from "./components/SignIn";
-import PasswordForgetPage from "./components/PasswordForget";
-import AdminPage from "./components/Admin";
-import NewEditionPage from "./components/Admin/Edition/NewEdition";
-import EditionList from "./components/Admin/Edition/EditionList";
-import NewArticlePage from "./components/Admin/Article/NewArticle";
-import EditArticle from "./components/Admin/Article/EditArticle";
-import ArticleList from "./components/Admin/Article/ArticleList";
-
-import NoMatch from "./components/NoMatch";
 import { withAuthentication } from "./components/Session";
+import { AdminPage } from "./components/Admin";
+import { ArticleList } from "./components/Admin/Article/ArticleList";
+import { EditArticle } from "./components/Admin/Article/EditArticle";
+import { NewArticlePage } from "./components/Admin/Article/NewArticle";
+import { EditionList } from "./components/Admin/Edition/EditionList";
+import { NewEditionPage } from "./components/Admin/Edition/NewEdition";
+import { Footer } from "./components/Footer";
+import { PasswordForgetPage } from "./components/PasswordForget";
+import { Search } from "./components/Search";
+import { SignInPage } from "./components/SignIn";
+import { AppNavbar } from "./components/Navbar";
+import { Home } from "./components/Home";
+import { NoMatch } from "./components/NoMatch";
 
 function App() {
   const darkmode = useDarkMode();
-  const logoSrc = `${process.env.PUBLIC_URL}/readme${
-    darkmode.value ? "_hvit" : ""
-  }.png`;
+  const logoSrc = `${process.env.PUBLIC_URL}/readme_hvit.png`;
+  const blackLogoSrc = `${process.env.PUBLIC_URL}/readme.png`;
 
   return (
     <Router>
       <div className={styles.app}>
-        <AppNavBar />
+        <AppNavbar />
         <header className={styles.header}>
           <div className={styles.readmelogo}>
-            <CrossfadeImage src={logoSrc} alt="Logo" />
+            <img
+              style={{ maxHeight: "1em" }}
+              src={logoSrc}
+              alt="readmeLogoHvit"
+            />
+            ;
+            <img
+              style={{ maxHeight: "1em" }}
+              src={blackLogoSrc}
+              alt="readmeLogoHvit"
+            />
           </div>
         </header>
         <div className={styles.content}>
