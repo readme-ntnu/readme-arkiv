@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FC } from "react";
+import { useState, useEffect, FC } from "react";
 import { withFirebase } from "../../Firebase";
 
 import { Image } from "react-bootstrap";

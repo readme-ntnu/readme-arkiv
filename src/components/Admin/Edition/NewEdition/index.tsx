@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Form, Button, Col, Alert, ProgressBar, Fade } from "react-bootstrap";

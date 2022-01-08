@@ -1,7 +1,7 @@
 import { DocumentReference, deleteDoc } from "firebase/firestore";
 import { StorageReference, deleteObject } from "firebase/storage";
 import { isArray } from "lodash";
-import React, { FC, useState } from "react";
+import { FC, useState } from "react";
 import { Spinner } from "react-bootstrap";
 
 import styles from "./DeleteButton.module.css";

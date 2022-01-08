@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 import { Button, Fade } from "react-bootstrap";
 

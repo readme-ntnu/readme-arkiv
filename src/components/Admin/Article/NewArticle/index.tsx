@@ -1,5 +1,5 @@
 import { User } from "firebase/auth";
-import React, { FC } from "react";
+import { FC } from "react";
 import { Fade } from "react-bootstrap";
 import { WithFirebaseProps } from "../../../Firebase/context";
 

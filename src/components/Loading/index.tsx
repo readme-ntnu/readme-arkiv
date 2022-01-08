@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC } from "react";
+import { CSSProperties, FC } from "react";
 import useDarkMode from "use-dark-mode";
 
 import { Fade, Spinner } from "react-bootstrap";

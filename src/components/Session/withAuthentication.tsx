@@ -1,4 +1,4 @@
-import React, { ComponentType } from "react";
+import { Component, ComponentType } from "react";
 
 import { AuthUserContext } from "./context";
 import { withFirebase } from "../Firebase";
@@ -6,9 +6,9 @@ import { onAuthStateChanged, Unsubscribe, User } from "firebase/auth";
 import { WithFirebaseProps } from "../Firebase/context";
 
 export const withAuthentication = <P extends WithFirebaseProps>(
-  Component: ComponentType<P>
+  ChildComponent: ComponentType<P>
 ) => {
-  class WithAuthentication extends React.Component<
+  class WithAuthentication extends Component<
     WithFirebaseProps & P,
     { authUser: User | null }
   > {
@@ -38,7 +38,7 @@ export const withAuthentication = <P extends WithFirebaseProps>(
     render() {
       return (
         <AuthUserContext.Provider value={this.state.authUser}>
-          <Component {...this.props} />
+          <ChildComponent {...this.props} />
         </AuthUserContext.Provider>
       );
     }

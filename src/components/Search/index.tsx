@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { AppTable } from "./Table";
 import { SearchBox } from "./SearchBox";
 import { InstantSearch, PoweredBy } from "react-instantsearch-dom";

@@ -1,5 +1,5 @@
 import { StorageReference } from "firebase/storage";
-import React, { useState, useEffect, useCallback, FC } from "react";
+import { useState, useEffect, useCallback, FC } from "react";
 import { Fade } from "react-bootstrap";
 import { withFirebase } from "../../../../Firebase";
 import { WithFirebaseProps } from "../../../../Firebase/context";

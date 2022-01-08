@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { createContext, FC } from "react";
 import { ComponentType } from "react";
 import { Firebase } from ".";
 
@@ -6,7 +6,7 @@ export interface WithFirebaseProps {
   firebase: Firebase;
 }
 
-export const FirebaseContext = React.createContext<Firebase>({} as Firebase);
+export const FirebaseContext = createContext<Firebase>({} as Firebase);
 
 export const withFirebase =
   <P extends WithFirebaseProps>(

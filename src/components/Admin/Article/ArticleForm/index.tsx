@@ -1,4 +1,4 @@
-import React, { FC, ClipboardEvent } from "react";
+import { FC, ClipboardEvent } from "react";
 
 import { Formik } from "formik";
 import * as Yup from "yup";

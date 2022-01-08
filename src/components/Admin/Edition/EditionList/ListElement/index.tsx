@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 
 import styles from "./ListElement.module.css";
 import { IEditionListData } from "../../../../Firebase/firebase";

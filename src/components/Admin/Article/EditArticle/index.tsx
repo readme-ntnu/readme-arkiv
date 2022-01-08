@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FC } from "react";
+import { useState, useEffect, FC } from "react";
 import { useParams } from "react-router-dom";
 import { Fade } from "react-bootstrap";
 import { getDoc } from "firebase/firestore";

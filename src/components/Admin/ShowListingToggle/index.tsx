@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FC } from "react";
+import { useState, useEffect, FC } from "react";
 import { Spinner } from "react-bootstrap";
 import Switch from "react-switch";
 

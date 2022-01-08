@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import useDarkMode from "use-dark-mode";
 import { Navbar, Nav } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";

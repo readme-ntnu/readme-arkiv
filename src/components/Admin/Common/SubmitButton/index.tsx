@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { Button, Spinner } from "react-bootstrap";
 import styles from "./SubmitButton.module.css";
 

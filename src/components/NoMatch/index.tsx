@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { Image, Fade } from "react-bootstrap";
 
 import redaktør from "../../Assets/Images/Shjolberg.png";
