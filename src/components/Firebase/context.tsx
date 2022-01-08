@@ -6,9 +6,7 @@ export interface WithFirebaseProps {
   firebase: Firebase;
 }
 
-export const FirebaseContext = React.createContext<Firebase>(
-  null as unknown as Firebase
-);
+export const FirebaseContext = React.createContext<Firebase>({} as Firebase);
 
 export const withFirebase =
   <P extends WithFirebaseProps>(

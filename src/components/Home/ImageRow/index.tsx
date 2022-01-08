@@ -47,7 +47,9 @@ const PlainImageRow: FC<ImageRowProps> = ({ year, firebase }) => {
           rel="noopener noreferrer"
         >
           <Image
-            src={`https://${process.env.PUBLIC_URL}/editionImage?year=${pdf.year}&edition=${pdf.edition}`}
+            src={`http${process.env.NODE_ENV === "production" ? "s" : ""}://${
+              process.env.PUBLIC_URL || "localhost:5000"
+            }/editionImage?year=${pdf.year}&edition=${pdf.edition}`}
             fluid
           />
         </a>

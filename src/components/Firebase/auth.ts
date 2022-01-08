@@ -9,7 +9,7 @@ export const useAnonymousLogin = () => {
 
   useEffect(() => {
     const auth = firebase.auth;
-    if (!auth.currentUser) {
+    if (auth.currentUser === null) {
       signInAnonymously(auth).catch(console.error);
     } else {
       auth.currentUser.getIdToken().then((idToken) => {
@@ -21,7 +21,7 @@ export const useAnonymousLogin = () => {
 
   useEffect(() => {
     const auth = firebase.auth;
-    onAuthStateChanged(auth, (user) => {
+    const unsub = onAuthStateChanged(auth, (user) => {
       if (user !== null) {
         setUser(user);
 
@@ -34,6 +34,7 @@ export const useAnonymousLogin = () => {
         setToken(null);
       }
     });
+    return () => unsub();
   }, [firebase.auth]);
 
   return {
