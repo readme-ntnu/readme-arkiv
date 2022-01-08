@@ -4,3 +4,7 @@
   width: 100%;
   height: 2.5rem;
 }
+
+.footer * img {
+  margin: 0 auto;
+}

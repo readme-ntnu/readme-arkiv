@@ -1,0 +1,20 @@
+.readmeLogo {
+  display: grid;
+  grid-template-columns: repeat(1fr, 1fr);
+  position: relative;
+}
+
+.readmeLogo > img {
+  transition: opacity 0.3s ease;
+}
+
+.logoHvit {
+  grid-column: 1;
+  grid-row: 1;
+  z-index: 0;
+}
+
+.logoSort {
+  grid-column: 1;
+  grid-row: 1;
+}

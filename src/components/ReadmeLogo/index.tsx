@@ -1,19 +1,42 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import useDarkMode from "use-dark-mode";
 
-export const ReadmeLogo: FC = () => {
+import styles from "./ReadmeLogo.module.css";
+
+export const ReadmeLogo: FC<{
+  maxWidth?: string;
+  maxHeight?: string;
+  small?: boolean;
+}> = ({ maxWidth, maxHeight, small }) => {
   const darkmode = useDarkMode();
-  const logoSrc = `${process.env.PUBLIC_URL}/readme_liten_hvit.png`;
-  const blackLogoSrc = `${process.env.PUBLIC_URL}/readme_liten.png`;
+  const logoSrc = `${process.env.PUBLIC_URL}/readme${
+    small ? "_liten" : ""
+  }_hvit.png`;
+  const blackLogoSrc = `${process.env.PUBLIC_URL}/readme${
+    small ? "_liten" : ""
+  }.png`;
   return (
-    <div>
-      <img style={{ maxHeight: "1em" }} src={logoSrc} alt="readmeLogoHvit" />;
+    <div className={styles.readmeLogo}>
       <img
-        style={{ maxHeight: "1em" }}
+        className={styles.logoHvit}
+        style={{
+          opacity: darkmode.value ? 1 : 0,
+          maxHeight,
+          maxWidth,
+        }}
+        src={logoSrc}
+        alt="readmeLogoHvit"
+      />
+      <img
+        className={styles.logoSort}
+        style={{
+          opacity: darkmode.value ? 0 : 1,
+          maxHeight,
+          maxWidth,
+        }}
         src={blackLogoSrc}
         alt="readmeLogoHvit"
       />
-      ;
     </div>
   );
 };

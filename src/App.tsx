@@ -1,6 +1,4 @@
-import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import useDarkMode from "use-dark-mode";
 
 import styles from "./App.module.css";
 
@@ -20,29 +18,16 @@ import { SignInPage } from "./components/SignIn";
 import { AppNavbar } from "./components/Navbar";
 import { Home } from "./components/Home";
 import { NoMatch } from "./components/NoMatch";
+import { ReadmeLogo } from "./components/ReadmeLogo";
 
 function App() {
-  const darkmode = useDarkMode();
-  const logoSrc = `${process.env.PUBLIC_URL}/readme_hvit.png`;
-  const blackLogoSrc = `${process.env.PUBLIC_URL}/readme.png`;
-
   return (
     <Router>
       <div className={styles.app}>
         <AppNavbar />
         <header className={styles.header}>
           <div className={styles.readmelogo}>
-            <img
-              style={{ maxHeight: "1em" }}
-              src={logoSrc}
-              alt="readmeLogoHvit"
-            />
-            ;
-            <img
-              style={{ maxHeight: "1em" }}
-              src={blackLogoSrc}
-              alt="readmeLogoHvit"
-            />
+            <ReadmeLogo maxWidth={"700px"} />
           </div>
         </header>
         <div className={styles.content}>
