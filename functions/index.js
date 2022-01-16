@@ -77,7 +77,7 @@ exports.handlePDFUpload = functions
     // Get the file name.
     const fileName = path.basename(filePath);
     // Exit if the image is already a thumbnail.
-    if (filePath.startsWith("images")) {
+    if (!filePath.match(/pdf\/\d{4}\/.+\.pdf/g)) {
       return console.log("Already a Thumbnail.");
     }
 
