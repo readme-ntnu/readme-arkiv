@@ -7,7 +7,7 @@ const path = require("path");
 const sharp = require("sharp");
 const os = require("os");
 const fs = require("fs-extra");
-const gs = require("gs");
+const pdf2jpg = require("pdf2jpg");
 
 admin.initializeApp();
 
@@ -77,16 +77,16 @@ exports.handlePDFUpload = functions
     // Get the file name.
     const fileName = path.basename(filePath);
     // Exit if the image is already a thumbnail.
-    if (filePath.startsWith("images")) {
+    if (!filePath.match(/pdf\/\d{4}\/.+\.pdf/g)) {
       return console.log("Already a Thumbnail.");
     }
 
     const bucket = admin.storage().bucket(fileBucket);
     const workingDir = path.join(os.tmpdir(), "thumbs");
     const tempFilePath = path.join(workingDir, fileName);
-    const tempJPGFilePath = path
+    const tempPNGFilePath = path
       .join(workingDir, fileName)
-      .replace(".pdf", ".jpg");
+      .replace(".pdf", ".png");
 
     await fs.ensureDir(workingDir);
 
@@ -95,26 +95,11 @@ exports.handlePDFUpload = functions
       .download({ destination: tempFilePath, validation: false });
     console.log("PDF downloaded locally to", tempFilePath);
 
-    await fs.ensureFile(tempJPGFilePath);
+    await fs.ensureFile(tempFilePath);
 
-    await new Promise((resolve, reject) => {
-      gs()
-        .executablePath("gs")
-        .batch()
-        .nopause()
-        .device("jpeg")
-        .output(tempJPGFilePath)
-        .input(tempFilePath)
-        .exec((err) => {
-          if (err) {
-            console.log("Error while running Ghostscript", err);
-            reject(err);
-          } else {
-            console.log("PDF conversion to JPG completed successfully");
-            resolve();
-          }
-        });
-    });
+    await pdf2jpg(tempFilePath, { page: 1 }).then((buffer) =>
+      fs.writeFileSync(tempPNGFilePath, buffer)
+    );
 
     const metadata = {
       contentType: "image/jpeg",
@@ -130,9 +115,12 @@ exports.handlePDFUpload = functions
 
     // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
     const pipeline = sharp();
-    pipeline.resize(THUMB_MAX_WIDTH).pipe(thumbnailUploadStream);
+    pipeline
+      .resize(THUMB_MAX_WIDTH)
+      .toFormat("jpeg")
+      .pipe(thumbnailUploadStream);
 
-    fs.createReadStream(tempJPGFilePath).pipe(pipeline);
+    fs.createReadStream(tempPNGFilePath).pipe(pipeline);
 
     await new Promise((resolve, reject) =>
       thumbnailUploadStream.on("finish", resolve).on("error", reject)
