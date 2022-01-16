@@ -18,6 +18,10 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+      - name: Use Node.js v14.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
       - name: Install FE dependencies and build
         run: npm ci && npm run build
 
