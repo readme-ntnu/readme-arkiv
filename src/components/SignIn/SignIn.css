@@ -1,4 +1,5 @@
 .SignInForm {
+  max-width: 400px;
   width: 60vw;
   margin: auto;
 }

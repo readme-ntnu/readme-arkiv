@@ -1,4 +1,5 @@
 .buttonContainer {
-  width: 40vw;
+  width: 60vw;
+  max-width: 400px;
   margin: auto;
 }
