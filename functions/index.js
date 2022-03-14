@@ -13,53 +13,57 @@ admin.initializeApp();
 
 const cacheMaxAge = 5 * 60 * 60; // 5 hrs
 
-exports.editionData = functions.https.onCall(async (data, context) => {
-  const year = data.year;
-  const bucket = admin.storage().bucket();
-  const pdfs = await bucket.getFiles({
-    prefix: `pdf/${year}`,
-  });
-  const showListing = (
-    await admin.firestore().collection("settings").get()
-  ).docs[0].get("showListing");
+exports.editionData = functions
+  .region("europe-west1")
+  .https.onCall(async (data, context) => {
+    const year = data.year;
+    const bucket = admin.storage().bucket();
+    const pdfs = await bucket.getFiles({
+      prefix: `pdf/${year}`,
+    });
+    const showListing = (
+      await admin.firestore().collection("settings").get()
+    ).docs[0].get("showListing");
 
-  const pdfUrls = pdfs[0].map((file) => {
-    const isListing =
-      file.metadata.metadata.listinglop.toLowerCase() === "true";
+    const pdfUrls = pdfs[0].map((file) => {
+      const isListing =
+        file.metadata.metadata.listinglop.toLowerCase() === "true";
 
-    const edition = file.name.replace(".pdf", "").split("-")[1];
+      const edition = file.name.replace(".pdf", "").split("-")[1];
+      return {
+        listinglop: isListing,
+        url: getDownloadURL(file.name, file.bucket.name),
+        year: year,
+        edition: edition,
+      };
+    });
+
     return {
-      listinglop: isListing,
-      url: getDownloadURL(file.name, file.bucket.name),
-      year: year,
-      edition: edition,
+      year,
+      pdfs: pdfUrls
+        .filter((data) => (data.listinglop && showListing) || !data.listinglop)
+        .reverse(),
     };
   });
 
-  return {
-    year,
-    pdfs: pdfUrls
-      .filter((data) => (data.listinglop && showListing) || !data.listinglop)
-      .reverse(),
-  };
-});
+exports.editionImage = functions
+  .region("europe-west1")
+  .https.onRequest((request, response) => {
+    try {
+      const { year, edition } = request.query;
 
-exports.editionImage = functions.https.onRequest((request, response) => {
-  try {
-    const { year, edition } = request.query;
+      const downloadURL = getDownloadURL(
+        `images/${year}/${year}-${edition}.jpg`,
+        admin.storage().bucket().name
+      );
 
-    const downloadURL = getDownloadURL(
-      `images/${year}/${year}-${edition}.jpg`,
-      admin.storage().bucket().name
-    );
+      response.set("Cache-Control", `public, max-age=${cacheMaxAge}`);
 
-    response.set("Cache-Control", `public, max-age=${cacheMaxAge}`);
-
-    https.get(downloadURL, (res) => res.pipe(response));
-  } catch (error) {
-    response.status(500).json({ message: error.toString() });
-  }
-});
+      https.get(downloadURL, (res) => res.pipe(response));
+    } catch (error) {
+      response.status(500).json({ message: error.toString() });
+    }
+  });
 
 const runtimeOpts = {
   timeoutSeconds: 180,
@@ -69,6 +73,7 @@ const runtimeOpts = {
 const THUMB_MAX_WIDTH = 620;
 
 exports.handlePDFUpload = functions
+  .region("europe-west1")
   .runWith(runtimeOpts)
   .storage.object()
   .onFinalize(async (object) => {
