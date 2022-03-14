@@ -46,24 +46,22 @@ exports.editionData = functions
     };
   });
 
-exports.editionImage = functions
-  .region("europe-west1")
-  .https.onRequest((request, response) => {
-    try {
-      const { year, edition } = request.query;
+exports.editionImage = functions.https.onRequest((request, response) => {
+  try {
+    const { year, edition } = request.query;
 
-      const downloadURL = getDownloadURL(
-        `images/${year}/${year}-${edition}.jpg`,
-        admin.storage().bucket().name
-      );
+    const downloadURL = getDownloadURL(
+      `images/${year}/${year}-${edition}.jpg`,
+      admin.storage().bucket().name
+    );
 
-      response.set("Cache-Control", `public, max-age=${cacheMaxAge}`);
+    response.set("Cache-Control", `public, max-age=${cacheMaxAge}`);
 
-      https.get(downloadURL, (res) => res.pipe(response));
-    } catch (error) {
-      response.status(500).json({ message: error.toString() });
-    }
-  });
+    https.get(downloadURL, (res) => res.pipe(response));
+  } catch (error) {
+    response.status(500).json({ message: error.toString() });
+  }
+});
 
 const runtimeOpts = {
   timeoutSeconds: 180,
