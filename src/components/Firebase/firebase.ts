@@ -80,7 +80,7 @@ export class Firebase {
 
     this.db = getFirestore(this.app);
 
-    this.functions = getFunctions(this.app);
+    this.functions = getFunctions(this.app, "europe-west1");
 
     if (process.env.NODE_ENV === "development") {
       connectStorageEmulator(this.storage, "localhost", 9199);
