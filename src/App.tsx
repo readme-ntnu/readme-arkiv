@@ -27,7 +27,7 @@ function App() {
         <AppNavbar />
         <header className={styles.header}>
           <div className={styles.readmelogo}>
-            <ReadmeLogo maxWidth={"700px"} />
+            <ReadmeLogo maxWidth={"min(700px, 100%)"} />
           </div>
         </header>
         <div className={styles.content}>
