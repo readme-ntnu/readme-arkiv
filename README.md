@@ -1,5 +1,8 @@
 # readme-arkiv
 
+_**Dette repo-et er arkivert. Se [readme-arkiv-v2](https://github.com/AndreasHaaversen/readme-arkiv-v2) istedenfor**_
+
+
 Artikkel og utgavedatabase for studentmagasinet [readme](https://readme.abakus.no).
 
 ## Hvordan fungerer dette?
