@@ -19,7 +19,7 @@
     "firebase-functions": "^3.16.0",
     "fs-extra": "^9.0.0",
     "pdf2jpg": "^0.4.2",
-    "sharp": "^0.25.1"
+    "sharp": "^0.30.5"
   },
   "devDependencies": {
     "eslint": "^5.12.0",
